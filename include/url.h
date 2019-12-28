@@ -8,14 +8,14 @@
 #include <cstdlib>
 #include <cstddef>
 
-#include "./urldetector.h"
-#include "./urldetectoroptions.h"
-#include "./stringutils.h"
-#include "./urlutil.h"
-#include "./urlmarker.h"
-#include "./hostnormalizer.h"
-#include "./pathnormalizer.h"
-//日志文件
+#include "urldetector.h"
+#include "urldetectoroptions.h"
+#include "stringutils.h"
+#include "urlutil.h"
+#include "urlmarker.h"
+#include "hostnormalizer.h"
+#include "pathnormalizer.h"
+//锟斤拷志锟侥硷拷
 //#include "./glog.h
 
 #define ubyte unsigned char
@@ -74,11 +74,12 @@ public:
 	*/
 	virtual vector<ubyte> getHostBytes();
 	string getOriginalUrl();
-	explicit Url(UrlMarker& urlMarker);	
+	explicit Url(UrlMarker &urlMarker);
 	Url();
 	~Url();
+
 private:
-	string DEFAULT_SCHEME ;
+	string DEFAULT_SCHEME;
 	map<string, int> SCHEME_PORT_MAP;
 
 	UrlMarker _urlMarker;
@@ -109,6 +110,7 @@ private:
 	* @param part The part that we want. Ex: host, path
 	*/
 	string getPart(UrlPart part);
+
 protected:
 	void setRawPath(string &path);
 	void setRawHost(string &host);
@@ -132,11 +134,10 @@ public:
 	vector<ubyte> getHostBytes();
 
 	void populateHostAndHostBytes();
+
 private:
 	bool _isPopulated;
 	vector<ubyte> _hostBytes;
-
-
 };
 
 #endif

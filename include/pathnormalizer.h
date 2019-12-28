@@ -4,11 +4,10 @@
 #include <stack>
 #include <cstring>
 
-#include "./stringutils.h"
-#include "./stringbuilder.h"
-#include "./urlutil.h"
-//日志文件
-//#include "./glog.h"
+#include "stringutils.h"
+#include "stringbuilder.h"
+#include "urlutil.h"
+
 using namespace std;
 class PathNormalizer
 {
@@ -18,7 +17,7 @@ public:
 	* remove special spaces, decoding hex encoded characters,
 	* gets rid of extra dots and slashes, and re-encodes it once
 	*/
-	std::string& normalizePath(string &path);
+	std::string &normalizePath(string &path);
 
 private:
 	/**
@@ -29,9 +28,6 @@ private:
 	* 5. Adds a slash at the end if there isn't one
 	*/
 	static std::string sanitizeDotsAndSlashes(string &path);
-
 };
-
-
 
 #endif // !_PATHNORMALIZER_H

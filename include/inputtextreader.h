@@ -1,13 +1,13 @@
 #ifndef _INPUTTEXTREADER_H
 #define _INPUTTEXTREADER_H
 
-#include "./charutils.h"
-//日志文件
-//#include "./glog.h"
-#include <cstdlib>
-#include <cstring>
+#include "charutils.h"
+
+#include <stdlib.h>
+#include <string.h>
 using namespace std;
-class InputTextReader {
+class InputTextReader
+{
 
 public:
 	InputTextReader();
@@ -63,7 +63,7 @@ public:
 	* Goes back a single character.
 	*/
 	void goBack();
-	
+
 private:
 	/**
 	* The content to read.
@@ -88,9 +88,6 @@ protected:
 	/**
 	* The number of times something can be backtracked is this multiplier times the length of the string.
 	*/
-	int MAX_BACKTRACK_MULTIPLIER ;
-	
-
-	
+	int MAX_BACKTRACK_MULTIPLIER;
 };
 #endif

@@ -1,11 +1,10 @@
 #ifndef _URLUTIL_H
 #define _URLUTIL_H
 
-#include "./charutils.h"
-#include "./inputtextreader.h"
-#include "./stringbuilder.h"
-//日志文件
-//#include "./glog.h"
+#include "charutils.h"
+#include "inputtextreader.h"
+#include "stringbuilder.h"
+
 #include <stack>
 #include <cstring>
 #include <cstdlib>
@@ -16,6 +15,7 @@ class UrlUtil
 {
 private:
 	UrlUtil();
+
 public:
 	/**
 	* Decodes the url by iteratively removing hex characters with backtracking.
@@ -35,6 +35,6 @@ public:
 	* Removes all leading and trailing dots; replaces consecutive dots with a single dot
 	* Ex: ".lalal.....com." -> "lalal.com"
 	*/
-	static std::string removeExtraDots(string &host);	
+	static std::string removeExtraDots(string &host);
 };
 #endif

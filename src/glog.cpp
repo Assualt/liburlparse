@@ -1,7 +1,8 @@
 #include "glog.h"
 
-Log::Log():_level(LOG_DEBUG_LEVEL),_LibUrlParser("URL Parser")
-{}
+Log::Log() : _level(LOG_DEBUG_LEVEL), _LibUrlParser("URL Parser")
+{
+}
 void Log::getTime()
 {
 	time_t localtimer;
@@ -22,25 +23,26 @@ void Log::getDate()
 	_date = buf;
 	memset(buf, 0, sizeof(buf));
 }
-Log& Log::setLevel(LOG_LEVEL level)
+Log &Log::setLevel(LOG_LEVEL level)
 {
 	_level = level;
 	return *this;
 }
-Log& Log::log()
+Log &Log::log()
 {
 	getTime();
 	getDate();
-//	std::cout << "localdate:" << _date << std::endl;
-//	std::cout << "localtime:" << _time << std::endl;
+	//	std::cout << "localdate:" << _date << std::endl;
+	//	std::cout << "localtime:" << _time << std::endl;
 	return *this;
 }
-Log& Log::format(const std::string& fmt_str, ...)
+Log &Log::format(const std::string &fmt_str, ...)
 {
 	int n = ((int)fmt_str.size()) * 2; /* Reserve two times as much as the length of the fmt_str */
 	std::unique_ptr<char[]> formatted;
 	va_list ap;
-	while (1) {
+	while (1)
+	{
 		formatted.reset(new char[n]); /* Wrap the plain char array into the unique_ptr */
 		strcpy(&formatted[0], fmt_str.c_str());
 		va_start(ap, fmt_str);
@@ -59,22 +61,30 @@ const string Log::getLevel()
 	string t;
 	switch (_level)
 	{
-	case LOG_DEBUG_LEVEL:t = "DEBUG"; break;
-	case LOG_WARN_LEVEL: t = "WARNNING"; break;
-	case LOG_ERR_LEVEL: t = "ERROR"; break;
-	default: t = "DEBUG"; break;
+	case LOG_DEBUG_LEVEL:
+		t = "DEBUG";
+		break;
+	case LOG_WARN_LEVEL:
+		t = "WARNNING";
+		break;
+	case LOG_ERR_LEVEL:
+		t = "ERROR";
+		break;
+	default:
+		t = "DEBUG";
+		break;
 	}
 	return t;
 }
 void Log::toFile()
 {
-//	std::cout << "localtime:" << _time << std::endl;
-//	std::cout << "_level:" << _level << std::endl;
-//	std::cout << "_log_data:" << _log_data << std::endl;
-	string log = _LibUrlParser + " " + _time + " [root - :" + this->getLevel() + "] " + _log_data ;
+	//	std::cout << "localtime:" << _time << std::endl;
+	//	std::cout << "_level:" << _level << std::endl;
+	//	std::cout << "_log_data:" << _log_data << std::endl;
+	string log = _LibUrlParser + " " + _time + " [root - :" + this->getLevel() + "] " + _log_data;
 	string filename = LOG_PATH + "." + _date;
-	std::ofstream fout(filename ,ios::app);
-//	assert(fout.is_open());
+	std::ofstream fout(filename, ios::app);
+	//	assert(fout.is_open());
 	fout << log << std::endl;
 	fout.close();
 }

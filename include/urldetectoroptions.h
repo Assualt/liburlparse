@@ -19,18 +19,18 @@ enum UrlDetectorOptions
 	/**
 	* Matches single quotes in the beginning and end of a string.
 	*/
-	SINGLE_QUOTE_MATCH = 2,// 00000010
+	SINGLE_QUOTE_MATCH = 2, // 00000010
 
 	/**
 	* Matches brackets and closes on the second one.
 	* Same as quote matching but works for brackets such as (), {}, [].
 	*/
 	BRACKET_MATCH = 4, // 000000100
-		
+
 	/**
 	 * Checks for bracket characters and more importantly quotes to start and end strings.
 	 */
-	JSON = 5,//00000101
+	JSON = 5, //00000101
 
 	/**
 	 * Checks JSON format or but also looks for a single quote.
@@ -40,11 +40,11 @@ enum UrlDetectorOptions
 	 * Checks for xml characters and uses them as ending characters as well as quotes.
 	 * This also includes quote_matching.
 	 */
-	XML = 9,//00001001
+	XML = 9, //00001001
 	/**
 	 * Checks all of the rules besides brackets. This is XML but also can contain javascript.
 	 */
-	HTML = 27,//00011011
+	HTML = 27, //00011011
 	/**
 	 * Checks for single level domains as well. Ex: go/, http://localhost
 	 */
@@ -52,8 +52,9 @@ enum UrlDetectorOptions
 
 };
 
-class UrlDetectorOptions_T {
-	
+class UrlDetectorOptions_T
+{
+
 public:
 	UrlDetectorOptions get(int index);
 	int getValue(UrlDetectorOptions flag);

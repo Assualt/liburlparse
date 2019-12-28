@@ -17,13 +17,14 @@ protected:
 	static const int IPv4 = INET_FAMILY_IPV4;
 	static const int IPv6 = INET_FAMILY_IPV6;
 	InetAddress();
+
 public:
 	string hostName;
 	int family;
 	int address;
 };
- 
-class Inet4Address :public InetAddress
+
+class Inet4Address : public InetAddress
 {
 public:
 	Inet4Address();

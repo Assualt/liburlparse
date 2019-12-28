@@ -1,8 +1,9 @@
 #include "urlmarker.h"
-//日志文件
-#include "./glog.h"
-UrlMarker::UrlMarker():_schemeIndex(-1), _usernamePasswordIndex(-1), _hostIndex(-1), _portIndex(-1), _pathIndex(-1), _queryIndex(-1), _fragmentIndex(-1)
-{}
+
+#include "glog.h"
+UrlMarker::UrlMarker() : _schemeIndex(-1), _usernamePasswordIndex(-1), _hostIndex(-1), _portIndex(-1), _pathIndex(-1), _queryIndex(-1), _fragmentIndex(-1)
+{
+}
 
 void UrlMarker::setOriginalUrl(string &originalUrl)
 {
@@ -14,7 +15,8 @@ string UrlMarker::getOriginalUrl()
 }
 void UrlMarker::setIndex(UrlPart urlPart, int index)
 {
-	switch (urlPart) {
+	switch (urlPart)
+	{
 	case URL_SCHEME:
 		_schemeIndex = index;
 		break;
@@ -42,7 +44,8 @@ void UrlMarker::setIndex(UrlPart urlPart, int index)
 }
 int UrlMarker::indexOf(UrlPart urlPart)
 {
-	switch (urlPart) {
+	switch (urlPart)
+	{
 	case URL_SCHEME:
 		return _schemeIndex;
 	case URL_USERNAME_PASSWORD:
@@ -65,9 +68,10 @@ void UrlMarker::unsetIndex(UrlPart urlPart)
 {
 	setIndex(urlPart, -1);
 }
-UrlMarker UrlMarker::setIndices(vector<int> indices) {
-	
-	if (indices.empty()|| indices.size()!= 7) 
+UrlMarker UrlMarker::setIndices(vector<int> indices)
+{
+
+	if (indices.empty() || indices.size() != 7)
 	{
 		Log().log().setLevel(LOG_ERR_LEVEL).format("IllegalArgumentException:Malformed index array. [at FILE:%s FUNC:%s LINE:%d]", __FILE__, __FUNCTION__, __LINE__).toFile();
 		//std::cout << "IllegalArgumentException:Malformed index array " << std::endl;

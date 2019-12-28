@@ -5,8 +5,8 @@
 #include <cstring>
 #include <numeric>
 #include <iostream>
-//ÈÕÖ¾ÎÄ¼þ
-#include "./glog.h"
+//ï¿½ï¿½Ö¾ï¿½Ä¼ï¿½
+#include "glog.h"
 using namespace std;
 // Subset of http://msdn.microsoft.com/en-us/library/system.text.stringbuilder.aspx
 template <typename chr>
@@ -17,7 +17,7 @@ class StringBuilder
 	typedef typename string_t::size_type size_type;					 // Reuse the size type in the string.
 	typedef typename std::list<string_t>::const_iterator iter_t_con; //
 	typedef typename std::list<string_t>::iterator iter_t;			 //
-  private:
+private:
 	container_t m_Data;
 	size_type m_totalSize;
 	void append(const string_t &src)
@@ -26,7 +26,7 @@ class StringBuilder
 		m_totalSize += src.size();
 	}
 
-  public:
+public:
 	// No copy constructor, no assignment.
 	//	StringBuilder(const StringBuilder &);
 	//	StringBuilder & operator = (StringBuilder & builder);
@@ -88,7 +88,7 @@ class StringBuilder
 		if ((start > end) || (end > (int)m_totalSize))
 		{
 			//std::cout << "err at delete(int start,int end) const args:(start can'over end or start can't over the str len)" << std::endl;
-			//ÈÕÖ¾Êä³ö
+			//ï¿½ï¿½Ö¾ï¿½ï¿½ï¿½
 			Log().log().setLevel(LOG_ERR_LEVEL).format("Err arg: start can't be over end or start can't be over the str length [at FILE:%s FUNC:%s LINE:%d]", __FILE__, __FUNCTION__, __LINE__).toFile();
 			return *this;
 		}

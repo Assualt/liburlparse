@@ -1,18 +1,19 @@
 #ifndef _DOMAINNAMEREADER_H
 #define _DOMAINNAMEREADER_H
 
-#include "./inputtextreader.h"
-#include "./charutils.h"
-#include "./urldetectoroptions.h"
-#include "./stringbuilder.h"
-#include "./urldetector.h"
+#include "inputtextreader.h"
+#include "charutils.h"
+#include "urldetectoroptions.h"
+#include "stringbuilder.h"
+#include "urldetector.h"
 
-//日志文件
+//锟斤拷志锟侥硷拷
 //#include "./glog.h"
 
 #include <cstdlib>
 #include <cstring>
-enum ReaderNextState {
+enum ReaderNextState
+{
 	/**
 	* Trying to read the domain name caused it to be invalid.
 	*/
@@ -46,7 +47,8 @@ enum ReaderNextState {
 * domain is valid, the return state will be to read a query string.
 */
 class CharacterHandler;
-class DomainNameReader {
+class DomainNameReader
+{
 public:
 	/**
 	* Creates a new instance of the DomainNameReader object.
@@ -69,59 +71,60 @@ public:
 
 	int getReaderPosition();
 	int getBacktracked();
+
 private:
 	/**
 	* The minimum length of a ascii based top level domain.
 	*/
-	int MIN_TOP_LEVEL_DOMAIN ;
+	int MIN_TOP_LEVEL_DOMAIN;
 
 	/**
 	* The maximum length of a ascii based top level domain.
 	*/
-	int MAX_TOP_LEVEL_DOMAIN ;
+	int MAX_TOP_LEVEL_DOMAIN;
 
 	/**
 	* The maximum number that the url can be in a url that looks like:
 	* http://123123123123/path
 	*/
-	long MAX_NUMERIC_DOMAIN_VALUE ;
+	long MAX_NUMERIC_DOMAIN_VALUE;
 
 	/**
 	* The minimum number the url can be in a url that looks like:
 	* http://123123123123/path
 	*/
-	long MIN_NUMERIC_DOMAIN_VALUE ;
+	long MIN_NUMERIC_DOMAIN_VALUE;
 
 	/**
 	* If the domain name is an ip address, for each part of the address, whats the minimum value?
 	*/
-	int MIN_IP_PART ;
+	int MIN_IP_PART;
 
 	/**
 	* If the domain name is an ip address, for each part of the address, whats the maximum value?
 	*/
-	int MAX_IP_PART ;
+	int MAX_IP_PART;
 
 	/**
 	* The start of the utf character code table which indicates that this character is an international character.
 	* Everything below this value is either a-z,A-Z,0-9 or symbols that are not included in domain name.
 	*/
-	int INTERNATIONAL_CHAR_START ;
+	int INTERNATIONAL_CHAR_START;
 
 	/**
 	* The maximum length of each label in the domain name.
 	*/
-	int MAX_LABEL_LENGTH ;
+	int MAX_LABEL_LENGTH;
 
 	/**
 	* The maximum number of labels in a single domain name.
 	*/
-	int MAX_NUMBER_LABELS ;
+	int MAX_NUMBER_LABELS;
 
 	/**
 	* The maximum domain name length.
 	*/
-	int MAX_DOMAIN_LENGTH ;
+	int MAX_DOMAIN_LENGTH;
 
 	/**
 	* Encoded hex dot.
@@ -146,44 +149,43 @@ private:
 	/**
 	* Keeps track the number of dots that were found in the domain name.
 	*/
-	int _dots ;
+	int _dots;
 
 	/**
 	* Keeps track of the number of characters since the last "."
 	*/
-	int _currentLabelLength ;
+	int _currentLabelLength;
 
 	/**
 	* Keeps track of the number of characters in the top level domain.
 	*/
-	int _topLevelLength ;
+	int _topLevelLength;
 
 	/**
 	* Keeps track where the domain name started. This is non zero if the buffer starts with
 	* http://username:password@...
 	*/
-	int _startDomainName ;
+	int _startDomainName;
 
 	/**
 	* Keeps track if the entire domain name is numeric.
 	*/
-	bool _numeric ;
+	bool _numeric;
 
 	/**
 	* Keeps track if we are seeing an ipv6 type address.
 	*/
-	bool _seenBracket ;
+	bool _seenBracket;
 
 	/**
 	* Keeps track if we have seen a full bracket set "[....]"; used for ipv6 type address.
 	*/
-	bool _seenCompleteBracketSet ;
+	bool _seenCompleteBracketSet;
 
 	/**
 	* Keeps track if we have a zone index in the ipv6 address.
 	*/
-	bool _zoneIndex ;
-
+	bool _zoneIndex;
 
 	/**
 	* Contains the input stream to read.
@@ -227,7 +229,4 @@ private:
 	bool isValidIpv6(string &testDomain);
 };
 
-
-
 #endif
-

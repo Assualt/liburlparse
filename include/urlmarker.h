@@ -2,9 +2,9 @@
 #define _URLMARKER_H
 
 #include <iostream>
-#include "./urlpart.h"
+#include "urlpart.h"
 
-#include <cstring>
+#include <string.h>
 #include <vector>
 using namespace std;
 class UrlMarker
@@ -17,6 +17,7 @@ public:
 	void setIndex(UrlPart urlPart, int index);
 	int indexOf(UrlPart urlPart);
 	void unsetIndex(UrlPart urlPart);
+
 private:
 	string _originalUrl;
 	int _schemeIndex;
@@ -30,7 +31,5 @@ private:
 protected:
 	UrlMarker setIndices(std::vector<int> indices);
 };
-
-
 
 #endif // !_URLMARKER_H

@@ -1,9 +1,9 @@
 CC 	= g++
 CXX = gcc
 FLAG = -Wno-literal-suffix -Wno-deprecated -D_POSIX_PTHREAD_SEMANTICS -D_POSIX_THREAD_PRIORITY_SCHEDULING
-CFLAGS 	= $(FLAG)  -g -Wall -I../include -O3 $(SYSFLAGS) -std=c++11
+CFLAGS 	= $(FLAG)  -g -Wall -I../include  $(SYSFLAGS) -std=c++11 -fprofile-arcs -ftest-coverage 
 #VPATH 指定cpp文件的路径
-VPATH = ../src:../test
+VPATH = ../src:../Test
 #LIBS 指定链接文件库
 OBJS = stringutils.o stringbuilder.o inetaddress.o charutils.o domainnamereader.o \
        inputtextreader.o urldetector.o hostnormalizer.o url.o urlmarker.o pathnormalizer.o \
@@ -15,16 +15,26 @@ OBJS = stringutils.o stringbuilder.o inetaddress.o charutils.o domainnamereader.
 liburlparse.a: $(OBJS)
 	rm -f liburlparse.a
 	ar cr liburlparse.a $(OBJS)
-	ranlib liburlparse.a #更新符号表
+	ranlib liburlparse.a
 all: liburlparse.a
 clean: 
-	rm -rf *.o *.a *.lo *.d
+	rm -rf *.o *.a *.lo *.d *.gcno *.gcda
 r: clean all
-# TEST
-TestMain:  testmain.o
+
+main:  testmain.o
 	$(CC) $(CFLAGS) -o TestMain testmain.o $(OBJS) 
 cleanTest:
 	rm -rf TestMain TestMain.d TestMain.o
+
+alltest: unitmain.o 
+	$(CC) $(CFLAGS) -o unitmain unitmain.o -L/usr/local/lib -lgtest -pthread -L./ -lurlparse  
+
+testcharutils:testCharUtils.o
+	$(CC) $(CFLAGS) -o unitcharutils testCharUtils.o -L/usr/local/lib -lgtest -pthread -L./ -lurlparse 
+testinputreader:testInputReader.o
+	$(CC) $(CFLAGS) -o unitinputreader testInputReader.o -L/usr/local/lib -lgtest -pthread -L./ -lurlparse
+
+
 ## Commands to generate dependency files
 GEN_DEPS.c= $(CC) -E -MM $(DEFS) $(CFLAGS)
 GEN_DEPS.cc= $(CXX) -E -MM $(DEFS) $(CFLAGS)

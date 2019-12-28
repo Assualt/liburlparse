@@ -3,11 +3,12 @@
 * Creates a new instance of the InputTextReader using the content to read.
 * @param content The content to read.
 */
-InputTextReader::InputTextReader():_index(0), _backtracked(0), MINIMUM_BACKTRACK_LENGTH(10),
-MAX_BACKTRACK_MULTIPLIER(20) 
-{}
-InputTextReader::InputTextReader(string &content):_content(content),_index(0),_backtracked(0),MINIMUM_BACKTRACK_LENGTH(10),
-	MAX_BACKTRACK_MULTIPLIER(20)
+InputTextReader::InputTextReader() : _index(0), _backtracked(0), MINIMUM_BACKTRACK_LENGTH(20),
+									 MAX_BACKTRACK_MULTIPLIER(10)
+{
+}
+InputTextReader::InputTextReader(string &content) : _content(content), _index(0), _backtracked(0), MINIMUM_BACKTRACK_LENGTH(20),
+													MAX_BACKTRACK_MULTIPLIER(10)
 {
 }
 /**
@@ -34,10 +35,11 @@ string InputTextReader::peek(int numberChars)
 */
 char InputTextReader::peekChar(int offset)
 {
-	if (!canReadChars(offset)) {
+	if (!canReadChars(offset))
+	{
 		//throw std::overflow_error();
 		//std::cout << "Arry is out of index" << std::endl;
-		//ÈÕÖ¾Êä³ö
+		//ï¿½ï¿½Ö¾ï¿½ï¿½ï¿½
 		Log().log().setLevel(LOG_WARN_LEVEL).format("Array is out of index. [at FILE:%s FUNC:%s LINE:%d]", __FILE__, __FUNCTION__, __LINE__).toFile();
 	}
 	return _content[_index + offset];
@@ -103,19 +105,18 @@ void InputTextReader::checkBacktrackLoop(int backtrackLength)
 {
 	if (_backtracked > ((int)_content.size() * MAX_BACKTRACK_MULTIPLIER))
 	{
-		if (backtrackLength < MINIMUM_BACKTRACK_LENGTH) 
+		if (backtrackLength < MINIMUM_BACKTRACK_LENGTH)
 		{
 			backtrackLength = MINIMUM_BACKTRACK_LENGTH;
 		}
 		int start = max(_index, 0);
-		if (start + backtrackLength > (int)_content.size()) 
+		if (start + backtrackLength > (int)_content.size())
 		{
 			backtrackLength = (int)_content.size() - start;
 		}
 		string badText = string(_content, start, backtrackLength);
 		//throw new NegativeArraySizeException("Backtracked max amount of characters. Endless loop detected. Bad Text: '"+ badText + "'");
 		//std::cout << "Backtracked max amount of characters. Endless loop detected. Bad Text: " << badText << std::endl;
-		//ÈÕÖ¾Êä³ö
 		//Log().log().setLevel(LOG_ERR_LEVEL).format("Backtracked max amount of characters. Endless loop detected. Bad Text: %s. [at FILE:%s FUNC:%s LINE:%d]",badText, __FILE__, __FUNCTION__, __LINE__).toFile();
 		Log().log().setLevel(LOG_ERR_LEVEL).format("Backtracked max amount of characters. Endless loop detected. Bad Text: %s  [at FILE:%s FUNC:%s LINE:%d]", badText.c_str(), __FILE__, __FUNCTION__, __LINE__).toFile();
 	}

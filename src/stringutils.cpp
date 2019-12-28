@@ -1,20 +1,19 @@
 #include "stringutils.h"
 
-
-void StringUtils::split(std::list<std::string>& v,const std::string& s,  const std::string& c)
+void StringUtils::split(std::list<std::string> &v, const std::string &s, const std::string &c)
 {
-  std::string::size_type pos1, pos2;
-  pos2 = s.find(c);
-  pos1 = 0;
-  while(std::string::npos != pos2)
-  {
-    v.push_back(s.substr(pos1, pos2-pos1));
- 
-    pos1 = pos2 + c.size();
-    pos2 = s.find(c, pos1);
-  }
-  if(pos1 != s.length())
-    v.push_back(s.substr(pos1));
+	std::string::size_type pos1, pos2;
+	pos2 = s.find(c);
+	pos1 = 0;
+	while (std::string::npos != pos2)
+	{
+		v.push_back(s.substr(pos1, pos2 - pos1));
+
+		pos1 = pos2 + c.size();
+		pos2 = s.find(c, pos1);
+	}
+	if (pos1 != s.length())
+		v.push_back(s.substr(pos1));
 }
 /*
 void StringUtils::split(std::list<string> &splitList,const string &s, const string &seperator)
@@ -25,7 +24,7 @@ void StringUtils::split(std::list<string> &splitList,const string &s, const stri
 
 	while (i != s.size())
 	{
-		//ÕÒµ½×Ö·û´®ÖÐÊ×¸ö²»µÈÓÚ·Ö¸ô·ûµÄ×ÖÄ¸£»
+		//ï¿½Òµï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú·Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¸ï¿½ï¿½
 		int flag = 0;
 		string_size size = seperator.size();
 		while (i != s.size() && flag == 0)
@@ -41,7 +40,7 @@ void StringUtils::split(std::list<string> &splitList,const string &s, const stri
 				}
 			}
 		}
-		//ÕÒµ½ÓÖÒ»¸ö·Ö¸ô·û£¬½«Á½¸ö·Ö¸ô·ûÖ®¼äµÄ×Ö·û´®È¡³ö£»
+		//ï¿½Òµï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½Ö®ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½
 		flag = 0;
 		string_size j = i;
 		while (j != s.size() && flag == 0)
@@ -70,24 +69,24 @@ void StringUtils::split(std::list<string> &splitList,const string &s, const stri
 /*
 bool StringUtils::trans(const char *pFromCode, const char *pToCode, const char *pInBuf, size_t iInLen, char *pOutBuf, size_t iOutLen)
 {
-	//´ò¿ª×Ö·û¼¯×ª»»
+	//ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½×ªï¿½ï¿½
 	iconv_t hIconv = iconv_open(pToCode, pFromCode);
 	if (!hIconv) return false;
-	//¿ªÊ¼×ª»»
+	//ï¿½ï¿½Ê¼×ªï¿½ï¿½
 	size_t iRet =  iconv(hIconv, (char **)(&pInBuf), &iInLen, &pOutBuf, &iOutLen);
-	//¹Ø±Õ×Ö·û¼¯×ª»»
+	//ï¿½Ø±ï¿½ï¿½Ö·ï¿½ï¿½ï¿½×ªï¿½ï¿½
 	iconv_close(hIconv);
 	return (bool)iRet;
 }
 */
-std::string& StringUtils::toLowerCase(string &src)
+std::string &StringUtils::toLowerCase(string &src)
 {
-	transform(src.begin(),src.end(),src.begin(),::tolower);
+	transform(src.begin(), src.end(), src.begin(), ::tolower);
 	return src;
 }
-std::string& StringUtils::toUpperCase(string &src)
+std::string &StringUtils::toUpperCase(string &src)
 {
-	transform(src.begin(),src.end(),src.begin(),::toupper);
+	transform(src.begin(), src.end(), src.begin(), ::toupper);
 	return src;
 }
 /*
@@ -133,17 +132,17 @@ std::string& StringUtils::toUpperCase(string &src)
 	return src;
 }
 */
-bool StringUtils::startsWith(const string &s,const string &sub)
+bool StringUtils::startsWith(const string &s, const string &sub)
 {
 	return s.find(sub) == 0 ? true : false;
 }
 
-bool StringUtils::endsWith(const string &s,const string &sub)
+bool StringUtils::endsWith(const string &s, const string &sub)
 {
 	return s.rfind(sub) == (s.size() - sub.size()) ? true : false;
 }
 
-std::string& StringUtils::replaceAll(string &old, char oldChar, char newChar)
+std::string &StringUtils::replaceAll(string &old, char oldChar, char newChar)
 {
 	int oldSize = (int)old.size();
 	for (int i = 0; i < oldSize; i++)
@@ -155,7 +154,7 @@ std::string& StringUtils::replaceAll(string &old, char oldChar, char newChar)
 	}
 	return old;
 }
-std::string& StringUtils::replaceAlls(string &old, const string &oldStr, const string &newStr)
+std::string &StringUtils::replaceAlls(string &old, const string &oldStr, const string &newStr)
 {
 	std::string::size_type pos = 0;
 	std::string::size_type srclen = oldStr.size();
@@ -169,7 +168,7 @@ std::string& StringUtils::replaceAlls(string &old, const string &oldStr, const s
 	return old;
 }
 
-std::string& StringUtils::trim(std::string &s)
+std::string &StringUtils::trim(std::string &s)
 {
 	if (s.empty())
 	{
@@ -179,9 +178,9 @@ std::string& StringUtils::trim(std::string &s)
 	s.erase(s.find_last_not_of(" ") + 1);
 	return s;
 }
-std::string& StringUtils::defaultstring(std::string &str)
+std::string &StringUtils::defaultstring(std::string &str)
 {
-	if(str.empty())
+	if (str.empty())
 	{
 		str = "";
 	}
@@ -196,18 +195,19 @@ bool StringUtils::stricmp(const char *dst, const char *src)
 			ch1 += 0x20;
 		if (((ch2 = (unsigned char)(*(src++))) >= 'A') && (ch2 <= 'Z'))
 			ch2 += 0x20;
-	}while (ch1 && (ch1 == ch2));
-	return (ch1 - ch2)== 0 ? true:false ;
-
+	} while (ch1 && (ch1 == ch2));
+	return (ch1 - ch2) == 0 ? true : false;
 }
-int StringUtils::min(int num1, int num2) {
+int StringUtils::min(int num1, int num2)
+{
 	return num1 > num2 ? num2 : num1;
 }
-int StringUtils::max(int num1, int num2) {
+int StringUtils::max(int num1, int num2)
+{
 	return num1 > num2 ? num1 : num2;
 }
 
-void StringUtils::list2vector(vector<string> &result,list<string> &li)
+void StringUtils::list2vector(vector<string> &result, list<string> &li)
 {
 	list<string>::iterator begin = li.begin();
 	list<string>::iterator end = li.end();

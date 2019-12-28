@@ -8,23 +8,23 @@
 #include <algorithm>
 #include <cstring>
 
-#include "./inputtextreader.h"
-#include "./stringbuilder.h"
-#include "./charutils.h"
-
-#include "./urldetectoroptions.h"
-#include "./urlpart.h"
-#include "./stringutils.h"
-#include "./urlmarker.h"
-#include "./domainnamereader.h"
-#include "./url.h"
+#include "inputtextreader.h"
+#include "stringbuilder.h"
+#include "charutils.h"
+#include "urldetectoroptions.h"
+#include "urlpart.h"
+#include "stringutils.h"
+#include "urlmarker.h"
+#include "domainnamereader.h"
+#include "url.h"
 //日志文件
 //#include "./glog.h"
 class Url;
 /**
 * The states to use to continue writing or not.
 */
-enum ReadEndState {
+enum ReadEndState
+{
 	/**
 	* The current url is valid.
 	*/
@@ -37,7 +37,8 @@ enum ReadEndState {
 /**
 * The response of character matching.
 */
-enum CharacterMatch {
+enum CharacterMatch
+{
 	/**
 	* The character was not matched.
 	*/
@@ -54,10 +55,10 @@ enum CharacterMatch {
 class CharacterHandler
 {
 public:
-	virtual void addCharacter(char chars) = 0;//纯虚函数
+	virtual void addCharacter(char chars) = 0; //纯虚函数
 	virtual ~CharacterHandler();
 };
-class UrlDetector:public CharacterHandler
+class UrlDetector : public CharacterHandler
 {
 public:
 	/**
@@ -85,7 +86,7 @@ public:
 	* Detects the urls and returns a list of detected url strings.
 	* @return A list with detected urls.
 	*/
-	const list<Url>& detect();
+	const list<Url> &detect();
 
 	//CharacterHandler 纯虚函数 需要加上virtual 关键字
 	virtual void addCharacter(char chars);
@@ -99,8 +100,8 @@ private:
 	/**
 	* Valid protocol schemes.
 	*/
-	set<string> VALID_SCHEMES ;
-	
+	set<string> VALID_SCHEMES;
+
 	/**
 	* Stores options for detection.
 	*/
@@ -118,27 +119,27 @@ private:
 	/**
 	* Has the scheme been found in this iteration?
 	*/
-	bool _hasScheme ;
+	bool _hasScheme;
 
 	/**
 	* If the first character in the url is a quote, then look for matching quote at the end.
 	*/
-	bool _quoteStart ;
+	bool _quoteStart;
 
 	/**
 	* If the first character in the url is a single quote, then look for matching quote at the end.
 	*/
-	bool _singleQuoteStart  ;
+	bool _singleQuoteStart;
 
 	/**
 	* If we see a '[', didn't find an ipv6 address, and the bracket option is on, then look for urls inside the brackets.
 	*/
-	bool _dontMatchIpv6 ;
+	bool _dontMatchIpv6;
 
 	/**
 	* Stores the found urls.
 	*/
-	list<Url> _urlList ;
+	list<Url> _urlList;
 
 	/**
 	* Keeps the count of special characters used to match quotes and different types of brackets.
@@ -168,7 +169,6 @@ private:
 	* @return The number of times that character was seen
 	*/
 	int getCharacterCount(char curr);
-
 
 	/**
 	* Increments the counter for the characters seen and return if this character matches a special character
@@ -237,9 +237,6 @@ private:
 	* @return True if the url was valid.
 	*/
 	bool readEnd(ReadEndState state);
-
 };
 
-
 #endif
-

@@ -10,7 +10,8 @@ int main(int argc, char **argv)
 {
     UrlDetectorOptions_T T(Default);
 
-    std::string str = "https://user:name@www.baidu.com:80/part.html?query=c++#part1";
+    // std::string str = "\"https://user:name@www.baidu.com:80/part.html?query=c++#part1";
+    std::string str = "hello www%2ewtfismyip%2ecom";
     UrlDetector detect(str, T);
     std::list<Url> urls = detect.detect();
 
@@ -24,8 +25,7 @@ int main(int argc, char **argv)
         std::cout << "port:" << url.getPort() << std::endl;          //获取端口号
         std::cout << "path:" << url.getPath() << std::endl;          //获取路径
         std::cout << "query:" << url.getQuery() << std::endl;        //获取查询参数
-        std::cout << "fragment:" << url.getFragment() << std::endl; //获取fragment
+        std::cout << "fragment:" << url.getFragment() << std::endl;  //获取fragment
     }
-
     return 0;
 }
