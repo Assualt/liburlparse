@@ -1,6 +1,6 @@
 #include "urlutil.h"
 std::string UrlUtil::decode(string &url) {
-    StringBuilder<char> stringBuilder;
+    StringBuilder<char> stringBuilder(url);
     stack<int> nonDecodedPercentIndices;
     int i = 0;
     int size = (int)stringBuilder.size();
@@ -53,12 +53,12 @@ std::string UrlUtil::decode(string &url) {
 }
 
 std::string UrlUtil::removeSpecialSpaces(string &urlPart) {
-    StringBuilder<char> stringBuilder;
+    StringBuilder<char> stringBuilder(urlPart);
     int size = (int)stringBuilder.size();
     for (int i = 0; i < size; i++) {
         char curr = stringBuilder.charAt(i);
         if (CharUtils::isWhiteSpace(curr)) {
-            stringBuilder.DeleteCharAt(i);  // ***1
+            stringBuilder.DeleteCharAt(i);  
         }
     }
     return stringBuilder.ToString();

@@ -29,5 +29,15 @@ int main(int argc, char **argv) {
         std::cout << "fragment:" << url.getFragment()
                   << std::endl;  //获取fragment
     }
+    StringBuilder<char> temp("%%32%35");
+    std::cout << temp.ToString() <<std::endl;
+    temp.Delete(1,4);
+    std::cout << temp.ToString() <<std::endl;
+    temp.insert(1,'2');
+    std::cout << temp.ToString() <<std::endl;
+    temp.Delete(2,5);
+    std::cout << temp.ToString() <<std::endl;
+    temp.insert(2,'5');
+    std::cout << temp.ToString() <<std::endl;
     return 0;
 }

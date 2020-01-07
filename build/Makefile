@@ -5,7 +5,7 @@ CFLAGS 	= $(FLAG)  -g -Wall -I../include  $(SYSFLAGS) -std=c++11 -fprofile-arcs 
 #VPATH 指定cpp文件的路径
 VPATH = ../src:../Test
 #LIBS 指定链接文件库
-OBJS = stringutils.o stringbuilder.o inetaddress.o charutils.o domainnamereader.o \
+OBJS = stringutils.o inetaddress.o charutils.o domainnamereader.o \
        inputtextreader.o urldetector.o hostnormalizer.o url.o urlmarker.o pathnormalizer.o \
        urlutil.o urlpart.o urldetectoroptions.o glog.o
 .cpp.o:
@@ -26,8 +26,8 @@ main:  testmain.o
 cleanTest:
 	rm -rf TestMain TestMain.d TestMain.o
 
-alltest: unitmain.o testInputReader.o testCharUtils.o
-	$(CC) $(CFLAGS) -o unitmain unitmain.o testInputReader.o -L/usr/local/lib -lgtest -pthread -L./ -lurlparse  
+alltest: unitmain.o testInputReader.o testCharUtils.o testurlutil.o
+	$(CC) $(CFLAGS) -o unitmain unitmain.o testInputReader.o testurlutil.o -L/usr/local/lib -lgtest -pthread -L./ -lurlparse  
 
 testcharutils:testCharUtils.o
 	$(CC) $(CFLAGS) -o unitcharutils testCharUtils.o -L/usr/local/lib -lgtest -pthread -L./ -lurlparse 

@@ -158,15 +158,22 @@ public:
         } else {
             int str_start = 0, str_end = -1;
             iter_t begin(m_Data.begin()), end(m_Data.end()), iter;
+            bool bInserted = false;
             for (iter = begin; iter != end; ++iter) {
                 string temp = *iter;
                 str_end += temp.size();
                 if (ops >= str_start && ops <= str_end) {
+                    bInserted = true;
                     iter->insert(ops, 1, c);
                     m_totalSize += 1;
                     break;
                 }
                 str_start = str_end + 1;
+            }
+            if(!bInserted){
+                m_totalSize += 1;
+                begin = m_Data.begin();
+                begin->push_back(c);
             }
         }
         return *this;
