@@ -1,0 +1,18 @@
+ #!/bin/bash
+
+format_file_suffix() {
+    suffix=$1
+    for item in `find . -type f | grep ${suffix}$`
+    do
+        echo -n "begin to format $item ..."
+        cp $item $item.org
+        clang-format $item.org > $item
+        rm $item.org -f
+        echo -n "....OK"
+        echo ""
+    done
+}
+format_file_suffix .cpp 
+format_file_suffix .h 
+format_file_suffix .cc 
+format_file_suffix .c

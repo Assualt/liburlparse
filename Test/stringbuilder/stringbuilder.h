@@ -5,9 +5,7 @@
 #include <cstring>
 #include <numeric>
 #include <iostream>
-#include <iomanip>
-#include <sstream>
-#include "glog.h"
+
 using namespace std;
 // Subset of
 // http://msdn.microsoft.com/en-us/library/system.text.stringbuilder.aspx
@@ -18,48 +16,34 @@ class StringBuilder {
             container_t;  // Reasons not to use vector below.
     typedef typename string_t::size_type
             size_type;  // Reuse the size type in the string.
-    typedef typename std::basic_stringstream<chr> my_stringstream;    // convert the any type of data to string_t 
     typedef typename std::list<string_t>::const_iterator iter_t_con;  //
     typedef typename std::list<string_t>::iterator iter_t;            //
 private:
     container_t m_Data;
     size_type m_totalSize;
-    size_t m_nprecision;
-private:    
     void append(const string_t &src) {
         m_Data.push_back(src);
         m_totalSize += src.size();
     }
-    template <class argType>
-    string_t toString(const argType &ar) {
-        my_stringstream stream;
-        stream << ar;
-        return stream.str();
-    }
-    string_t toString(const float &arg){
-        my_stringstream stream;
-        stream << std::setprecision(m_nprecision) << arg;
-        return stream.str();
-    }
-    string_t toString(const double &arg){
-        my_stringstream stream;
-        stream << std::setprecision(m_nprecision) << arg;
-        return stream.str();
-    }
+
 public:
     // No copy constructor, no assignment.
-    //StringBuilder(const StringBuilder &)=delete;
-    StringBuilder & operator = (StringBuilder & builder)=delete;
-    StringBuilder(const string_t &src):m_nprecision(15) {
+    //	StringBuilder(const StringBuilder &);
+    //	StringBuilder & operator = (StringBuilder & builder);
+    explicit StringBuilder(const string_t &src) {
         if (!src.empty()) {
             m_Data.push_back(src);
         }
         m_totalSize = src.size();
     }
-    StringBuilder():m_totalSize(0),m_nprecision(15) {
+    StringBuilder() {
+        m_totalSize = 0;
     }
     void setSize(size_type size) {
         m_totalSize = size;
+        if (size < (int)m_totalSize) {
+            Delete(size, m_totalSize);
+        }
     }
     StringBuilder &setlength(int len) {
         if (len < (int)m_totalSize) {
@@ -72,30 +56,41 @@ public:
     size_type size() {
         return m_totalSize;
     }
-    string &subprocess(string &str, int start, int end) {
+    string &ssub(string &str, int start, int end) {
         string temp;
         int length = str.size();
         if (start > end) {
-            Log().log()
-                    .setLevel(LOG_ERR_LEVEL)
-                    .format("Err arg: start can't be over end [at FILE:%s "
-                            "FUNC:%s LINE:%d]",
-                            __FILE__,
-                            __FUNCTION__,
-                            __LINE__)
-                    .toFile();
+            std::cout << "err at ssub(string &str,int start,int end):args. "
+                         "start cannot be over end"
+                      << std::endl;
+            // Log().log().setLevel(LOG_ERR_LEVEL).format("Err arg: start can't
+            // be over end [at FILE:%s FUNC:%s LINE:%d]", __FILE__,
+            // __FUNCTION__, __LINE__).toFile();
             return str;
-        } else if (start == end){  // do nothing
+        } else if (start == end)  // do nothing
+        {
             return str;
         }
         end = end > length ? length : end;
         temp = str.substr(end);
         str = str.substr(0, start) + temp;
 
+        //		std::cout<<"sub str:"<<str<<std::endl;
         return str;
     }
     StringBuilder &Delete(int start, int end) {
         int p_start = 0, p_end = -1;
+        /*
+        if ((start > end) || (end > (int)m_totalSize))
+        {
+                //std::cout << "err at delete(int start,int end) const
+        args:(start can'over end or start can't over the str len)" << std::endl;
+                //��־���
+                Log().log().setLevel(LOG_ERR_LEVEL).format("Err arg: start can't
+        be over end or start can't be over the str length [at FILE:%s FUNC:%s
+        LINE:%d]", __FILE__, __FUNCTION__, __LINE__).toFile(); return *this;
+        }
+        */
         end = end > (int)m_totalSize ? m_totalSize : end;
         m_totalSize -= (end - start);
         iter_t m_begin = m_Data.begin();
@@ -105,11 +100,11 @@ public:
             if (start >= p_start && start <= p_end) {
                 // string::iterator begin = iter->begin():
                 if (end <= p_end) {
-                    subprocess(*iter, start - p_start, end - p_start);
+                    ssub(*iter, start - p_start, end - p_start);
                     // iter->erase(begin+start-p_start,begin+end-p_start);
                     break;
                 } else {
-                    subprocess(*iter, start - p_start, iter->size());
+                    ssub(*iter, start - p_start, iter->size());
                     // iter->erase(begin+start-p_start,begin+iter->size());
                     start = p_end + 1;
                 }
@@ -137,22 +132,32 @@ public:
         }
         return *this;
     }
-    chr charAt(int index) const {
+    char charAt(int index) const {
         string dest;
+        /*
+        if (index < 0 || (index > (int)m_totalSize))
+        {
+                //	std::cout << "err at charAt(int index) const args:(index
+        can't over len)" << std::endl;
+                Log().log().setLevel(LOG_ERR_LEVEL).format("Err arg: index can't
+        be over the str length. [at FILE:%s FUNC:%s LINE:%d]", __FILE__,
+        __FUNCTION__, __LINE__).toFile(); return '\0';
+        }
+        */
         dest = ToString().c_str();
         return dest[index];
     }
-    template<class ArgType>
-    StringBuilder &Append(const ArgType & src){
-        append(toString(src));
-        return *this;
+    StringBuilder &Append(const string_t &src) {
+        append(src);
+        return *this;  // allow chaining.
     }
-    StringBuilder &Append(const chr c){
-        string_t temp(1,c);
+    StringBuilder &Append(const char &ch) {
+        string temp;
+        temp = temp + ch;
         append(temp);
         return *this;
     }
-    StringBuilder &insert(int ops, chr c) {
+    StringBuilder &insert(int ops, char c) {
         if (ops > (int)m_totalSize) {
             return *this;
         } else {
@@ -172,8 +177,7 @@ public:
         return *this;
     }
     /*
-     *  it apply the repeat to replace and cost a lot of time use
-    StringBuilder & replace(int start, int end, string str)
+    StringBuilder & replace1(int start, int end, string str)
     {
             Delete1(start, end);
             int i = 0;
@@ -209,6 +213,24 @@ public:
     }
     // This one lets you add any STL container to the string builder.
     string substr(int start, int end) const {
+        /*
+        if (start<0 || start > (int)m_totalSize || start > end) {
+                std::cout << "err at string_t substr(int start) const
+        args:(start can't below zero)" << std::endl; return "";
+        }*/
+        /*
+        if (start > (int)m_totalSize) {
+                std::cout << "err at string_t substr(int start) const
+        args:(start can't over the string len)" << std::endl; return "";
+        }
+        if (start > end) {
+                std::cout << "err at string_t substr(int start) const
+        args:(start can't over the end)" << std::endl; return "";
+        }
+        if (end > (int)m_totalSize) {
+                end = m_totalSize;
+        }
+        */
         end = end > (int)m_totalSize ? m_totalSize : end;
         return ToString().substr(start, end - start);
     }

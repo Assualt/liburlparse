@@ -26,14 +26,16 @@ main:  testmain.o
 cleanTest:
 	rm -rf TestMain TestMain.d TestMain.o
 
-alltest: unitmain.o 
-	$(CC) $(CFLAGS) -o unitmain unitmain.o -L/usr/local/lib -lgtest -pthread -L./ -lurlparse  
+alltest: unitmain.o testInputReader.o testCharUtils.o
+	$(CC) $(CFLAGS) -o unitmain unitmain.o testInputReader.o -L/usr/local/lib -lgtest -pthread -L./ -lurlparse  
 
 testcharutils:testCharUtils.o
 	$(CC) $(CFLAGS) -o unitcharutils testCharUtils.o -L/usr/local/lib -lgtest -pthread -L./ -lurlparse 
 testinputreader:testInputReader.o
 	$(CC) $(CFLAGS) -o unitinputreader testInputReader.o -L/usr/local/lib -lgtest -pthread -L./ -lurlparse
 
+urlclient:urlparseclient.o
+	$(CC) $(CFLAGS) -o client urlparseclient.o -L./ -lurlparse 
 
 ## Commands to generate dependency files
 GEN_DEPS.c= $(CC) -E -MM $(DEFS) $(CFLAGS)
