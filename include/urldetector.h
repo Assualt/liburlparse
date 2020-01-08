@@ -60,13 +60,13 @@ public:
      * @param content The content to search inside of.
      * @param options The UrlDetectorOptions to use when detecting the content.
      */
-    UrlDetector(string &content, UrlDetectorOptions_T options);
+    UrlDetector(const string &content, UrlDetectorOptions_T options);
     UrlDetector();
     ~UrlDetector();
 
     /*set 方法*/
     void setOptions(UrlDetectorOptions_T options);
-    void setContent(string &content);
+    void setContent(const string &content);
 
     // virtual ~UrlDetector();
     /**

@@ -11,7 +11,7 @@ class UrlMarker {
 public:
     UrlMarker();
     // Url createUrl();
-    void setOriginalUrl(string &originalUrl);
+    void setOriginalUrl(const string &originalUrl);
     string getOriginalUrl();
     void setIndex(UrlPart urlPart, int index);
     int indexOf(UrlPart urlPart);
@@ -28,7 +28,7 @@ private:
     int _fragmentIndex;
 
 protected:
-    UrlMarker setIndices(std::vector<int> indices);
+    UrlMarker setIndices(const std::vector<int> indices);
 };
 
 #endif  // !_URLMARKER_H

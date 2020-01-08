@@ -37,6 +37,8 @@ testinputreader:testInputReader.o
 urlclient:urlparseclient.o
 	$(CC) $(CFLAGS) -o client urlparseclient.o -L./ -lurlparse 
 
+testhostnormalizer:testHostnormalizer.o
+	$(CC) $(CFLAGS) -o unithostnormalizer testHostnormalizer.o -L/usr/local/lib -lgtest -pthread -L./ -lurlparse
 ## Commands to generate dependency files
 GEN_DEPS.c= $(CC) -E -MM $(DEFS) $(CFLAGS)
 GEN_DEPS.cc= $(CXX) -E -MM $(DEFS) $(CFLAGS)

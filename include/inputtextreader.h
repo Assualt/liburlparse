@@ -13,7 +13,7 @@ public:
      * Creates a new instance of the InputTextReader using the content to read.
      * @param content The content to read.
      */
-    explicit InputTextReader(string &content);
+    InputTextReader(const string &content);
     /**
      * Reads a single char from the content stream and increments the index.
      * @return The next available character.

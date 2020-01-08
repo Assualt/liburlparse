@@ -14,10 +14,8 @@ using namespace std;
 template <typename chr>
 class StringBuilder {
     typedef std::basic_string<chr> string_t;
-    typedef std::list<string_t>
-            container_t;  // Reasons not to use vector below.
-    typedef typename string_t::size_type
-            size_type;  // Reuse the size type in the string.
+    typedef std::list<string_t> container_t;  // Reasons not to use vector below.
+    typedef typename string_t::size_type size_type;  // Reuse the size type in the string.
     typedef typename std::basic_stringstream<chr> my_stringstream;    // convert the any type of data to string_t 
     typedef typename std::list<string_t>::const_iterator iter_t_con;  //
     typedef typename std::list<string_t>::iterator iter_t;            //
@@ -58,11 +56,11 @@ public:
     }
     StringBuilder():m_totalSize(0),m_nprecision(15) {
     }
-    void setSize(size_type size) {
-        m_totalSize = size;
+    StringBuilder& setSize(size_type size) {
+        return setlength(size);
     }
-    StringBuilder &setlength(int len) {
-        if (len < (int)m_totalSize) {
+    StringBuilder &setlength(size_type len) {
+        if (len < m_totalSize) {
             Delete(len, m_totalSize);
         }
         return *this;
@@ -76,14 +74,8 @@ public:
         string temp;
         int length = str.size();
         if (start > end) {
-            Log().log()
-                    .setLevel(LOG_ERR_LEVEL)
-                    .format("Err arg: start can't be over end [at FILE:%s "
-                            "FUNC:%s LINE:%d]",
-                            __FILE__,
-                            __FUNCTION__,
-                            __LINE__)
-                    .toFile();
+            Log().log().setLevel(LOG_ERR_LEVEL).format("Err arg: start can't be over end [at FILE:%s "
+                "FUNC:%s LINE:%d]", __FILE__,__FUNCTION__,__LINE__).toFile();
             return str;
         } else if (start == end){  // do nothing
             return str;

@@ -9,8 +9,6 @@
 #include "./stringbuilder.h"
 #include "./stringutils.h"
 #include "./inetaddress.h"
-//日志文件
-//#include "./glog.h"
 
 class UrlUtil;
 #define ubyte unsigned char
@@ -31,7 +29,6 @@ private:
     static const int NUMBER_BYTES_IN_IPV4 = 4;
     string _host;
 
-    //�ֽ�����
     vector<ubyte> _bytes;
 
     void normalizeHost();
@@ -41,7 +38,7 @@ private:
      */
     std::vector<ubyte> &tryDecodeHostToIp(
             std::vector<ubyte> &bytes,
-            string &host);
+            const string &host);
 
     /**
      * This covers cases like:
@@ -56,15 +53,23 @@ private:
      * if ipv4 was found, _bytes is set to the byte representation of the ipv4
      * address
      */
-    vector<ubyte> &tryDecodeHostToIPv4(
-            std::vector<ubyte> &sbytes,
-            string &host);
-    string _normalizedHost;
+    vector<ubyte> &tryDecodeHostToIPv4(std::vector<ubyte> &sbytes,const string &host);
+    /**
+     * Recommendation for IPv6 Address Text Representation
+     * http://tools.ietf.org/html/rfc5952
+     *
+     * if ipv6 was found, _bytes is set to the byte representation of the ipv6 address
+     */
+    vector<ubyte> &tryDecodeHostToIPv6(std::vector<ubyte> &sbytes,const string &host);
 
-    // bool isHexSection(string &section);
+
+    std::vector<ubyte> sectionToTwoBytes(int section);
+    bool isHexSection(string &section);
     // protected:
     //	vector<byte> getBytes();
     //	string getNormalizedHost();
+private:    
+    string _normalizedHost;
 };
 
 #endif

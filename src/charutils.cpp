@@ -1,11 +1,9 @@
 ﻿#include "charutils.h"
 using namespace std;
-CharUtils::CharUtils() {}
 
 // Check if Character is a valid hex character.
 bool CharUtils::isHex(char a) {
-    return (a >= '0' && a <= '9') || (a >= 'a' && a <= 'f') ||
-            (a >= 'A' && a <= 'F');
+    return (a >= '0' && a <= '9') || (a >= 'a' && a <= 'f') ||(a >= 'A' && a <= 'F');
 }
 
 // Check if character is a valid alphabetic character.
@@ -30,23 +28,15 @@ bool CharUtils::isUnreserved(char a) {
 }
 
 // Checks if character is a dot
-bool CharUtils::isDot(char a) {  //判断是否为 . 。．｡  (半角和全角的点号和句号)
-                                 //此处编译会出现警告
-
-    return (a == '.' || (int)a == 0x3002 || (int)a == 0xFF0E ||
-            (int)a == 0xFF61);
+bool CharUtils::isDot(char a) { 
+    //判断是否为 . 。．｡  (半角和全角的点号和句号
+    //此处编译会出现警告
+    return (a == '.' || (int)a == 0x3002 || (int)a == 0xFF0E ||(int)a == 0xFF61);
 }
 bool CharUtils::isWhiteSpace(char a) {
     return (a == '\n' || a == '\t' || a == '\r' || a == ' ');
 }
-/*
-        Splite a Strubf without the use of a regex,which could split by isDot()
-   or %2e
-        @param input the input string which can be split by dot
-        @return an arry of Strings that is a patition of the original string by
-   dot
-*/
-void CharUtils::splitByDot(list<string> &splitList, string &input) {
+void CharUtils::splitByDot(std::vector<std::string> &splitList,const string &input) {
     StringBuilder<char> section;
     if (input.empty()) {
         // Log().log().setLevel(LOG_DEBUG_LEVEL).format("Input string is

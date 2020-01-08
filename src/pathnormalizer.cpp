@@ -9,7 +9,7 @@ std::string &PathNormalizer::normalizePath(string &path) {
     return path;
 }
 
-std::string PathNormalizer::sanitizeDotsAndSlashes(string &path) {
+std::string PathNormalizer::sanitizeDotsAndSlashes(const string &path) {
     StringBuilder<char> stringBuilder(path);
     stack<int> slashIndexStack;
 

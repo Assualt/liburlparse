@@ -178,19 +178,17 @@ void Url::populateUsernamePassword() {
     if (exists(URL_USERNAME_PASSWORD)) {
         string usernamepassword = getPart(URL_USERNAME_PASSWORD);
         // string temp = usernamepassword.substr(0,usernamepassword.size()-1);
-        list<string> usernamePasswordParts;
+        std::vector<std::string> usernamePasswordParts;
         // string spliter = ":";
         StringUtils::split(
                 usernamePasswordParts,
                 usernamepassword.substr(0, usernamepassword.size() - 1),
                 ":");  //
-        vector<string> ve;
-        StringUtils::list2vector(ve, usernamePasswordParts);
         if (usernamePasswordParts.size() == 1) {
-            _username = ve[0];
+            _username = usernamePasswordParts[0];
         } else if (usernamePasswordParts.size() == 2) {
-            _username = ve[0];
-            _password = ve[1];
+            _username = usernamePasswordParts[0];
+            _password = usernamePasswordParts[1];
         }
     }
 }

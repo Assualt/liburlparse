@@ -1,7 +1,7 @@
 #include "stringutils.h"
 
 void StringUtils::split(
-        std::list<std::string> &v,
+        std::vector<std::string> &v,
         const std::string &s,
         const std::string &c) {
     std::string::size_type pos1, pos2;
@@ -9,7 +9,6 @@ void StringUtils::split(
     pos1 = 0;
     while (std::string::npos != pos2) {
         v.push_back(s.substr(pos1, pos2 - pos1));
-
         pos1 = pos2 + c.size();
         pos2 = s.find(c, pos1);
     }
@@ -87,10 +86,3 @@ int StringUtils::max(int num1, int num2) {
     return num1 > num2 ? num1 : num2;
 }
 
-void StringUtils::list2vector(vector<string> &result, list<string> &li) {
-    list<string>::iterator begin = li.begin();
-    list<string>::iterator end = li.end();
-    for (list<string>::iterator iter = begin; iter != end; ++iter) {
-        result.push_back(*iter);
-    }
-}

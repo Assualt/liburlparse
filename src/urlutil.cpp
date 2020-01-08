@@ -1,11 +1,15 @@
 #include "urlutil.h"
-std::string UrlUtil::decode(string &url) {
+std::string UrlUtil::decode(const string &url) {
     StringBuilder<char> stringBuilder(url);
     stack<int> nonDecodedPercentIndices;
-    int i = 0;
-    int size = (int)stringBuilder.size();
+    size_t i = 0;
+    size_t size = stringBuilder.size();
     while (i < (size - 2)) {
-        char curr = stringBuilder.charAt(i);
+        char curr = ' ';
+        if(i < stringBuilder.size())
+            curr = stringBuilder.charAt(i);
+        else
+            break;
         if (curr == '%') {
             if (CharUtils::isHex(stringBuilder.charAt(i + 1)) &&
                 CharUtils::isHex(stringBuilder.charAt(i + 2))) {
@@ -37,7 +41,7 @@ std::string UrlUtil::decode(string &url) {
                     nonDecodedPercentIndices.pop();
                 } else if (
                         (!nonDecodedPercentIndices.empty()) &&
-                        (i == (int)stringBuilder.size() - 2)) {
+                        (i == stringBuilder.size() - 2)) {
                     // special case to handle %[HEX][Unknown][end of string]
                     i = nonDecodedPercentIndices.top() -
                             1;  // backtrack to the % sign.
@@ -52,7 +56,7 @@ std::string UrlUtil::decode(string &url) {
     return stringBuilder.ToString();
 }
 
-std::string UrlUtil::removeSpecialSpaces(string &urlPart) {
+std::string UrlUtil::removeSpecialSpaces(const string &urlPart) {
     StringBuilder<char> stringBuilder(urlPart);
     int size = (int)stringBuilder.size();
     for (int i = 0; i < size; i++) {
@@ -64,10 +68,9 @@ std::string UrlUtil::removeSpecialSpaces(string &urlPart) {
     return stringBuilder.ToString();
 }
 
-std::string UrlUtil::encode(string &url) {
+std::string UrlUtil::encode(const string &url) {
     StringBuilder<char> encoder;
-    int size = (int)url.size();
-    for (int i = 0; i < size; i++) {
+    for (size_t i = 0; i < url.size(); i++) {
         char chr = url[i];
         char buf[10];
         ubyte chrByte = (ubyte)chr;
@@ -86,7 +89,7 @@ std::string UrlUtil::encode(string &url) {
     return encoder.ToString();
 }
 
-std::string UrlUtil::removeExtraDots(string &host) {
+std::string UrlUtil::removeExtraDots(const string &host) {
     StringBuilder<char> stringBuilder;
     InputTextReader reader(host);
     while (!reader.eof()) {
@@ -112,4 +115,3 @@ std::string UrlUtil::removeExtraDots(string &host) {
     return stringBuilder.ToString();
 }
 
-UrlUtil::UrlUtil() {}

@@ -73,7 +73,7 @@ TEST(CharUtils__Test, getSplitStrings) {
                                     {"0xc0%2e0x00%2e0x02%2e0xeb"},
                                     {""}};
     for (auto s : Ret) {
-        std::list<std::string> tmpList;
+        std::vector<std::string> tmpList;
         CharUtils::splitByDot(tmpList, s);
         for (auto t : tmpList) {
             std::cout << t << "\t";

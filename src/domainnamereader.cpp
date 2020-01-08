@@ -6,7 +6,7 @@
 DomainNameReader::DomainNameReader(
         InputTextReader &reader,
         StringBuilder<char> &buffer,
-        string &current,
+        const string &current,
         UrlDetectorOptions_T &options) :
         HEX_ENCODED_DOT("2e"),
         _buffer(buffer),
@@ -384,9 +384,9 @@ ReaderNextState DomainNameReader::checkDomainNameValid(
 
 bool DomainNameReader::isValidIpv4(string &testDomain) {
     bool valid = false;
-    list<string>::iterator parts_end;
-    list<string>::iterator parts_start;
-    list<string>::iterator iter;
+    std::vector<std::string>::iterator parts_end;
+    std::vector<std::string>::iterator parts_start;
+    std::vector<std::string>::iterator iter;
     if (testDomain.size() > 0) {
         // handling format without dots. Ex: http://2123123123123/path/a,
         // http://0x8242343/aksdjf
@@ -417,7 +417,7 @@ bool DomainNameReader::isValidIpv4(string &testDomain) {
             }
         } else if (_dots == 3 || _dots == 4) {
             // Dotted decimal/hex/octal format
-            list<string> parts;
+            std::vector<std::string> parts;
             CharUtils::splitByDot(parts, testDomain);
             valid = true;
             // check each part of the ip and make sure its valid.
