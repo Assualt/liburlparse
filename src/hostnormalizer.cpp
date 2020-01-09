@@ -1,4 +1,42 @@
 #include "hostnormalizer.h"
+#include <algorithm>
+std::vector<std::string> HostNormalizer::splitbyDot(const std::string &src, const char c, int nlimit){
+    int nCnt = count(src.begin(), src.end(), c);
+    std::vector<std::string> ret;
+    if(nCnt == 0 || nlimit == 1){
+        ret.push_back(src);
+        return ret;
+    }
+    string temp;
+    for(size_t i = 0 ; i < src.size(); ++i){
+        if(src[i] == c){        
+            ret.push_back(temp);
+            temp.clear();
+        }else{
+            temp.push_back(src[i]);
+        }
+    }
+    if(!temp.empty())
+        ret.push_back(temp);
+    for(size_t i = ret.size(); i < nCnt + 1; ++i)
+        ret.push_back("");
+    if(nlimit < 0){
+        return ret;
+    }
+    else if(nlimit == 0){
+        std::vector<std::string>::reverse_iterator it(ret.rbegin());
+        while(it->empty())
+            it++;
+        ret.erase(it.base(), ret.end());
+        return ret;
+    }
+    std::vector<std::string> rcpy; 
+    if(ret.size() < nlimit)
+        return ret;
+    for(int i = 0 ; i < nlimit; ++i )
+        rcpy.push_back(ret[i]);
+    return rcpy;
+}
 
 HostNormalizer::HostNormalizer(const string &host) : _host(host) {
     //_host = host;

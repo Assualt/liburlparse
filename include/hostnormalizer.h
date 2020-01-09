@@ -15,12 +15,14 @@ class UrlUtil;
 
 class HostNormalizer {
 public:
-    explicit HostNormalizer(const string &host);
+    HostNormalizer(const string &host);
 
     vector<ubyte> getBytes();
     string getNormalizedHost();
 
 private:
+    
+
     static const long MAX_NUMERIC_DOMAIN_VALUE = 4294967295L;
     static const int MAX_IPV4_PART = 255;
     static const int MIN_IP_PART = 0;
@@ -30,7 +32,29 @@ private:
     string _host;
 
     vector<ubyte> _bytes;
+    string _normalizedHost;
 
+public:    
+    /**
+     * split ipv6 to vector array
+     *
+     * example a,b,c,d,e,,
+     * splitchar -> ,
+     * limit:0  
+     *  try to split forever but remove the last ""
+     * => ["a","b","c","d","e"] 
+     * limit:n (n>0)        
+     *  try to split n-1 times , parts = n
+     *  n = 1 => ["a,b,c,d,e,,"] 
+     *  n = 2 => ["a","b,c,d,e,,"]
+     * limit:n (n<0)
+     *  try to split forever ,parts = count(,) + 1
+     * n = -1 => ["a","b","c","d","e","",""]
+     *
+     */
+    static std::vector<std::string> splitbyDot(const std::string &src, const char c = ':', int nlimit = 0);
+
+private:
     void normalizeHost();
     /**
      * Checks if the host is an ip address. Returns the byte representation of
@@ -62,14 +86,8 @@ private:
      */
     vector<ubyte> &tryDecodeHostToIPv6(std::vector<ubyte> &sbytes,const string &host);
 
-
     std::vector<ubyte> sectionToTwoBytes(int section);
     bool isHexSection(string &section);
-    // protected:
-    //	vector<byte> getBytes();
-    //	string getNormalizedHost();
-private:    
-    string _normalizedHost;
 };
 
 #endif

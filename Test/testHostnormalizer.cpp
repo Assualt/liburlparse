@@ -24,8 +24,28 @@ HostPathMap = {
 
 TEST(HostNormalizer__Test, testIpHostNormalizationAndGetBytes){
     for(auto it : HostPathMap){
-        HostNormalizer hostNormalizer(it[0]);
-        std::cout << hostNormalizer.getNormalizedHost() << ":" << it[1] << std::endl;
+//        HostNormalizer hostNormalizer(it[0]);
+//        std::cout << hostNormalizer.getNormalizedHost() << ":" << it[1] << std::endl;
+    }
+}
+
+
+TEST(HostNormalizer__Test, testSplit){
+    string t = "a:b:c:d:e:f:";
+
+    std::vector<std::string> temp = HostNormalizer::splitbyDot(t,':',-1);
+    for(auto i : temp){
+        std::cout << "->" << i << "<-" << std::endl;
+    }
+    std::cout << "--------------" << std::endl;
+    temp = HostNormalizer::splitbyDot(t,':',0);
+    for(auto i : temp){
+        std::cout << "->" << i << "<-" << std::endl;
+    }
+    std::cout << "--------------" << std::endl;
+    temp = HostNormalizer::splitbyDot(t,':',1);
+    for(auto i : temp){
+        std::cout << "->" << i << "<-" << std::endl;
     }
 }
 
