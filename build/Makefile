@@ -18,7 +18,7 @@ liburlparse.a: $(OBJS)
 	ranlib liburlparse.a
 all: liburlparse.a
 clean: 
-	rm -rf *.o *.a *.lo *.d *.gcno *.gcda
+	rm -rf *.o *.a *.lo *.d *.gcno *.gcda unit* test*
 r: clean all
 
 main:  testmain.o
@@ -26,8 +26,8 @@ main:  testmain.o
 cleanTest:
 	rm -rf TestMain TestMain.d TestMain.o
 
-alltest: unitmain.o testInputReader.o testCharUtils.o testurlutil.o
-	$(CC) $(CFLAGS) -o unitmain unitmain.o testInputReader.o testurlutil.o -L/usr/local/lib -lgtest -pthread -L./ -lurlparse  
+alltest: unitmain.o testInputReader.o testCharUtils.o testurlutil.o testHostnormalizer.o testPathNormalizer.o testUrl.o
+	$(CC) $(CFLAGS) -o unitmain unitmain.o testInputReader.o testurlutil.o testHostnormalizer.o testPathNormalizer.o testUrl.o -L/usr/local/lib -lgtest -pthread -L./ -lurlparse  
 
 testcharutils:testCharUtils.o
 	$(CC) $(CFLAGS) -o unitcharutils testCharUtils.o -L/usr/local/lib -lgtest -pthread -L./ -lurlparse 
@@ -36,9 +36,15 @@ testinputreader:testInputReader.o
 
 urlclient:urlparseclient.o
 	$(CC) $(CFLAGS) -o client urlparseclient.o -L./ -lurlparse 
-
 testhostnormalizer:testHostnormalizer.o
 	$(CC) $(CFLAGS) -o unithostnormalizer testHostnormalizer.o -L/usr/local/lib -lgtest -pthread -L./ -lurlparse
+testpathnormalizer:testPathNormalizer.o
+	$(CC) $(CFLAGS) -o unitpathnormalizer testPathNormalizer.o -L/usr/local/lib -lgtest -pthread -L./ -lurlparse
+testurl:testUrl.o
+	$(CC) $(CFLAGS) -o uniturl testUrl.o -L/usr/local/lib -lgtest -pthread -L./ -lurlparse
+
+testnormalizedurl:testNormalizedUrl.o
+	$(CC) $(CFLAGS) -o unitnormalizedurl testNormalizedUrl.o -L/usr/local/lib -lgtest -pthread -L./ -lurlparse
 ## Commands to generate dependency files
 GEN_DEPS.c= $(CC) -E -MM $(DEFS) $(CFLAGS)
 GEN_DEPS.cc= $(CXX) -E -MM $(DEFS) $(CFLAGS)

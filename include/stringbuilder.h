@@ -60,6 +60,11 @@ public:
         return setlength(size);
     }
     StringBuilder &setlength(size_type len) {
+        if(len == 0){// remove all
+            m_Data.clear();
+            m_totalSize = 0;
+            return *this;
+        }
         if (len < m_totalSize) {
             Delete(len, m_totalSize);
         }

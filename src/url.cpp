@@ -200,6 +200,7 @@ bool Url::exists(UrlPart urlPart) {
 UrlPart Url::nextExistingPart(UrlPart urlPart) {
     UrlPart_T part(urlPart);
     UrlPart nextPart = part.getNextUrlPart();
+    // std::cout <<"nexpart:" <<nextPart << std::endl;
     if (exists(nextPart)) {
         return nextPart;
     } else if (nextPart == 0) {
@@ -251,9 +252,7 @@ NormalizedUrl::NormalizedUrl(UrlMarker &urlMarker) :
         _isPopulated(false) {}
 NormalizedUrl::NormalizedUrl() : Url(), _isPopulated(false) {}
 NormalizedUrl NormalizedUrl::create(string &url) {
-    // NormalizedUrl url(Url::getUrlMarker());
-    return (*this).Url::create(url).normalize();
-    // return url;
+    return Url::create(url).normalize();
 }
 
 /**
@@ -291,7 +290,9 @@ vector<ubyte> NormalizedUrl::getHostBytes() {
 
 void NormalizedUrl::populateHostAndHostBytes() {
     if (!_isPopulated) {
-        HostNormalizer hostNormalizer(Url::getHost());
+        string host = Url::getHost();
+        std::cout << "rawhost->" << host << std::endl;
+        HostNormalizer hostNormalizer(host);
         string rawhost = hostNormalizer.getNormalizedHost();
         setRawHost(rawhost);
         _hostBytes = hostNormalizer.getBytes();

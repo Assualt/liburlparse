@@ -39,9 +39,6 @@ bool CharUtils::isWhiteSpace(char a) {
 void CharUtils::splitByDot(std::vector<std::string> &splitList,const string &input) {
     StringBuilder<char> section;
     if (input.empty()) {
-        // Log().log().setLevel(LOG_DEBUG_LEVEL).format("Input string is
-        // empty.[at FILE:%s FUNC:%s LINE:%d]", __FILE__, __FUNCTION__,
-        // __LINE__).toFile();
         return;
     }
     InputTextReader reader(input);
@@ -49,14 +46,14 @@ void CharUtils::splitByDot(std::vector<std::string> &splitList,const string &inp
         char current = reader.read();
         if (isDot(current)) {
             splitList.push_back(section.ToString());
-            section.Delete(0, section.size());
-        } else if (
-                current == '%' && reader.canReadChars(2) &&
-                StringUtils::stricmp(
-                        reader.peek(2).c_str(), (const char *)"2e")) {
+//            section.Delete(0, section.size());
+            section.setlength(0);
+        } else if (current == '%' && reader.canReadChars(2) && StringUtils::stricmp(reader.peek(2).c_str(), (const char *)"2e")) {
             reader.read();
             reader.read();  // advance past the 2e
-            section.Delete(0, section.size());
+//            section.Delete(0, section.size());
+            splitList.push_back(section.ToString());
+            section.setlength(0);
         } else {
             section.Append(current);  //加到尾部
         }
