@@ -12,21 +12,25 @@
 
 using namespace std;
 class InetAddress {
-protected:
-    static const int IPv4 = INET_FAMILY_IPV4;
-    static const int IPv6 = INET_FAMILY_IPV6;
-    InetAddress();
-
 public:
+    InetAddress(const int nfamily);
+    InetAddress(const std::vector<ubyte> ipaddr,const int nfamily = INET_FAMILY_IPV4);
+
+    std::string getHostAddress();
+protected:
     string hostName;
     int family;
     int address;
+    std::vector<ubyte> _bytes;
+protected:
+	std::vector<ubyte> & getBytes();
 };
 
-class Inet4Address : public InetAddress {
+class InetAddressUtils {
 public:
-    Inet4Address();
-    explicit Inet4Address(vector<ubyte> &ipaddr);
+	static std::string getIPV6HostAddress(const std::vector<ubyte> &vec);
+	static std::string getIPV4HostAddress(const std::vector<ubyte> &vec);
 };
+
 
 #endif  // !_INETADDRESS_H

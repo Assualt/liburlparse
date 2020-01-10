@@ -55,3 +55,8 @@ TEST(UrlUtil__Test, testExtraDotsHosts) {
         EXPECT_EQ(UrlUtil::removeExtraDots(it[0]), it[1]);
     }
 }
+
+// int main(int argc,char **argv){
+//     testing::InitGoogleTest(&argc,argv);
+//     return RUN_ALL_TESTS();
+// }

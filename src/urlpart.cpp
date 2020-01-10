@@ -32,6 +32,8 @@ int UrlPart_T::getPart(UrlPart part) {
 }
 UrlPart UrlPart_T::getPartByIndex(int index) {
     switch (index) {
+    case 0:
+        return URL_END;
     case 1:
         return URL_FRAGMENT;
     case 2:

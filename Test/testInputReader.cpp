@@ -41,9 +41,9 @@ TEST(InputTextReader___Test, testSeek) {
     reader.seek(1);
     EXPECT_EQ(reader.read(), tmpText.at(1));
 }
-/*
-int main(int argc, char **argv) {
-    testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
-}
-*/
+
+
+// int main(int argc,char **argv){
+//     testing::InitGoogleTest(&argc,argv);
+//     return RUN_ALL_TESTS();
+// }

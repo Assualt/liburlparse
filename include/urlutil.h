@@ -12,28 +12,25 @@
 #define ubyte unsigned char
 
 class UrlUtil {
-private:
-    UrlUtil();
-
 public:
     /**
      * Decodes the url by iteratively removing hex characters with backtracking.
      * For example: %2525252525252525 becomes %
      */
-    static std::string decode(string &url);
+    static std::string decode(const string &url);
     /**
      * Removes TAB (0x09), CR (0x0d), and LF (0x0a) from the URL
      * @param urlPart The part of the url we are canonicalizing
      */
-    static std::string removeSpecialSpaces(string &urlPart);
+    static std::string removeSpecialSpaces(const string &urlPart);
     /**
      * Replaces all special characters in the url with hex strings.
      */
-    static std::string encode(string &url);
+    static std::string encode(const string &url);
     /**
      * Removes all leading and trailing dots; replaces consecutive dots with a
      * single dot Ex: ".lalal.....com." -> "lalal.com"
      */
-    static std::string removeExtraDots(string &host);
+    static std::string removeExtraDots(const string &host);
 };
 #endif

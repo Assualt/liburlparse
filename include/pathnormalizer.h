@@ -26,7 +26,7 @@ private:
      * 4. "//" -> "/"
      * 5. Adds a slash at the end if there isn't one
      */
-    static std::string sanitizeDotsAndSlashes(string &path);
+    static std::string sanitizeDotsAndSlashes(const string &path);
 };
 
 #endif  // !_PATHNORMALIZER_H

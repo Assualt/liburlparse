@@ -46,7 +46,7 @@ public:
     /**
      * Returns a url given a single url.
      */
-    Url create(string &url);
+    static Url create(string &url);
     /**
      * Returns a normalized url given a url object
      */
@@ -130,7 +130,7 @@ public:
     /**
      * Returns a normalized url given a single url.
      */
-    NormalizedUrl create(string &url);
+    static NormalizedUrl create(string &url);
     explicit NormalizedUrl(UrlMarker &urlMarker);
     NormalizedUrl();
     // Override

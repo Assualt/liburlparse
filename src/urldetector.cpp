@@ -1,6 +1,6 @@
 #include "urldetector.h"
 #include "time.h"
-UrlDetector::UrlDetector(string &content, UrlDetectorOptions_T options) :
+UrlDetector::UrlDetector(const string &content, UrlDetectorOptions_T options) :
         HTML_MAILTO("mailto:"),
         VALID_SCHEMES{"http://",
                       "https://",
@@ -37,7 +37,7 @@ UrlDetector::UrlDetector() :
 void UrlDetector::setOptions(UrlDetectorOptions_T options) {
     _options = options;
 }
-void UrlDetector::setContent(string &content) {
+void UrlDetector::setContent(const string &content) {
     _reader = InputTextReader(content);
 }
 void UrlDetector::addCharacter(char chars) {

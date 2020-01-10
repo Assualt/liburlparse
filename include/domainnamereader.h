@@ -7,11 +7,9 @@
 #include "stringbuilder.h"
 #include "urldetector.h"
 
-//��־�ļ�
-//#include "./glog.h"
 
-#include <cstdlib>
-#include <cstring>
+#include <stdlib.h>
+#include <string.h>
 enum ReaderNextState {
     /**
      * Trying to read the domain name caused it to be invalid.
@@ -65,7 +63,7 @@ public:
     DomainNameReader(
             InputTextReader &reader,
             StringBuilder<char> &buffer,
-            string &current,
+            const string &current,
             UrlDetectorOptions_T &options);
     /**
      * Reads the Dns and returns the next state the state machine should take in

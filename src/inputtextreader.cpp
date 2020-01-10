@@ -8,7 +8,7 @@ InputTextReader::InputTextReader() :
         _backtracked(0),
         MINIMUM_BACKTRACK_LENGTH(20),
         MAX_BACKTRACK_MULTIPLIER(10) {}
-InputTextReader::InputTextReader(string &content) :
+InputTextReader::InputTextReader(const string &content) :
         _content(content),
         _index(0),
         _backtracked(0),

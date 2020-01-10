@@ -178,19 +178,17 @@ void Url::populateUsernamePassword() {
     if (exists(URL_USERNAME_PASSWORD)) {
         string usernamepassword = getPart(URL_USERNAME_PASSWORD);
         // string temp = usernamepassword.substr(0,usernamepassword.size()-1);
-        list<string> usernamePasswordParts;
+        std::vector<std::string> usernamePasswordParts;
         // string spliter = ":";
         StringUtils::split(
                 usernamePasswordParts,
                 usernamepassword.substr(0, usernamepassword.size() - 1),
                 ":");  //
-        vector<string> ve;
-        StringUtils::list2vector(ve, usernamePasswordParts);
         if (usernamePasswordParts.size() == 1) {
-            _username = ve[0];
+            _username = usernamePasswordParts[0];
         } else if (usernamePasswordParts.size() == 2) {
-            _username = ve[0];
-            _password = ve[1];
+            _username = usernamePasswordParts[0];
+            _password = usernamePasswordParts[1];
         }
     }
 }
@@ -202,10 +200,11 @@ bool Url::exists(UrlPart urlPart) {
 UrlPart Url::nextExistingPart(UrlPart urlPart) {
     UrlPart_T part(urlPart);
     UrlPart nextPart = part.getNextUrlPart();
+    // std::cout <<"nexpart:" <<nextPart << std::endl;
     if (exists(nextPart)) {
         return nextPart;
-    } else if (nextPart == 0) {
-        return URL_FRAGMENT;
+    } else if (nextPart == 0) {// end of part
+        return URL_END;
     }
     return nextExistingPart(nextPart);
 }
@@ -253,9 +252,7 @@ NormalizedUrl::NormalizedUrl(UrlMarker &urlMarker) :
         _isPopulated(false) {}
 NormalizedUrl::NormalizedUrl() : Url(), _isPopulated(false) {}
 NormalizedUrl NormalizedUrl::create(string &url) {
-    // NormalizedUrl url(Url::getUrlMarker());
-    return (*this).Url::create(url).normalize();
-    // return url;
+    return Url::create(url).normalize();
 }
 
 /**
@@ -293,7 +290,9 @@ vector<ubyte> NormalizedUrl::getHostBytes() {
 
 void NormalizedUrl::populateHostAndHostBytes() {
     if (!_isPopulated) {
-        HostNormalizer hostNormalizer(Url::getHost());
+        string host = Url::getHost();
+        std::cout << "rawhost->" << host << std::endl;
+        HostNormalizer hostNormalizer(host);
         string rawhost = hostNormalizer.getNormalizedHost();
         setRawHost(rawhost);
         _hostBytes = hostNormalizer.getBytes();

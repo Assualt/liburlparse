@@ -1,6 +1,7 @@
 #ifndef _URLPART_H
 #define _URLPART_H
 enum UrlPart {
+    URL_END = 0,
     URL_FRAGMENT = 1,
     URL_QUERY = 2,
     URL_PATH = 3,

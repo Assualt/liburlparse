@@ -11,12 +11,7 @@
 using namespace std;
 class StringUtils {
 public:
-    // static void split(list<string> &splitList, const string &s, const string
-    // &seperator);
-    static void split(
-            std::list<std::string> &v,
-            const std::string &s,
-            const std::string &c);
+    static void split(std::vector<std::string> &v,const std::string &s,const std::string &c);
     // static bool trans(const char *pFromCode, const char *pToCode, const char
     // *pInBuf, size_t iInLen, char *pOutBuf, size_t iOutLen );
 
@@ -43,6 +38,6 @@ public:
     static int min(int num1, int num2);
     static int max(int num1, int num2);
 
-    static void list2vector(vector<string> &result, list<string> &li);
+
 };
 #endif

@@ -10,7 +10,7 @@ UrlMarker::UrlMarker() :
         _queryIndex(-1),
         _fragmentIndex(-1) {}
 
-void UrlMarker::setOriginalUrl(string &originalUrl) {
+void UrlMarker::setOriginalUrl(const string &originalUrl) {
     _originalUrl = originalUrl;
 }
 string UrlMarker::getOriginalUrl() {
@@ -66,7 +66,7 @@ int UrlMarker::indexOf(UrlPart urlPart) {
 void UrlMarker::unsetIndex(UrlPart urlPart) {
     setIndex(urlPart, -1);
 }
-UrlMarker UrlMarker::setIndices(vector<int> indices) {
+UrlMarker UrlMarker::setIndices(const vector<int> indices) {
     if (indices.empty() || indices.size() != 7) {
         Log().log()
                 .setLevel(LOG_ERR_LEVEL)

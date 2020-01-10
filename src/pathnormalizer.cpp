@@ -9,7 +9,7 @@ std::string &PathNormalizer::normalizePath(string &path) {
     return path;
 }
 
-std::string PathNormalizer::sanitizeDotsAndSlashes(string &path) {
+std::string PathNormalizer::sanitizeDotsAndSlashes(const string &path) {
     StringBuilder<char> stringBuilder(path);
     stack<int> slashIndexStack;
 
@@ -30,11 +30,12 @@ std::string PathNormalizer::sanitizeDotsAndSlashes(string &path) {
                         int endIndex = index + 3;
                         // backtrack so we can detect if this / is part of
                         // another replacement
-
-                        index = slashIndexStack.empty()
-                                ? -1
-                                : slashIndexStack.top() - 1;
-                        slashIndexStack.pop();
+                        if(slashIndexStack.empty()){
+                            index = -1;
+                        }else{
+                            index = slashIndexStack.top() - 1;
+                            slashIndexStack.pop();
+                        }
                         int startIndex = endOfPath ? index + 1 : index;
                         stringBuilder.Delete(startIndex + 1, endIndex);
                     }
