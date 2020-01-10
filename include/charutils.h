@@ -41,5 +41,7 @@ public:
      * @return an arry of Strings that is a patition of the original string by dot
      */
     static void splitByDot(std::vector<std::string> &splitList,const string &input);
+    
+    static bool JudgeValidRadixString(const std::string &src, int radix = 10);
 };
 #endif

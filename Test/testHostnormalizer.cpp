@@ -15,7 +15,7 @@ HostPathMap = {
     {"[Aaaa::1]", "[aaaa:0:0:0:0:0:0:1]"},
     {"[::192.167.2.2]", "[0:0:0:0:0:0:c0a7:202]"},
     {"[0:ffff::077.0x22.222.11]", "[0:ffff:0:0:0:0:3f22:de0b]"},
-    // {"[0::ffff:077.0x22.222.11]", "63.34.222.11"}, -->failed
+    // {"[0::ffff:077.0x22.222.11]", "63.34.222.11"}, // -->failed
     {"192.168.1.1", "192.168.1.1"},
     {"0x92.168.1.1", "146.168.1.1"},
     {"3279880203", "195.127.0.11"}
@@ -47,7 +47,6 @@ TEST(HostNormalizer__Test, testFormatHost){
 
     }
 }
-
 // int main(int argc,char **argv){
 //     testing::InitGoogleTest(&argc,argv);
 //     return RUN_ALL_TESTS();

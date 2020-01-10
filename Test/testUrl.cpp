@@ -11,7 +11,7 @@ const static std::vector<std::vector<std::string> > urlpart =
     {"hello:ono@bob.com/lala.html", "bob.com", "/lala.html", "hello", "ono"},
     {"lala:asdfjdj1k@bob.com", "bob.com", "/", "lala", "asdfjdj1k"},
     {"sdf@bob.com", "bob.com", "/", "sdf", ""},
-    // {"@www.google.com", "www.google.com", "/", "", ""},
+    {"@www.google.com", "www.google.com", "/", "", ""},
     {"lalal:@www.gogo.com", "www.gogo.com", "/", "lalal", ""},
     {"nono:boo@[::1]", "[::1]", "/", "nono", "boo"},
     {"nono:boo@yahoo.com/@1234", "yahoo.com", "/@1234", "nono", "boo"}
@@ -22,8 +22,6 @@ TEST(Url__Test, testUsernamePasswordUrls){
 	for(auto it: urlpart){
 		string strurl = it[0];
 		Url url = Url::create(strurl);
-		// std::cout << url.getHost() << ":" << url.getPath() << ":" << url.getUsername() << ":" << url.getPassword() << std::endl;
-		// std::cout << it[1] << ":" << it[2] << ":" << it[3] << ":" << it[4] << std::endl;
 		EXPECT_EQ(url.getHost(),it[1]);
 		EXPECT_EQ(url.getPath(),it[2]);
 		EXPECT_EQ(url.getUsername(),it[3]);
@@ -132,8 +130,8 @@ TEST(Url__Test, testSingleDomainUrls){
 		EXPECT_EQ(url.getFullUrl(),it[3]);
 	}
 }
-
 // int main(int argc,char **argv){
-// 	testing::InitGoogleTest(&argc,argv);
-//  	return RUN_ALL_TESTS();
+//     testing::InitGoogleTest(&argc,argv);
+//     return RUN_ALL_TESTS();
 // }
+// #endif

@@ -203,8 +203,8 @@ UrlPart Url::nextExistingPart(UrlPart urlPart) {
     // std::cout <<"nexpart:" <<nextPart << std::endl;
     if (exists(nextPart)) {
         return nextPart;
-    } else if (nextPart == 0) {
-        return URL_FRAGMENT;
+    } else if (nextPart == 0) {// end of part
+        return URL_END;
     }
     return nextExistingPart(nextPart);
 }

@@ -50,16 +50,16 @@ std::string InetAddressUtils::getIPV6HostAddress(const std::vector<ubyte> &addr)
             if(p == 0 && p1 == 0){
                 hostName += "0";
             }else if(p == 0){
-                char temp[2];
+                char temp[10];
                 sprintf(temp,"%x", p1);
                 hostName += temp; 
             }else if(p1 == 0){
-                char temp[4];
+                char temp[10];
                 sprintf(temp,"%02x", p);
                 hostName += temp; 
                 hostName += "00";
             }else{
-                char temp[4];
+                char temp[10];
                 sprintf(temp,"%x%02x",p,p1);
                 hostName += temp;
             }

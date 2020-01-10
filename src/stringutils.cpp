@@ -86,3 +86,9 @@ int StringUtils::max(int num1, int num2) {
     return num1 > num2 ? num1 : num2;
 }
 
+#ifdef MAINEXEC
+int main(int argc,char **argv){
+    testing::InitGoogleTest(&argc,argv);
+    return RUN_ALL_TESTS();
+}
+#endif

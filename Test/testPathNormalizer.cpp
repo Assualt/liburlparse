@@ -51,7 +51,8 @@ TEST(PathNormalizer__Test, testPaths){
 		EXPECT_EQ(pathNormalizer.normalizePath(path[0]), path[1]);
 	}
 }
+
 // int main(int argc,char **argv){
-// 	testing::InitGoogleTest(&argc,argv);
-//  	return RUN_ALL_TESTS();
+//     testing::InitGoogleTest(&argc,argv);
+//     return RUN_ALL_TESTS();
 // }

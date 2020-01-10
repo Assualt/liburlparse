@@ -38,5 +38,6 @@ public:
     static int min(int num1, int num2);
     static int max(int num1, int num2);
 
+
 };
 #endif

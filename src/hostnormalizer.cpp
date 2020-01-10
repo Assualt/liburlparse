@@ -39,7 +39,7 @@ std::vector<std::string> HostNormalizer::splitbyDot(const std::string &src, cons
     return rcpy;
 }
 
-HostNormalizer::HostNormalizer(const string &host) : _host(host),_useIpv6Decoded(false),_useUpv4Decoded(false) {
+HostNormalizer::HostNormalizer(const string &host) : _host(host),_useIpv6Decoded(false),_useIpv4Decoded(false) {
     normalizeHost();
 }
 void HostNormalizer::normalizeHost() {
@@ -69,7 +69,7 @@ void HostNormalizer::normalizeHost() {
             if(_useIpv6Decoded){ //try to decode with ipv6
                 InetAddress address(_bytes, INET_FAMILY_IPV6);
                 host = "[" + address.getHostAddress() + "]";
-            }else if(_useUpv4Decoded){
+            }else if(_useIpv4Decoded){
                 InetAddress address(_bytes, INET_FAMILY_IPV4);
                 host = address.getHostAddress();
             }else{
@@ -106,8 +106,6 @@ vector<ubyte> &HostNormalizer::tryDecodeHostToIPv4(std::vector<ubyte> &bytes,con
         return bytes;
     }
     string parsedNum;
-    // string regex1 = "0x";
-    // string regex2 = "0";
     int base;
     for (size_t i = 0; i < parts.size(); i++) {
         if (StringUtils::startsWith(parts[i], "0x")) {  // hex
@@ -120,7 +118,12 @@ vector<ubyte> &HostNormalizer::tryDecodeHostToIPv4(std::vector<ubyte> &bytes,con
             parsedNum = parts[i];
             base = 10;
         }
+        if(!CharUtils::JudgeValidRadixString(parsedNum, base)){
+            _useIpv4Decoded = false;
+            return bytes;
+        }
         long section = strtol(parsedNum.c_str(), NULL, base);
+
         if (((numParts == 4) &&
              (section > MAX_IPV4_PART)) ||  // This would look like 288.1.2.4
             ((numParts == 1) &&
@@ -137,12 +140,12 @@ vector<ubyte> &HostNormalizer::tryDecodeHostToIPv4(std::vector<ubyte> &bytes,con
             bytes[index++] = (ubyte)((section >> 16) & 0xFF);
             bytes[index++] = (ubyte)((section >> 8) & 0xFF);
             bytes[index] = (ubyte)(section & 0xFF);
-            _useUpv4Decoded= true;
+            _useIpv4Decoded= true;
             return bytes;
         }
     }
     validEmpty = false;
-    _useUpv4Decoded = true;
+    _useIpv4Decoded = true;
     return bytes;
 }
 
@@ -173,7 +176,6 @@ vector<ubyte> &HostNormalizer::tryDecodeHostToIPv6(std::vector<ubyte> &bytes,con
         if (lenPart == 0 && i != 0 && i != parts.size() - 1) {
             numberOfFilledZeroes = totalSize - size;
             for (size_t k = i; k < numberOfFilledZeroes + i; k++) {
-                //System.arraycopy(sectionToTwoBytes(0), 0, bytes, k * 2, 2);
                 std::vector<ubyte> tempVec = sectionToTwoBytes(0);
                 bytes[k*2] = tempVec[0];
                 bytes[k*2+1] = tempVec[1];
@@ -186,10 +188,8 @@ vector<ubyte> &HostNormalizer::tryDecodeHostToIPv6(std::vector<ubyte> &bytes,con
         std::vector<ubyte> tempVec = sectionToTwoBytes(parseNum);
         bytes[(numberOfFilledZeroes+i) * 2] = tempVec[0];
         bytes[(numberOfFilledZeroes+i) * 2 + 1] = tempVec[1];
-        //System.arraycopy(sectionToTwoBytes(section), 0, bytes, (numberOfFilledZeroes + i) * 2, 2);
     }
     if(!validEmpty){
-        // System.arraycopy(ipv4Address, IPV4_MAPPED_IPV6_START_OFFSET, bytes, IPV4_MAPPED_IPV6_START_OFFSET,NUMBER_BYTES_IN_IPV4);
         for(size_t i = 0; i < NUMBER_BYTES_IN_IPV4; i++){
             bytes[IPV4_MAPPED_IPV6_START_OFFSET+i] = ipv4Address[IPV4_MAPPED_IPV6_START_OFFSET+i];
         }
@@ -199,7 +199,7 @@ vector<ubyte> &HostNormalizer::tryDecodeHostToIPv6(std::vector<ubyte> &bytes,con
 }
 
 bool HostNormalizer::isHexSection(string &section) {
-	for (int i = 0; i < (int)section.size(); i++) {
+	for (size_t i = 0; i < section.size(); i++) {
 		if (!CharUtils::isHex(section[i])) {
 			return false;
 		}

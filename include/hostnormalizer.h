@@ -32,7 +32,7 @@ private:
     vector<ubyte> _bytes;
     string _normalizedHost;
     bool _useIpv6Decoded;
-    bool _useUpv4Decoded;
+    bool _useIpv4Decoded;
 public:    
     /**
      * split ipv6 to vector array

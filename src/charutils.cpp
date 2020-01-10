@@ -1,4 +1,6 @@
 ﻿#include "charutils.h"
+#include <algorithm>
+#include <stdlib.h>
 using namespace std;
 
 // Check if Character is a valid hex character.
@@ -60,3 +62,35 @@ void CharUtils::splitByDot(std::vector<std::string> &splitList,const string &inp
     }
     splitList.push_back(section.ToString());  //加到尾部
 }
+
+//radix should between [2,16)
+bool CharUtils::JudgeValidRadixString(const std::string &src, int radix){
+    string temp = src;
+    std::transform(temp.begin(), temp.end(), temp.begin(), ::tolower);
+    if(radix < 2 || radix> 16)
+        return false; //invalid radix
+    int SignleraidxMax = radix;
+    if(SignleraidxMax < 10){
+        for(size_t i = 0; i < src.size(); i++){
+            if(!CharUtils::isNumberic(src[i]))
+                return false;
+            else if(abs((src[i] - '0')) >= SignleraidxMax )
+                return false;
+        }
+        return true;
+    }else{
+        char c = 'a' + SignleraidxMax - 10;
+        for(size_t i = 0; i< src.size(); i++){
+            if(CharUtils::isNumberic(src[i]))
+                continue;
+            else if(src[i]>= 'a' && src[i] < c)
+                continue;
+            else
+                return false;
+        }
+        return true;
+    }
+    //never reach here
+    return true;
+}
+
