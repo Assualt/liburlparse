@@ -48,12 +48,10 @@ void CharUtils::splitByDot(std::vector<std::string> &splitList,const string &inp
         char current = reader.read();
         if (isDot(current)) {
             splitList.push_back(section.ToString());
-//            section.Delete(0, section.size());
             section.setlength(0);
         } else if (current == '%' && reader.canReadChars(2) && StringUtils::stricmp(reader.peek(2).c_str(), (const char *)"2e")) {
             reader.read();
             reader.read();  // advance past the 2e
-//            section.Delete(0, section.size());
             splitList.push_back(section.ToString());
             section.setlength(0);
         } else {

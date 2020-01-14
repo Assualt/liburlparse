@@ -305,7 +305,9 @@ ReaderNextState DomainNameReader::readDomainName() {
     return checkDomainNameValid(ValidDomainName, ' ');
 }
 void DomainNameReader::setBuffer(StringBuilder<char> &builder) {
-    std::string temp = _buffer.substr(builder.size());
+    std::string temp;
+    if(builder.size() <_buffer.size())
+        temp = _buffer.substr(builder.size());
     builder.Append(temp);
     // for (size_t i = builder.size(); i < _buffer.size(); i++)
     // {
@@ -545,7 +547,8 @@ bool DomainNameReader::isValidIpv6(string &testDomain) {
             hexSection = true;  // reset hex to true
             hexDigits = 0;      // reset count for hex digits
             numSections++;
-            lastSection.Delete(0, lastSection.size());  // clear last section
+//            lastSection.Delete(0, lastSection.size());  // clear last section
+            lastSection.setlength(0);
             break;
         default:
             if (zoneIndiceMode) {

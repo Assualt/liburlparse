@@ -671,7 +671,8 @@ bool UrlDetector::readEnd(ReadEndState state) {
         }
     }
     // clear out the buffer.
-    _buffer.Delete(0, _buffer.size());
+    // _buffer.Delete(0, _buffer.size());
+    _buffer.setlength(0);
     // reset the state of internal objects.
     _quoteStart = false;
     _hasScheme = false;

@@ -40,7 +40,13 @@ int main(int argc, char **argv) {
         return 0;
     }
     string readString = readFromFile(argv[1]);
+    if(readString.size() > 100000){
+        std::cout << "over flow " << std::endl;
+        return 0;
+    }
+
     UrlDetectorOptions_T t(HTML);
+
     UrlDetector detect(readString, t);
 
     std::list<Url> urls = detect.detect();
