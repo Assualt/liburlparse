@@ -14,6 +14,7 @@
 #include <iostream>
 #include <sstream>
 #include <iomanip>
+#include <memory>
 using namespace std;
 template <typename chr>
 class StringBuilderImpl {
@@ -22,18 +23,31 @@ class StringBuilderImpl {
     typedef typename string_t::size_type size_type;
 
 public:
+    /**
+     * the default construcor and init the 
+     * total size and capacity and set precision 
+     * of double/float and append current val to 
+     * the inner data
+     *
+     */
     StringBuilderImpl(const string_t &src) :
+            m_Data(nullptr),
             m_nTotalSize(0),
             m_nCapacity(16),
-            m_Data(nullptr),
             m_nPrecision(15) {
         ExpandCapacity(m_nCapacity);
         Append(src);
     }
+    /**
+     * the default construcor and init the 
+     * total size and capacity and set precision 
+     * of double/float
+     *
+     */
     StringBuilderImpl(void) :
-            m_nCapacity(16),
-            m_nTotalSize(0),
             m_Data(nullptr),
+            m_nTotalSize(0),
+            m_nCapacity(16),
             m_nPrecision(15) {
         ExpandCapacity(m_nCapacity);
     }
@@ -102,7 +116,7 @@ public:
         if (nEnd == -1)
             nEnd = m_nTotalSize;
         memset(m_Data + nStart, 0, nEnd - nStart);
-        memmove(m_Data + nStart, m_Data + nEnd, m_nTotalSize - nEnd);
+        memcpy(m_Data + nStart, m_Data + nEnd, m_nTotalSize - nEnd);
         m_nTotalSize -= (nEnd - nStart);
         return *this;
     }
@@ -121,7 +135,7 @@ public:
         if (checkSize) {
             ExpandCapacity(checkSize);
         }
-        memmove(m_Data + nIndex + nCnt, m_Data + nIndex, m_nTotalSize - nIndex);
+        memcpy(m_Data + nIndex + nCnt, m_Data + nIndex, m_nTotalSize - nIndex);
         memset(m_Data + nIndex, 0, nCnt);
         mempcpy(m_Data + nIndex, temp.c_str(), nCnt);
         m_nTotalSize += nCnt;
@@ -130,8 +144,7 @@ public:
     StringBuilderImpl &replace(off_t nStart, off_t nEnd, const string_t &str) {
         // safe check first
         if (nStart < 0 || (nStart > nEnd && nEnd != -1) || nEnd > m_nTotalSize)
-            throw std::invalid_argument(
-                    "invalid Begining and Ending in Replace");
+            throw std::invalid_argument("invalid Begining and Ending in Replace");
 
         int NeedAllocatedLength = (nEnd - nStart) - str.size();
         off_t checkSize = CheckSizeEnough(NeedAllocatedLength);
@@ -139,7 +152,7 @@ public:
             ExpandCapacity(checkSize);
         // move (nStart, m_nTotalSize] to
         // (nStart+str.size(),m_nTotalSize+str.size()]
-        memmove(m_Data + nStart + str.size(),
+        memcpy(m_Data + nStart + str.size(),
                 m_Data + nStart,
                 m_nTotalSize - nStart);
         // move str to (nStart, nStart+str.size()]
@@ -170,15 +183,19 @@ private:
         if (nCheckSize) {  // should expand capacity
             ExpandCapacity(nCheckSize);
         }
-        memmove(m_Data + m_nTotalSize, src.data(), src.size());
+        memcpy(m_Data + m_nTotalSize, src.data(), src.size());
         m_nTotalSize += src.size();
     }
     /**
-     * @
+     * check current size is enough
+     * if enough return 0;
+     * else return the size of should expand
      *
+     * @param: nSize the enoutg
+     * @return: the size of should expand
      */
     off_t CheckSizeEnough(size_type nSize) {
-        if (nSize + m_nTotalSize > m_nCapacity) {
+        if ( static_cast<off_t>(nSize) + m_nTotalSize > m_nCapacity) {
             // should ExpandCapacity
             m_nCapacity = (m_nCapacity + nSize) << 1;  //扩大为原始的2倍
             return m_nCapacity;
@@ -188,27 +205,25 @@ private:
 
 protected:
     /**
+     * expand the current size to nSize
+     *
      * @param:nSize the total size
-     * */
+     */
     void ExpandCapacity(off_t nSize) {
         if (nSize < m_nCapacity) {
             return;
         }
-        char *temp = nullptr;
+        std::auto_ptr<chr> _au(new chr[nSize]);
         if (nullptr != m_Data) {
-            temp = new chr[m_nTotalSize + 1];
-            // strncpy(temp, m_Data, m_nTotalSize);
-            memmove(temp, m_Data, m_nTotalSize);
+            memcpy(_au.get(),m_Data,m_nTotalSize);
             delete[] m_Data;
         }
-        m_Data = new chr[nSize];
-        // should free the temp
-        if (nullptr != temp) {
-            memmove(m_Data, temp, m_nTotalSize);
-            delete[] temp;
-        }
+        m_Data = _au.release();
+        m_nCapacity = nSize;
     }
-
+    // delete the default function due to free double
+    StringBuilderImpl& operator=(const StringBuilderImpl&)=delete;
+    StringBuilderImpl(const StringBuilderImpl&)=delete;
 private:
     chr *m_Data;
     off_t m_nTotalSize;   //字符串实际长度
