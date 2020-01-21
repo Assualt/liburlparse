@@ -22,9 +22,9 @@ string readFromFile(const std::string &filepath) {
     fin.seekg(0, std::ios_base::beg);
     char *temp = new char[length + 1];
     fin.read(temp, length);
-    fin.close();
     std::string tmp = temp;
     delete temp;
+    fin.close();
     std::cout << "file length allocated " << length << std::endl;
     return tmp;
 }
@@ -42,7 +42,7 @@ int main(int argc, char **argv) {
     string readString = readFromFile(argv[1]);
     if(readString.size() > 100000){
         std::cout << "over flow " << std::endl;
-        return 0;
+//        return 0;
     }
 
     UrlDetectorOptions_T t(HTML);

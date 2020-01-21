@@ -15,6 +15,7 @@
 #include <sstream>
 #include <iomanip>
 #include <memory>
+#include "glog.h"
 using namespace std;
 template <typename chr>
 class StringBuilderImpl {
@@ -131,6 +132,9 @@ public:
             m_nTotalSize = nSize;
         }
         return *this;
+    }
+    StringBuilderImpl &setLength(off_t nSize){
+        return setSize(nSize);
     }
 
     StringBuilderImpl &remove(off_t nStart, off_t nEnd = -1) {
@@ -252,6 +256,6 @@ private:
     off_t m_nCapacity;    //字符串容纳体积
     size_t m_nPrecision;  //浮点数精度
 };
-typedef StringBuilderImpl<char> TStringBuilder;
+typedef StringBuilderImpl<char> StringBuilder;
 
 #endif

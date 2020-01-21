@@ -57,14 +57,10 @@ public:
      * @param characterHandler The handler to call on each non-matching
      * character to count matching quotes and stuff.
      */
-    // DomainNameReader(InputTextReader reader, StringBuilder<char> buffer,
+    // DomainNameReader(InputTextReader reader, StringBuilder buffer,
     // string current, UrlDetectorOptions_T options,CharacterHandler
     // *characterHandler);
-    DomainNameReader(
-            InputTextReader &reader,
-            StringBuilder<char> &buffer,
-            const string &current,
-            UrlDetectorOptions_T &options);
+    DomainNameReader(InputTextReader &reader,StringBuilder &buffer, const std::string &current, UrlDetectorOptions_T &options);
     /**
      * Reads the Dns and returns the next state the state machine should take in
      * throwing this out, or continue processing if this is a valid domain name.
@@ -72,83 +68,86 @@ public:
      */
     ReaderNextState readDomainName();
 
-    void setBuffer(StringBuilder<char> &builder);
+    void setBuffer(StringBuilder &builder);
 
     int getReaderPosition();
     int getBacktracked();
 
-private:
+
+public: //static const val
+
     /**
      * The minimum length of a ascii based top level domain.
      */
-    int MIN_TOP_LEVEL_DOMAIN;
+    static int MIN_TOP_LEVEL_DOMAIN;
 
     /**
      * The maximum length of a ascii based top level domain.
      */
-    int MAX_TOP_LEVEL_DOMAIN;
+    static int MAX_TOP_LEVEL_DOMAIN;
 
     /**
      * The maximum number that the url can be in a url that looks like:
      * http://123123123123/path
      */
-    long MAX_NUMERIC_DOMAIN_VALUE;
+    static long MAX_NUMERIC_DOMAIN_VALUE;
 
     /**
      * The minimum number the url can be in a url that looks like:
      * http://123123123123/path
      */
-    long MIN_NUMERIC_DOMAIN_VALUE;
+    static long MIN_NUMERIC_DOMAIN_VALUE;
 
     /**
      * If the domain name is an ip address, for each part of the address, whats
      * the minimum value?
      */
-    int MIN_IP_PART;
+    static int MIN_IP_PART;
 
     /**
      * If the domain name is an ip address, for each part of the address, whats
      * the maximum value?
      */
-    int MAX_IP_PART;
+    static int MAX_IP_PART;
 
     /**
      * The start of the utf character code table which indicates that this
      * character is an international character. Everything below this value is
      * either a-z,A-Z,0-9 or symbols that are not included in domain name.
      */
-    int INTERNATIONAL_CHAR_START;
+    static int INTERNATIONAL_CHAR_START;
 
     /**
      * The maximum length of each label in the domain name.
      */
-    int MAX_LABEL_LENGTH;
+    static int MAX_LABEL_LENGTH;
 
     /**
      * The maximum number of labels in a single domain name.
      */
-    int MAX_NUMBER_LABELS;
+    static int MAX_NUMBER_LABELS;
 
     /**
      * The maximum domain name length.
      */
-    int MAX_DOMAIN_LENGTH;
+    static int MAX_DOMAIN_LENGTH;
 
     /**
      * Encoded hex dot.
      */
-    string HEX_ENCODED_DOT;
+    static std::string HEX_ENCODED_DOT;
 
+private:
     /**
      * The currently written string buffer.
      */
-    StringBuilder<char> _buffer;
+    StringBuilder _buffer;
 
     /**
      * The domain name started with a partial domain name found. This is the
      * original string of the domain name only.
      */
-    string _current;
+    std::string _current;
 
     /**
      * Detection option of this reader.
@@ -224,9 +223,7 @@ private:
      * @return The validState if the domain is valid, else
      * ReaderNextState.InvalidDomainName
      */
-    ReaderNextState checkDomainNameValid(
-            ReaderNextState validState,
-            char lastChar);
+    ReaderNextState checkDomainNameValid(ReaderNextState validState, char lastChar);
 
     /**
      * Handles Hexadecimal, octal, decimal, dotted decimal, dotted hex, dotted
@@ -234,7 +231,7 @@ private:
      * @param testDomain the string we're testing
      * @return Returns true if it's a valid ipv4 address
      */
-    bool isValidIpv4(string &testDomain);
+    bool isValidIpv4(const std::string &testDomain);
 
     /**
      * Sees that there's an open "[", and is now checking for ":"'s and stopping
@@ -242,7 +239,7 @@ private:
      * addresses, zone indices, truncated notation.
      * @return Returns true if it is a valid ipv6 address
      */
-    bool isValidIpv6(string &testDomain);
+    bool isValidIpv6(const std::string &testDomain);
 };
 
 #endif

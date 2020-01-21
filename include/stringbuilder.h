@@ -1,243 +1,268 @@
-#ifndef _StringBuilder_H_
-#define _StringBuilder_H_
+/*************************************************************************
+        > File Name: stringbuilder_1.h
+        > Author:
+        > Mail:
+        > Created Time: 2020年01月06日 星期一 16时02分19秒
+ ************************************************************************/
+
+#ifndef _STRINGBUILDER_1_H
+#define _STRINGBUILDER_1_H
 
 #include <list>
-#include <cstring>
+#include <string.h>
 #include <numeric>
 #include <iostream>
-#include <iomanip>
 #include <sstream>
+#include <iomanip>
+#include <memory>
 #include "glog.h"
 using namespace std;
-// Subset of
-// http://msdn.microsoft.com/en-us/library/system.text.stringbuilder.aspx
 template <typename chr>
-class StringBuilder {
-    typedef std::basic_string<chr> string_t;
-    typedef std::list<string_t> container_t;  // Reasons not to use vector below.
-    typedef typename string_t::size_type size_type;  // Reuse the size type in the string.
-    typedef typename std::basic_stringstream<chr> my_stringstream;    // convert the any type of data to string_t 
-    typedef typename std::list<string_t>::const_iterator iter_t_con;  //
-    typedef typename std::list<string_t>::iterator iter_t;            //
-private:
-    container_t m_Data;
-    size_type m_totalSize;
-    size_t m_nprecision;
-private:    
-    void append(const string_t &src) {
-        m_Data.push_back(src);
-        m_totalSize += src.size();
+class StringBuilderImpl {
+    typedef typename std::basic_string<chr> string_t;
+    typedef typename std::basic_stringstream<chr> my_stringstream;
+    typedef typename string_t::size_type size_type;
+
+public: 
+    /**
+     * static method to provide to replace the copy/assign
+     * function. and avoid the warning message of valgrind
+     * like "Invalid free()/delete()/malloc()/new() "
+     * happending
+     *
+     * @param : StringBuilderImpl
+     * @return: StringBuilderImpl 
+     */
+    static StringBuilderImpl& copyOf(const StringBuilderImpl& src, StringBuilderImpl& dst){
+        string_t temp = src.toString();
+        dst.append(temp);
+        return dst;
     }
+public:
+    // delete the default function due to free double
+    StringBuilderImpl operator=(const StringBuilderImpl& other)=delete;
+    /**
+     * the default construcor and init the 
+     * total size and capacity and set precision 
+     * of double/float and append current val to 
+     * the inner data
+     *
+     */
+    StringBuilderImpl(const string_t &src) :
+            m_Data(nullptr),
+            m_nTotalSize(0),
+            m_nCapacity(16),
+            m_nPrecision(15) {
+        ExpandCapacity(m_nCapacity);
+        Append(src);
+    }
+    /**
+     * the default construcor and init the 
+     * total size and capacity and set precision 
+     * of double/float
+     *
+     */
+    StringBuilderImpl(void) :
+            m_Data(nullptr),
+            m_nTotalSize(0),
+            m_nCapacity(16),
+            m_nPrecision(15) {
+        ExpandCapacity(m_nCapacity);
+    }
+    ~StringBuilderImpl() {
+        if (nullptr != m_Data)
+            delete []m_Data;
+        m_nTotalSize = 0;
+        m_nCapacity = 0;
+    }
+
+public:
+    template<class T>
+    StringBuilderImpl& operator << (const T &val){
+        return append(val);
+    }
+    StringBuilderImpl &clear(){
+        return setSize(0);
+    }
+    template <class typeArg>
+    StringBuilderImpl &append(const typeArg &arg) {
+        Append(toString(arg));
+        return *this;
+    }
+    StringBuilderImpl &append(const string_t &arg){
+        Append(arg);
+        return *this;
+    }
+    string_t toString(void) const {
+        string_t temp;
+        temp.reserve(m_nTotalSize + 1);
+        temp.append(m_Data,m_nTotalSize);
+        return temp;
+    }
+    chr charAt(size_type nIndex) {
+        if (nIndex >= 0 && static_cast<off_t>(nIndex) < m_nTotalSize) {
+            return m_Data[nIndex];
+        }
+        return chr();
+    }
+    chr operator[](size_type nIndex) {
+        return charAt(nIndex);
+    }
+
+    size_type size() const {
+        return m_nTotalSize;
+    }
+    size_type length() const {
+        return m_nTotalSize;
+    }
+    size_type capacity() const {
+        return m_nCapacity;
+    }
+
+    string_t substr(off_t nBegin, off_t nEnd = -1) {
+        // safe check first
+        if (nBegin < 0 || (nBegin > nEnd && nEnd != -1) || nEnd > m_nTotalSize)
+            throw std::invalid_argument("invalid Begining and Ending");
+        if (nEnd == -1)
+            nEnd = m_nTotalSize;
+        string_t temp(m_Data + nBegin, nEnd - nBegin);
+        return temp;
+    }
+
+    // have to reset some thing between (nSize, m_nTotalSize]
+    StringBuilderImpl &setSize(off_t nSize) {
+        if (nSize > m_nTotalSize)
+            ExpandCapacity(nSize);
+        else {
+            memset(m_Data + nSize, 0, m_nTotalSize - nSize);
+            m_nTotalSize = nSize;
+        }
+        return *this;
+    }
+    StringBuilderImpl &setLength(off_t nSize){
+        return setSize(nSize);
+    }
+
+    StringBuilderImpl &remove(off_t nStart, off_t nEnd = -1) {
+        // safe check first
+        if (nStart < 0 || (nStart > nEnd && nEnd != -1) || nEnd > m_nTotalSize)
+            throw std::invalid_argument("invalid Begining and Ending");
+        if (nEnd == -1)
+            nEnd = m_nTotalSize;
+        memset(m_Data + nStart, 0, nEnd - nStart);
+        memcpy(m_Data + nStart, m_Data + nEnd, m_nTotalSize - nEnd);
+        memset(m_Data + m_nTotalSize - nEnd, 0, nEnd - nStart);
+        m_nTotalSize -= (nEnd - nStart);
+        return *this;
+    }
+    StringBuilderImpl &removeCharAt(off_t nIndex) {
+        if (nIndex < 0 || nIndex > m_nTotalSize)
+            throw std::invalid_argument("invalid Index to remove");
+        return remove(nIndex, nIndex + 1);
+    }
+
+    StringBuilderImpl &insert(off_t nIndex, chr arg, size_type nCnt = 1) {
+        // safe Check
+        if (nIndex < 0 || nIndex > m_nTotalSize)
+            throw std::invalid_argument("invalid Index to insert");
+        string_t temp(nCnt, arg);
+        off_t checkSize = CheckSizeEnough(nCnt);
+        if (checkSize) {
+            ExpandCapacity(checkSize);
+        }
+        memcpy(m_Data + nIndex + nCnt, m_Data + nIndex, m_nTotalSize - nIndex);
+        memset(m_Data + nIndex, 0, nCnt);
+        memcpy(m_Data + nIndex, temp.c_str(), nCnt);
+        m_nTotalSize += nCnt;
+        return *this;
+    }
+    StringBuilderImpl &replace(off_t nStart, off_t nEnd, const string_t &str) {
+        // safe check first
+        if (nStart < 0 || (nStart > nEnd && nEnd != -1) || nEnd > m_nTotalSize)
+            throw std::invalid_argument("invalid Begining and Ending in Replace");
+
+        int NeedAllocatedLength = (nEnd - nStart) - str.size();
+        off_t checkSize = CheckSizeEnough(NeedAllocatedLength);
+        if (checkSize)
+            ExpandCapacity(checkSize);
+        // move (nStart, m_nTotalSize] to
+        // (nStart+str.size(),m_nTotalSize+str.size()]
+        memcpy(m_Data + nStart + str.size(),
+                m_Data + nStart,
+                m_nTotalSize - nStart);
+        // move str to (nStart, nStart+str.size()]
+        memcpy(m_Data + nStart, str.c_str(), str.size());
+        return *this;
+    }
+
+private:
     template <class argType>
     string_t toString(const argType &ar) {
         my_stringstream stream;
         stream << ar;
         return stream.str();
     }
-    string_t toString(const float &arg){
+    // float double 会出现精度丢失现象，默认保留15
+    string_t toString(float arg) {
         my_stringstream stream;
-        stream << std::setprecision(m_nprecision) << arg;
+        stream << std::setprecision(m_nPrecision) << arg;
         return stream.str();
     }
-    string_t toString(const double &arg){
+    string_t toString(double arg) {
         my_stringstream stream;
-        stream << std::setprecision(m_nprecision) << arg;
+        stream << std::setprecision(m_nPrecision) << arg;
         return stream.str();
     }
-public:
-    // No copy constructor, no assignment.
-    //StringBuilder(const StringBuilder &)=delete;
-    StringBuilder & operator = (StringBuilder & builder)=delete;
-    StringBuilder(const string_t &src):m_nprecision(15) {
-        if (!src.empty()) {
-            m_Data.push_back(src);
+    void Append(const string_t &src) {
+        off_t nCheckSize = CheckSizeEnough(src.size());
+        if (nCheckSize) {  // should expand capacity
+            ExpandCapacity(nCheckSize);
         }
-        m_totalSize = src.size();
+        memcpy(m_Data + m_nTotalSize, src.data(), src.size());
+        m_nTotalSize += src.size();
     }
-    StringBuilder():m_totalSize(0),m_nprecision(15) {
-    }
-    StringBuilder& setSize(size_type size) {
-        return setlength(size);
-    }
-    StringBuilder &setlength(size_type len) {
-        if(len == 0){// remove all
-            m_Data.clear();
-            m_totalSize = 0;
-            return *this;
+    /**
+     * check current size is enough
+     * if enough return 0;
+     * else return the size of should expand
+     *
+     * @param: nSize the enoutg
+     * @return: the size of should expand
+     */
+    off_t CheckSizeEnough(size_type nSize) {
+        if ( static_cast<off_t>(nSize) + m_nTotalSize > m_nCapacity) {
+            // should ExpandCapacity
+            m_nCapacity = (m_nCapacity + nSize) << 1;  //扩大为原始的2倍
+            return m_nCapacity;
         }
-        if (len < m_totalSize) {
-            Delete(len, m_totalSize);
-        }
-        return *this;
+        return 0;
     }
 
-    // TODO: Constructor that takes an array of strings.
-    size_type size() {
-        return m_totalSize;
-    }
-    string &subprocess(string &str, int start, int end) {
-        string temp;
-        int length = str.size();
-        if (start > end) {
-            Log().log().setLevel(LOG_ERR_LEVEL).format("Err arg: start can't be over end [at FILE:%s "
-                "FUNC:%s LINE:%d]", __FILE__,__FUNCTION__,__LINE__).toFile();
-            return str;
-        } else if (start == end){  // do nothing
-            return str;
+protected:
+    /**
+     * expand the current size to nSize
+     *
+     * @param:nSize the total size
+     */
+    void ExpandCapacity(off_t nSize) {
+        if (nSize < m_nCapacity) {
+            return;
         }
-        end = end > length ? length : end;
-        temp = str.substr(end);
-        str = str.substr(0, start) + temp;
+        std::auto_ptr<chr> _au(new chr[nSize]);
+        if (nullptr != m_Data) {
+            memcpy(_au.get(),m_Data,m_nTotalSize);
+            delete []m_Data;
+        }
+        m_Data = _au.release();
+        m_nCapacity = nSize;
+    }
+    StringBuilderImpl(const StringBuilderImpl&)=delete;
+private:
+    chr *m_Data;
+    off_t m_nTotalSize;   //字符串实际长度
+    off_t m_nCapacity;    //字符串容纳体积
+    size_t m_nPrecision;  //浮点数精度
+};
+typedef StringBuilderImpl<char> StringBuilder;
 
-        return str;
-    }
-    StringBuilder &Delete(int start, int end) {
-        int p_start = 0, p_end = -1;
-        end = end > (int)m_totalSize ? m_totalSize : end;
-        m_totalSize -= (end - start);
-        iter_t m_begin = m_Data.begin();
-        iter_t m_end = m_Data.end();
-        for (iter_t iter = m_begin; iter != m_end; ++iter) {
-            p_end += iter->size();
-            if (start >= p_start && start <= p_end) {
-                // string::iterator begin = iter->begin():
-                if (end <= p_end) {
-                    subprocess(*iter, start - p_start, end - p_start);
-                    // iter->erase(begin+start-p_start,begin+end-p_start);
-                    break;
-                } else {
-                    subprocess(*iter, start - p_start, iter->size());
-                    // iter->erase(begin+start-p_start,begin+iter->size());
-                    start = p_end + 1;
-                }
-            }
-            p_start = p_end + 1;
-        }
-
-        return *this;
-    }
-    StringBuilder &DeleteCharAt(int index) {
-        if (index > (int)m_totalSize) {
-            return *this;
-        } else {
-            int str_start = 0, str_end = -1;
-            iter_t begin(m_Data.begin()), end(m_Data.end());
-            for (iter_t iter = begin; iter != end; ++iter) {
-                str_end += iter->size();
-                if (index >= str_start && index <= str_end) {
-                    iter->erase(index - str_start, 1);
-                    m_totalSize -= 1;
-                    break;
-                }
-                str_start = str_end + 1;
-            }
-        }
-        return *this;
-    }
-    chr charAt(int index) const {
-        string dest;
-        dest = ToString().c_str();
-        return dest[index];
-    }
-    template<class ArgType>
-    StringBuilder &Append(const ArgType & src){
-        append(toString(src));
-        return *this;
-    }
-    StringBuilder &Append(const chr c){
-        string_t temp(1,c);
-        append(temp);
-        return *this;
-    }
-    StringBuilder &insert(int ops, chr c) {
-        if (ops > (int)m_totalSize) {
-            return *this;
-        } else {
-            int str_start = 0, str_end = -1;
-            iter_t begin(m_Data.begin()), end(m_Data.end()), iter;
-            bool bInserted = false;
-            for (iter = begin; iter != end; ++iter) {
-                string temp = *iter;
-                str_end += temp.size();
-                if (ops >= str_start && ops <= str_end) {
-                    bInserted = true;
-                    iter->insert(ops, 1, c);
-                    m_totalSize += 1;
-                    break;
-                }
-                str_start = str_end + 1;
-            }
-            if(!bInserted){
-                m_totalSize += 1;
-                begin = m_Data.begin();
-                begin->push_back(c);
-            }
-        }
-        return *this;
-    }
-    /*
-     *  it apply the repeat to replace and cost a lot of time use
-    StringBuilder & replace(int start, int end, string str)
-    {
-            Delete1(start, end);
-            int i = 0;
-            for (;i < (int) str.size();)
-            {
-                    insert(start + i, str[i]);
-                    ++i;
-            }
-            return *this;
-    }
-    */
-    StringBuilder &replace(int start, int end, string str) {
-        Delete(start, end);
-        if (start > (int)m_totalSize) {
-            return *this;
-        } else {
-            int str_start = 0, str_end = -1;
-            iter_t m_begin(m_Data.begin()), m_end(m_Data.end()), iter;
-            for (iter = m_begin; iter != m_end; ++iter) {
-                str_end += iter->size();
-                if (start >= str_start && start <= str_end) {
-                    iter->insert(start - str_start + 1, str);
-                    m_totalSize += str.size();
-                    break;
-                }
-                str_start = str_end + 1;
-            }
-        }
-        return *this;
-    }
-    string substr(int start) {
-        return substr(start, m_totalSize);
-    }
-    // This one lets you add any STL container to the string builder.
-    string substr(int start, int end) const {
-        end = end > (int)m_totalSize ? m_totalSize : end;
-        return ToString().substr(start, end - start);
-    }
-
-    // TODO: AppendFormat implementation. Not relevant for the article.
-
-    // Like C# StringBuilder.ToString()
-    // Note the use of reserve() to avoid reallocations.
-    string ToString() const {
-        string result;
-        // The whole point of the exercise!
-        // container has a lot of strings, reallocation (each time the result
-        // grows) will take a serious toll, both in performance and chances of
-        // failure. I measured (in code I cannot publish) fractions of a second
-        // using 'reserve', and almost two minutes using +=.
-        result.reserve(m_totalSize + 1);
-        // result = std::accumulate(m_Data.begin(), m_Data.end(), result); //
-        // This would lose the advantage of 'reserve'
-        iter_t_con begin = m_Data.begin();
-        iter_t_con end = m_Data.end();
-        for (iter_t_con iter = begin; iter != end; ++iter) {
-            result += *iter;
-        }
-        return result;
-    }
-};  // class StringBuilder
-
-#endif  // !_StringBuilder_H_
+#endif

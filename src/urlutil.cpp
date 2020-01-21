@@ -1,6 +1,6 @@
 #include "urlutil.h"
-std::string UrlUtil::decode(const string &url) {
-    StringBuilder<char> stringBuilder(url);
+std::string UrlUtil::decode(const std::string &url) {
+    StringBuilder stringBuilder(url);
     stack<int> nonDecodedPercentIndices;
     size_t i = 0;
     size_t size = stringBuilder.size();
@@ -14,17 +14,10 @@ std::string UrlUtil::decode(const string &url) {
             if (CharUtils::isHex(stringBuilder.charAt(i + 1)) &&
                 CharUtils::isHex(stringBuilder.charAt(i + 2))) {
                 char buf[2];
-                sprintf(buf,
-                        "%c",
-                        (char)strtol(
-                                stringBuilder.substr(i + 1, i + 3).c_str(),
-                                NULL,
-                                16));
+                sprintf(buf,"%c",(char)strtol(stringBuilder.substr(i + 1, i + 3).c_str(),NULL,16));
                 char decodedChar = buf[0];
-                stringBuilder.Delete(
-                        i, i + 3);  // delete the % and two hex digits ***1
-                stringBuilder.insert(
-                        i, decodedChar);  // add decoded character ***1
+                stringBuilder.remove(i, i + 3);  // delete the % and two hex digits ***1
+                stringBuilder.insert(i, decodedChar);  // add decoded character ***1
                 if (decodedChar == '%') {
                     i--;  // backtrack one character to check for another
                           // decoding with this %.
@@ -53,65 +46,65 @@ std::string UrlUtil::decode(const string &url) {
         }
         i++;
     }
-    return stringBuilder.ToString();
+    return stringBuilder.toString();
 }
 
-std::string UrlUtil::removeSpecialSpaces(const string &urlPart) {
-    StringBuilder<char> stringBuilder(urlPart);
+std::string UrlUtil::removeSpecialSpaces(const std::string &urlPart) {
+    StringBuilder stringBuilder(urlPart);
     int size = (int)stringBuilder.size();
     for (int i = 0; i < size; i++) {
         char curr = stringBuilder.charAt(i);
         if (CharUtils::isWhiteSpace(curr)) {
-            stringBuilder.DeleteCharAt(i);  
+            stringBuilder.removeCharAt(i);  
         }
     }
-    return stringBuilder.ToString();
+    return stringBuilder.toString();
 }
 
-std::string UrlUtil::encode(const string &url) {
-    StringBuilder<char> encoder;
+std::string UrlUtil::encode(const std::string &url) {
+    StringBuilder encoder;
     for (size_t i = 0; i < url.size(); i++) {
         char chr = url[i];
         char buf[10];
         ubyte chrByte = (ubyte)chr;
-        string s;
+        std::string s;
         memset(buf, 0, sizeof(buf));
         if ((chrByte <= 32 || chrByte >= 127 || chr == '#' || chr == '%')) {
             sprintf(buf, "%%%02X", chr);
             s = buf;
-            encoder.Append(s);
+            encoder.append(s);
         } else {
             sprintf(buf, "%c", chr);
             s = buf;
-            encoder.Append(chr);
+            encoder.append(chr);
         }
     }
-    return encoder.ToString();
+    return encoder.toString();
 }
 
-std::string UrlUtil::removeExtraDots(const string &host) {
-    StringBuilder<char> stringBuilder;
+std::string UrlUtil::removeExtraDots(const std::string &host) {
+    StringBuilder stringBuilder;
     InputTextReader reader(host);
     while (!reader.eof()) {
         char curr = reader.read();
-        stringBuilder.Append(curr);
+        stringBuilder.append(curr);
         if (curr == '.') {
             char possibleDot = curr;
             while (possibleDot == '.' && !reader.eof()) {
                 possibleDot = reader.read();
             }
             if (possibleDot != '.') {
-                stringBuilder.Append(possibleDot);
+                stringBuilder.append(possibleDot);
             }
         }
     }
     if (stringBuilder.size() > 0 &&
         stringBuilder.charAt(stringBuilder.size() - 1) == '.') {
-        stringBuilder.DeleteCharAt(stringBuilder.size() - 1);
+        stringBuilder.removeCharAt(stringBuilder.size() - 1);
     }
     if (stringBuilder.size() > 0 && stringBuilder.charAt(0) == '.') {
-        stringBuilder.DeleteCharAt(0);
+        stringBuilder.removeCharAt(0);
     }
-    return stringBuilder.ToString();
+    return stringBuilder.toString();
 }
 

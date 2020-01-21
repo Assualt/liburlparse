@@ -1,5 +1,5 @@
 #include "pathnormalizer.h"
-std::string &PathNormalizer::normalizePath(string &path) {
+std::string &PathNormalizer::normalizePath(std::string &path) {
     if (path.empty()) {
         return path;
     }
@@ -9,8 +9,8 @@ std::string &PathNormalizer::normalizePath(string &path) {
     return path;
 }
 
-std::string PathNormalizer::sanitizeDotsAndSlashes(const string &path) {
-    StringBuilder<char> stringBuilder(path);
+std::string PathNormalizer::sanitizeDotsAndSlashes(const std::string &path) {
+    StringBuilder stringBuilder(path);
     stack<int> slashIndexStack;
 
     int index = 0;
@@ -37,7 +37,7 @@ std::string PathNormalizer::sanitizeDotsAndSlashes(const string &path) {
                             slashIndexStack.pop();
                         }
                         int startIndex = endOfPath ? index + 1 : index;
-                        stringBuilder.Delete(startIndex + 1, endIndex);
+                        stringBuilder.remove(startIndex + 1, endIndex);
                     }
                 } else if (
                         ((index < (int)stringBuilder.size() - 2) &&
@@ -46,21 +46,20 @@ std::string PathNormalizer::sanitizeDotsAndSlashes(const string &path) {
                     bool endOfPath = index == (int)stringBuilder.size() - 2;
                     slashIndexStack.pop();
                     int startIndex = endOfPath ? index + 1 : index;
-                    stringBuilder.Delete(
-                            startIndex, index + 2);  // "/./" -> "/"
+                    stringBuilder.remove(startIndex, index + 2);  // "/./" -> "/"
                     index--;  // backtrack so we can detect if this / is part of
                               // another replacement
                 }
             } else if (stringBuilder.charAt(index + 1) == '/') {
                 slashIndexStack.pop();
-                stringBuilder.DeleteCharAt(index);
+                stringBuilder.removeCharAt(index);
                 index--;
             }
         }
         index++;
     }
     if (stringBuilder.size() == 0) {
-        stringBuilder.Append("/");  // Every path has at least a slash
+        stringBuilder.append("/");  // Every path has at least a slash
     }
-    return stringBuilder.ToString();
+    return stringBuilder.toString();
 }

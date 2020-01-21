@@ -7,7 +7,7 @@ std::vector<std::string> HostNormalizer::splitbyDot(const std::string &src, cons
         ret.push_back(src);
         return ret;
     }
-    string temp;
+    std::string temp;
     for(size_t i = 0 ; i < src.size(); ++i){
         if(src[i] == c){        
             ret.push_back(temp);
@@ -39,13 +39,13 @@ std::vector<std::string> HostNormalizer::splitbyDot(const std::string &src, cons
     return rcpy;
 }
 
-HostNormalizer::HostNormalizer(const string &host) : _host(host),_useIpv6Decoded(false),_useIpv4Decoded(false) {
+HostNormalizer::HostNormalizer(const std::string &host) : _host(host),_useIpv6Decoded(false),_useIpv4Decoded(false) {
     normalizeHost();
 }
 void HostNormalizer::normalizeHost() {
     if (_host.empty())
         return;
-    string host;
+    std::string host;
     try {
         //remove the high unicode characters
         for(size_t i = 0 ; i < _host.size(); ++i){
@@ -87,17 +87,17 @@ void HostNormalizer::normalizeHost() {
     }
 
     host = UrlUtil::removeExtraDots(host);
-    string temp = UrlUtil::encode(host);
+    std::string temp = UrlUtil::encode(host);
     _normalizedHost = StringUtils::replaceAlls(temp, "\\x", "%");
 }
 
-vector<ubyte> &HostNormalizer::tryDecodeHostToIp(vector<ubyte> &bytes,const string &host) {
+vector<ubyte> &HostNormalizer::tryDecodeHostToIp(vector<ubyte> &bytes,const std::string &host) {
     bool validEmpty = true;
     if (StringUtils::startsWith(host,"[") && StringUtils::endsWith(host,"]"))
         return tryDecodeHostToIPv6(bytes, host);
     return tryDecodeHostToIPv4(bytes, host,validEmpty);
 }
-vector<ubyte> &HostNormalizer::tryDecodeHostToIPv4(std::vector<ubyte> &bytes,const string &host, bool &validEmpty) {
+vector<ubyte> &HostNormalizer::tryDecodeHostToIPv4(std::vector<ubyte> &bytes,const std::string &host, bool &validEmpty) {
     std::vector<std::string> parts;
     CharUtils::splitByDot(parts, host); //use . or %2e to split the host parts
     // vector<byte> bytes;
@@ -105,7 +105,7 @@ vector<ubyte> &HostNormalizer::tryDecodeHostToIPv4(std::vector<ubyte> &bytes,con
     if (numParts != 4 && numParts != 1) {
         return bytes;
     }
-    string parsedNum;
+    std::string parsedNum;
     int base;
     for (size_t i = 0; i < parts.size(); i++) {
         if (StringUtils::startsWith(parts[i], "0x")) {  // hex
@@ -149,16 +149,16 @@ vector<ubyte> &HostNormalizer::tryDecodeHostToIPv4(std::vector<ubyte> &bytes,con
     return bytes;
 }
 
-vector<ubyte> &HostNormalizer::tryDecodeHostToIPv6(std::vector<ubyte> &bytes,const string &host) {
+vector<ubyte> &HostNormalizer::tryDecodeHostToIPv6(std::vector<ubyte> &bytes,const std::string &host) {
     std::string ip = host.substr(1, host.length() - 2);
     std::vector<std::string> parts = HostNormalizer::splitbyDot(ip, ':', -1);
     if(parts.size() < 3){
         return bytes;
     }
     //Check for embedded ipv4 address
-    string lastPart = parts[parts.size()-1];
+    std::string lastPart = parts[parts.size()-1];
     int zoneIndexStart = lastPart.rfind("%");
-    string lastPartWithoutZoneIndex = zoneIndexStart == -1 ? lastPart : lastPart.substr(0, zoneIndexStart);
+    std::string lastPartWithoutZoneIndex = zoneIndexStart == -1 ? lastPart : lastPart.substr(0, zoneIndexStart);
     std::vector<ubyte> ipv4Address(16,0);
     bool validEmpty = true;
     if(!isHexSection(lastPartWithoutZoneIndex)){
@@ -198,7 +198,7 @@ vector<ubyte> &HostNormalizer::tryDecodeHostToIPv6(std::vector<ubyte> &bytes,con
     return bytes;
 }
 
-bool HostNormalizer::isHexSection(string &section) {
+bool HostNormalizer::isHexSection(const std::string &section) {
 	for (size_t i = 0; i < section.size(); i++) {
 		if (!CharUtils::isHex(section[i])) {
 			return false;
@@ -217,6 +217,6 @@ vector<ubyte> HostNormalizer::getBytes() {
     return _bytes;
 }
 
-string HostNormalizer::getNormalizedHost() {
+std::string HostNormalizer::getNormalizedHost() {
     return _normalizedHost;
 }

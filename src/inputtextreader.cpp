@@ -1,19 +1,16 @@
 #include "inputtextreader.h"
+
+
+
+int InputTextReader::MINIMUM_BACKTRACK_LENGTH = 20;
+int InputTextReader::MAX_BACKTRACK_MULTIPLIER = 10;
+
 /**
  * Creates a new instance of the InputTextReader using the content to read.
  * @param content The content to read.
  */
-InputTextReader::InputTextReader() :
-        _index(0),
-        _backtracked(0),
-        MINIMUM_BACKTRACK_LENGTH(20),
-        MAX_BACKTRACK_MULTIPLIER(10) {}
-InputTextReader::InputTextReader(const string &content) :
-        _content(content),
-        _index(0),
-        _backtracked(0),
-        MINIMUM_BACKTRACK_LENGTH(20),
-        MAX_BACKTRACK_MULTIPLIER(10) {}
+InputTextReader::InputTextReader() : _index(0), _backtracked(0){}
+InputTextReader::InputTextReader(const std::string &content) : _content(content), _index(0),_backtracked(0){}
 /**
  * Reads a single char from the content stream and increments the index.
  * @return The next available character.
@@ -27,8 +24,8 @@ char InputTextReader::read() {
  * incrementing the current index.
  * @param numberChars The number of chars to peek.
  */
-string InputTextReader::peek(int numberChars) {
-    return string(_content, _index, numberChars);
+std::string InputTextReader::peek(int numberChars) {
+    return std::string(_content, _index, numberChars);
 }
 /**
  * Gets the character in the array offset by the current index.
@@ -38,13 +35,8 @@ string InputTextReader::peek(int numberChars) {
 char InputTextReader::peekChar(int offset) {
     if (!canReadChars(offset)) {
         // throw std::overflow_error();
-        Log().log()
-                .setLevel(LOG_WARN_LEVEL)
-                .format("Array is out of index. [at FILE:%s FUNC:%s LINE:%d]",
-                        __FILE__,
-                        __FUNCTION__,
-                        __LINE__)
-                .toFile();
+        Log().log().setLevel(LOG_WARN_LEVEL).format("Array is out of index. [at FILE:%s FUNC:%s LINE:%d]",__FILE__, __FUNCTION__, __LINE__).toFile();
+        return ' ';
     }
     return _content[_index + offset];
 }
@@ -107,21 +99,13 @@ void InputTextReader::checkBacktrackLoop(int backtrackLength) {
         if (start + backtrackLength > (int)_content.size()) {
             backtrackLength = (int)_content.size() - start;
         }
-        string badText = string(_content, start, backtrackLength);
+        std::string badText = string(_content, start, backtrackLength);
         // throw new NegativeArraySizeException("Backtracked max amount of
         // characters. Endless loop detected. Bad Text: '"+ badText + "'");
         // Log().log().setLevel(LOG_ERR_LEVEL).format("Backtracked max amount of
         // characters. Endless loop detected. Bad Text: %s. [at FILE:%s FUNC:%s
         // LINE:%d]",badText, __FILE__, __FUNCTION__, __LINE__).toFile();
-        Log().log()
-                .setLevel(LOG_ERR_LEVEL)
-                .format("Backtracked max amount of characters. Endless loop "
-                        "detected. Bad Text: %s  [at FILE:%s FUNC:%s LINE:%d]",
-                        badText.c_str(),
-                        __FILE__,
-                        __FUNCTION__,
-                        __LINE__)
-                .toFile();
+        Log().log().setLevel(LOG_ERR_LEVEL).format("Backtracked max amount of characters. Endless loop detected. Bad Text: %s  [at FILE:%s FUNC:%s LINE:%d]",badText.c_str(),__FILE__,__FUNCTION__,__LINE__).toFile();
     }
 }
 void InputTextReader::setPosition(int index) {

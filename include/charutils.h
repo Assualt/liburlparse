@@ -1,12 +1,6 @@
-/*
-        Copyright 2018 tsun. All rights reserved.
-        Date: 2018/7/27.
-*/
-
 #ifndef _CHARUTILS_H_
 #define _CHARUTILS_H_
 
-#include <cstring>
 #include <string.h>
 #include <iostream>
 #include <list>
@@ -40,7 +34,7 @@ public:
      * @param input the input string which can be split by dot
      * @return an arry of Strings that is a patition of the original string by dot
      */
-    static void splitByDot(std::vector<std::string> &splitList,const string &input);
+    static void splitByDot(std::vector<std::string> &splitList,const std::string &input);
     
     static bool JudgeValidRadixString(const std::string &src, int radix = 10);
 };

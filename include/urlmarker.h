@@ -11,14 +11,13 @@ class UrlMarker {
 public:
     UrlMarker();
     // Url createUrl();
-    void setOriginalUrl(const string &originalUrl);
-    string getOriginalUrl();
+    void setOriginalUrl(const std::string &originalUrl);
+    std::string getOriginalUrl() const;
     void setIndex(UrlPart urlPart, int index);
     int indexOf(UrlPart urlPart);
     void unsetIndex(UrlPart urlPart);
-
 private:
-    string _originalUrl;
+    std::string _originalUrl;
     int _schemeIndex;
     int _usernamePasswordIndex;
     int _hostIndex;

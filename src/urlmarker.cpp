@@ -10,10 +10,10 @@ UrlMarker::UrlMarker() :
         _queryIndex(-1),
         _fragmentIndex(-1) {}
 
-void UrlMarker::setOriginalUrl(const string &originalUrl) {
+void UrlMarker::setOriginalUrl(const std::string &originalUrl) {
     _originalUrl = originalUrl;
 }
-string UrlMarker::getOriginalUrl() {
+std::string UrlMarker::getOriginalUrl() const {
     return _originalUrl;
 }
 void UrlMarker::setIndex(UrlPart urlPart, int index) {

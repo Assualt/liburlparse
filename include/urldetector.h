@@ -60,13 +60,13 @@ public:
      * @param content The content to search inside of.
      * @param options The UrlDetectorOptions to use when detecting the content.
      */
-    UrlDetector(const string &content, UrlDetectorOptions_T options);
+    UrlDetector(const std::string &content, UrlDetectorOptions_T options);
     UrlDetector();
     ~UrlDetector();
 
     /*set 方法*/
     void setOptions(UrlDetectorOptions_T options);
-    void setContent(const string &content);
+    void setContent(const std::string &content);
 
     // virtual ~UrlDetector();
     /**
@@ -80,22 +80,21 @@ public:
      * Detects the urls and returns a list of detected url strings.
      * @return A list with detected urls.
      */
-    const list<Url> &detect();
+    const std::list<Url> &detect();
 
     // CharacterHandler 纯虚函数 需要加上virtual 关键字
     virtual void addCharacter(char chars);
 
-private:
-    /**
-     * Contains the string to check for and remove if the scheme is this.
-     */
-    string HTML_MAILTO;
-
+public: //static const 
     /**
      * Valid protocol schemes.
      */
-    set<string> VALID_SCHEMES;
-
+    static std::set<std::string> VALID_SCHEMES;
+    /**
+     * Contains the string to check for and remove if the scheme is this.
+     */
+    static std::string HTML_MAILTO;
+private:
     /**
      * Stores options for detection.
      */
@@ -109,7 +108,7 @@ private:
     /**
      * Buffer to store temporary urls inside of.
      */
-    StringBuilder<char> _buffer;
+    StringBuilder _buffer;
     /**
      * Has the scheme been found in this iteration?
      */
@@ -136,17 +135,17 @@ private:
     /**
      * Stores the found urls.
      */
-    list<Url> _urlList;
+    std::list<Url> _urlList;
     /**
      * Stores the urls to avoid the same
      */ 
-    set<string> _urlSet;
+    std::set<std::string> _urlSet;
 
     /**
      * Keeps the count of special characters used to match quotes and different
      * types of brackets.
      */
-    map<char, int> _characterMatch;
+    std::map<char, int> _characterMatch;
 
     /**
      * Keeps track of certain indices to create a Url object.
@@ -213,7 +212,7 @@ private:
      * @param current The current string used.
      * @return Whether the domain is valid or not.
      */
-    bool readDomainName(string &current);
+    bool readDomainName(std::string &current);
 
     /**
      * Reads the fragments which is the part of the url starting with #

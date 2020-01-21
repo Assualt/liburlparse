@@ -1,7 +1,7 @@
 CC 	= g++
 CXX = gcc
 FLAG = -Wno-literal-suffix -Wno-deprecated -D_POSIX_PTHREAD_SEMANTICS -D_POSIX_THREAD_PRIORITY_SCHEDULING
-CFLAGS= -O2 $(FLAG)  -g -Wall -I../include  $(SYSFLAGS) -std=c++11 -fprofile-arcs -ftest-coverage 
+CFLAGS=  $(FLAG)  -g -Wall -I../include  $(SYSFLAGS) -std=c++11 # -fprofile-arcs -ftest-coverage 
 
 #VPATH 指定cpp文件的路径
 VPATH = ../src:../Test
@@ -43,6 +43,8 @@ testurl:testUrl.o
 	$(CC) $(CFLAGS) -o uniturl testUrl.o -L/usr/local/lib -lgtest -pthread -L./ -lurlparse 
 testnormalizedurl:testNormalizedUrl.o
 	$(CC) $(CFLAGS) -o unitnormalizedurl testNormalizedUrl.o -L/usr/local/lib -lgtest -pthread -L./ -lurlparse 
+testurlutil:testurlutil.o
+	$(CC) $(CFLAGS) -o uniturlutil testurlutil.o -L/usr/local/lib -lgtest -pthread -L./ -lurlparse
 
 # file reader to parse url
 urlclient:urlparseclient.o

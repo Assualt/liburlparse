@@ -38,8 +38,8 @@ bool CharUtils::isDot(char a) {
 bool CharUtils::isWhiteSpace(char a) {
     return (a == '\n' || a == '\t' || a == '\r' || a == ' ');
 }
-void CharUtils::splitByDot(std::vector<std::string> &splitList,const string &input) {
-    StringBuilder<char> section;
+void CharUtils::splitByDot(std::vector<std::string> &splitList,const std::string &input) {
+    StringBuilder section;
     if (input.empty()) {
         return;
     }
@@ -47,23 +47,23 @@ void CharUtils::splitByDot(std::vector<std::string> &splitList,const string &inp
     while (!reader.eof()) {
         char current = reader.read();
         if (isDot(current)) {
-            splitList.push_back(section.ToString());
-            section.setlength(0);
+            splitList.push_back(section.toString());
+            section.setLength(0);
         } else if (current == '%' && reader.canReadChars(2) && StringUtils::stricmp(reader.peek(2).c_str(), (const char *)"2e")) {
             reader.read();
             reader.read();  // advance past the 2e
-            splitList.push_back(section.ToString());
-            section.setlength(0);
+            splitList.push_back(section.toString());
+            section.setLength(0);
         } else {
-            section.Append(current);  //加到尾部
+            section.append(current);  //加到尾部
         }
     }
-    splitList.push_back(section.ToString());  //加到尾部
+    splitList.push_back(section.toString());  //加到尾部
 }
 
 //radix should between [2,16)
 bool CharUtils::JudgeValidRadixString(const std::string &src, int radix){
-    string temp = src;
+    std::string temp = src;
     std::transform(temp.begin(), temp.end(), temp.begin(), ::tolower);
     if(radix < 2 || radix> 16)
         return false; //invalid radix

@@ -13,7 +13,7 @@ public:
      * Creates a new instance of the InputTextReader using the content to read.
      * @param content The content to read.
      */
-    InputTextReader(const string &content);
+    InputTextReader(const std::string &content);
     /**
      * Reads a single char from the content stream and increments the index.
      * @return The next available character.
@@ -24,7 +24,7 @@ public:
      * incrementing the current index.
      * @param numberChars The number of chars to peek.
      */
-    string peek(int numberChars);
+    std::string peek(int numberChars);
     /**
      * Gets the character in the array offset by the current index.
      * @param offset The number of characters to offset.
@@ -68,7 +68,7 @@ private:
     /**
      * The content to read.
      */
-    string _content;
+     std::string _content;
     /**
      * The current position in the content we are looking at.
      */
@@ -78,19 +78,19 @@ private:
      * performance analysis.
      */
     int _backtracked;
-    /**
-     * When detecting for exceeding the backtrack limit, make sure the text is
-     * at least 20 characters.
-     */
-    int MINIMUM_BACKTRACK_LENGTH;
 
     void checkBacktrackLoop(int backtrackLength);
 
-protected:
+public:
     /**
      * The number of times something can be backtracked is this multiplier times
      * the length of the string.
      */
-    int MAX_BACKTRACK_MULTIPLIER;
+    static int MAX_BACKTRACK_MULTIPLIER;
+    /**
+     * When detecting for exceeding the backtrack limit, make sure the text is
+     * at least 20 characters.
+     */
+    static int MINIMUM_BACKTRACK_LENGTH;
 };
 #endif

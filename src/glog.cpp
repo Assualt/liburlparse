@@ -48,8 +48,8 @@ Log &Log::format(const std::string &fmt_str, ...) {
     _log_data = std::string(formatted.get());
     return *this;
 }
-const string Log::getLevel() {
-    string t;
+const std::string Log::getLevel() {
+    std::string t;
     switch (_level) {
     case LOG_DEBUG_LEVEL:
         t = "DEBUG";
@@ -67,9 +67,8 @@ const string Log::getLevel() {
     return t;
 }
 void Log::toFile() {
-    string log = _LibUrlParser + " " + _time + " [root - :" + this->getLevel() +
-            "] " + _log_data;
-    string filename = LOG_PATH + "." + _date;
+    std::string log = _LibUrlParser + " " + _time + " [root - :" + this->getLevel() + "] " + _log_data;
+    std::string filename = LOG_PATH + "." + _date;
     std::ofstream fout(filename, ios::app);
     fout << log << std::endl;
     fout.close();

@@ -74,7 +74,6 @@ public:
      * Gets the numeric value of the enum
      * @return The numeric value of the enum
      */
-
 private:
     /**
      * The numeric value.

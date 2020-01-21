@@ -5,20 +5,20 @@
 #include <cstring>
 #include <vector>
 
-#include "./urlutil.h"
-#include "./stringbuilder.h"
-#include "./stringutils.h"
-#include "./inetaddress.h"
+#include "urlutil.h"
+#include "stringbuilder.h"
+#include "stringutils.h"
+#include "inetaddress.h"
 
 class UrlUtil;
 #define ubyte unsigned char
 
 class HostNormalizer {
 public:
-    HostNormalizer(const string &host);
+    HostNormalizer(const std::string &host);
 
     vector<ubyte> getBytes();
-    string getNormalizedHost();
+    std::string getNormalizedHost();
 
 private:
     static const long MAX_NUMERIC_DOMAIN_VALUE = 4294967295L;
@@ -27,10 +27,10 @@ private:
     static const int MAX_IPV6_PART = 0xFFFF;
     static const int IPV4_MAPPED_IPV6_START_OFFSET = 12;
     static const int NUMBER_BYTES_IN_IPV4 = 4;
-    string _host;
+    std::string _host;
 
     vector<ubyte> _bytes;
-    string _normalizedHost;
+    std::string _normalizedHost;
     bool _useIpv6Decoded;
     bool _useIpv4Decoded;
 public:    
@@ -59,7 +59,7 @@ private:
      * Checks if the host is an ip address. Returns the byte representation of
      * it
      */
-    std::vector<ubyte> &tryDecodeHostToIp(std::vector<ubyte> &bytes,const string &host);
+    std::vector<ubyte> &tryDecodeHostToIp(std::vector<ubyte> &bytes,const std::string &host);
 
     /**
      * This covers cases like:
@@ -74,17 +74,17 @@ private:
      * if ipv4 was found, _bytes is set to the byte representation of the ipv4
      * address
      */
-    vector<ubyte> &tryDecodeHostToIPv4(std::vector<ubyte> &sbytes,const string &host, bool &validEmpty);
+    vector<ubyte> &tryDecodeHostToIPv4(std::vector<ubyte> &sbytes,const std::string &host, bool &validEmpty);
     /**
      * Recommendation for IPv6 Address Text Representation
      * http://tools.ietf.org/html/rfc5952
      *
      * if ipv6 was found, _bytes is set to the byte representation of the ipv6 address
      */
-    vector<ubyte> &tryDecodeHostToIPv6(std::vector<ubyte> &sbytes,const string &host);
+     vector<ubyte> &tryDecodeHostToIPv6(std::vector<ubyte> &sbytes,const std::string &host);
 
     std::vector<ubyte> sectionToTwoBytes(int section);
-    bool isHexSection(string &section);
+    bool isHexSection(const std::string &section);
 };
 
 #endif

@@ -1,42 +1,27 @@
 #include "domainnamereader.h"
 
 // DomainNameReader::DomainNameReader(InputTextReader reader,
-// StringBuilder<char> buffer, string current, UrlDetectorOptions_T
+// StringBuilder buffer, string current, UrlDetectorOptions_T
 // options,CharacterHandler *characterHandler)
-DomainNameReader::DomainNameReader(
-        InputTextReader &reader,
-        StringBuilder<char> &buffer,
-        const string &current,
-        UrlDetectorOptions_T &options) :
-        HEX_ENCODED_DOT("2e"),
-        _buffer(buffer),
-        _current(current),
-        _options(options),
-        _reader(reader),
-        _characterHandler(NULL) {
-    MAX_TOP_LEVEL_DOMAIN = 22;
-    MIN_TOP_LEVEL_DOMAIN = 2;
-    MAX_NUMERIC_DOMAIN_VALUE = 4294967295L;
-    MIN_NUMERIC_DOMAIN_VALUE = 16843008L;
-    MIN_IP_PART = 0;
-    MAX_IP_PART = 255;
-    INTERNATIONAL_CHAR_START = 192;
-    MAX_LABEL_LENGTH = 64;
-    MAX_NUMBER_LABELS = 127;
-    MAX_DOMAIN_LENGTH = 255;
-    // HEX_ENCODED_DOT = "2e";
-    _currentLabelLength = 0;
-    _topLevelLength = 0;
-    _startDomainName = 0;
-    _zoneIndex = false;
-    _seenCompleteBracketSet = false;
-    _numeric = false;
-    _seenBracket = false;
-    _dots = 0;
-    // _buffer = buffer;
-    // _current = current;
-    // _reader = reader;
-    // _options = options ;
+int DomainNameReader::MAX_TOP_LEVEL_DOMAIN = 22;
+int DomainNameReader::MIN_TOP_LEVEL_DOMAIN = 2;
+long DomainNameReader::MAX_NUMERIC_DOMAIN_VALUE = 4294967295L;
+long DomainNameReader::MIN_NUMERIC_DOMAIN_VALUE = 16843008L;
+int DomainNameReader::MIN_IP_PART = 0;
+int DomainNameReader::MAX_IP_PART = 255;
+int DomainNameReader::INTERNATIONAL_CHAR_START = 192;
+int DomainNameReader::MAX_LABEL_LENGTH = 64;
+int DomainNameReader::MAX_NUMBER_LABELS = 127;
+int DomainNameReader::MAX_DOMAIN_LENGTH = 255;
+std::string DomainNameReader::HEX_ENCODED_DOT = "2e";
+
+DomainNameReader::DomainNameReader(InputTextReader &reader,StringBuilder &buffer,const std::string &current,UrlDetectorOptions_T &options) :
+        _current(current),_options(options) ,
+        _dots(0), _currentLabelLength(0), _topLevelLength(0), _startDomainName(0),
+        _numeric(false), _seenBracket(false), _seenCompleteBracketSet(false), _zoneIndex(false) {
+    _reader = reader; 
+    _characterHandler = NULL;
+    StringBuilder::copyOf(buffer,_buffer);
 }
 ReaderNextState DomainNameReader::readCurrent() {
     if (!_current.empty()) {
@@ -65,10 +50,7 @@ ReaderNextState DomainNameReader::readCurrent() {
         // there.
         int newStart = 0;
 
-        // char *currArrays = new char[_current.size()];
-        // strcpy(currArrays,_current.c_str());
-        string currArray = _current.c_str();
-        // delete(currArrays);
+        std::string currArray = _current;
 
         int length = currArray.size();
 
@@ -154,7 +136,7 @@ ReaderNextState DomainNameReader::readCurrent() {
             // now after cutting if the buffer is just "." newStart > current
             // (last character in current is invalid)
             if (newStart >= (int)_current.size() ||
-                !strcmp(_buffer.ToString().c_str(), (const char *)".")) {
+                !strcmp(_buffer.toString().c_str(), (const char *)".")) {
                 // return ReaderNextState::InvalidDomainName;
                 return InvalidDomainName;
             }
@@ -199,13 +181,13 @@ ReaderNextState DomainNameReader::readDomainName() {
                 done = true;
             } else {
                 // append the "." to the domain name
-                _buffer.Append(curr);
+                _buffer.append(curr);
 
                 // if it was not a normal dot, then it is url encoded
                 // read the next two chars, which are the hex representation
                 if (!CharUtils::isDot(curr)) {
-                    _buffer.Append(_reader.read());
-                    _buffer.Append(_reader.read());
+                    _buffer.append(_reader.read());
+                    _buffer.append(_reader.read());
                 }
 
                 // increment the dots only if it's not part of the zone index
@@ -251,7 +233,7 @@ ReaderNextState DomainNameReader::readDomainName() {
                 break;
             }
             _numeric = false;
-            _buffer.Append(curr);
+            _buffer.append(curr);
         } else if (
                 CharUtils::isAlphaNumberic(curr) || curr == '-' ||
                 curr >= INTERNATIONAL_CHAR_START) {
@@ -269,14 +251,14 @@ ReaderNextState DomainNameReader::readDomainName() {
                     _numeric = false;
                 }
                 // append to the states.
-                _buffer.Append(curr);
+                _buffer.append(curr);
                 _currentLabelLength++;
                 _topLevelLength = _currentLabelLength;
             }
         } else if (curr == '[' && !_seenBracket) {
             _seenBracket = true;
             _numeric = false;
-            _buffer.Append(curr);
+            _buffer.append(curr);
         } else if (curr == '[' && _seenCompleteBracketSet) {  // Case where
                                                               // [::][ ...
             _reader.goBack();
@@ -286,9 +268,9 @@ ReaderNextState DomainNameReader::readDomainName() {
                 CharUtils::isHex(_reader.peekChar(0)) &&
                 CharUtils::isHex(_reader.peekChar(1))) {
             // append to the states.
-            _buffer.Append(curr);
-            _buffer.Append(_reader.read());
-            _buffer.Append(_reader.read());
+            _buffer.append(curr);
+            _buffer.append(_reader.read());
+            _buffer.append(_reader.read());
             _currentLabelLength += 3;
             _topLevelLength = _currentLabelLength;
         } else {
@@ -304,34 +286,29 @@ ReaderNextState DomainNameReader::readDomainName() {
     // Check the domain name to make sure its ok.
     return checkDomainNameValid(ValidDomainName, ' ');
 }
-void DomainNameReader::setBuffer(StringBuilder<char> &builder) {
+void DomainNameReader::setBuffer(StringBuilder &builder) {
     std::string temp;
     if(builder.size() <_buffer.size())
         temp = _buffer.substr(builder.size());
-    builder.Append(temp);
+    builder.append(temp);
     // for (size_t i = builder.size(); i < _buffer.size(); i++)
     // {
-    // 	builder.Append(_buffer.charAt(i));
+    // 	builder.append(_buffer.charAt(i));
     // }
 }
 ReaderNextState DomainNameReader::checkDomainNameValid(
         ReaderNextState validState,
         char lastChar) {
     bool valid = false;
-    int lastDotLength = _buffer.size() > 3 &&
-                    StringUtils::stricmp(
-                                _buffer.substr(_buffer.size() - 3).c_str(),
-                                ("%" + HEX_ENCODED_DOT).c_str())
-            ? 3
-            : 1;
+    int lastDotLength = _buffer.size() > 3 && StringUtils::stricmp( _buffer.substr(_buffer.size() - 3).c_str(),("%" + HEX_ENCODED_DOT).c_str())? 3: 1;
     int domainLength = _buffer.size() - _startDomainName +
             (_currentLabelLength > 0 ? lastDotLength : 0);
     int dotCount = _dots + (_currentLabelLength > 0 ? 1 : 0);
     if (domainLength >= MAX_DOMAIN_LENGTH || (dotCount > MAX_NUMBER_LABELS)) {
         valid = false;
     } else if (_numeric) {
-        string temp = _buffer.substr(_startDomainName);
-        string testDomain = StringUtils::toLowerCase(temp);
+        std::string temp = _buffer.substr(_startDomainName);
+        std::string testDomain = StringUtils::toLowerCase(temp);
         //! ipv4 must be 4 parts
         //! if dotCount > 4 is not valid and has no dotCount
         //! like 1.1.3 or 1.2.3.4.5
@@ -340,13 +317,10 @@ ReaderNextState DomainNameReader::checkDomainNameValid(
         else
             valid = isValidIpv4(testDomain);
     } else if (_seenBracket) {
-        string temp = _buffer.substr(_startDomainName);
-        string testDomain = StringUtils::toLowerCase(temp);
+        std::string temp = _buffer.substr(_startDomainName);
+        std::string testDomain = StringUtils::toLowerCase(temp);
         valid = isValidIpv6(testDomain);
-    } else if (
-            (_currentLabelLength > 0 && _dots >= 1) ||
-            (_dots >= 2 && _currentLabelLength == 0) ||
-            (_options.hasFlag(ALLOW_SINGLE_LEVEL_DOMAIN) && _dots == 0)) {
+    } else if ((_currentLabelLength > 0 && _dots >= 1) || (_dots >= 2 && _currentLabelLength == 0) || (_options.hasFlag(ALLOW_SINGLE_LEVEL_DOMAIN) && _dots == 0)) {
         int topStart = _buffer.size() - _topLevelLength;
         if (_currentLabelLength == 0) {
             topStart--;
@@ -354,23 +328,17 @@ ReaderNextState DomainNameReader::checkDomainNameValid(
         topStart = StringUtils::max(topStart, 0);
 
         // get the first 4 characters of the top level domain
-        string topLevelStart = _buffer.substr(
-                topStart,
-                topStart + StringUtils::min(4, _buffer.size() - topStart));
+        std::string topLevelStart = _buffer.substr(topStart,topStart + StringUtils::min(4, _buffer.size() - topStart));
 
         // There is no size restriction if the top level domain is international
         // (starts with "xn--")
-        valid =
-                ((StringUtils::stricmp(
-                          topLevelStart.c_str(), (const char *)"xn--") ||
-                  (_topLevelLength >= MIN_TOP_LEVEL_DOMAIN &&
-                   _topLevelLength <= MAX_TOP_LEVEL_DOMAIN)));
+        valid = ((StringUtils::stricmp( topLevelStart.c_str(), (const char *)"xn--") || (_topLevelLength >= MIN_TOP_LEVEL_DOMAIN && _topLevelLength <= MAX_TOP_LEVEL_DOMAIN)));
     }
     if (valid) {
         // if it's valid, add the last character (if specified) and return the
         // valid state.
         if (lastChar != ' ') {
-            _buffer.Append(lastChar);
+            _buffer.append(lastChar);
         }
 
         return validState;
@@ -384,7 +352,7 @@ ReaderNextState DomainNameReader::checkDomainNameValid(
     return InvalidDomainName;
 }
 
-bool DomainNameReader::isValidIpv4(string &testDomain) {
+bool DomainNameReader::isValidIpv4(const std::string &testDomain) {
     bool valid = false;
     std::vector<std::string>::iterator parts_end;
     std::vector<std::string>::iterator parts_start;
@@ -407,14 +375,7 @@ bool DomainNameReader::isValidIpv4(string &testDomain) {
                         (value >= MIN_NUMERIC_DOMAIN_VALUE);
             } catch (int) {
                 //日志输出
-                Log().log()
-                        .setLevel(LOG_DEBUG_LEVEL)
-                        .format("This testDomain can't covert to Int.[at "
-                                "FILE:%s FUNC:%s LINE:%d]",
-                                __FILE__,
-                                __FUNCTION__,
-                                __LINE__)
-                        .toFile();
+                Log().log().setLevel(LOG_DEBUG_LEVEL).format("This testDomain can't covert to Int.[at FILE:%s FUNC:%s LINE:%d]",__FILE__,__FUNCTION__,__LINE__).toFile();
                 valid = false;
             }
         } else if (_dots == 3 || _dots == 4) {
@@ -426,9 +387,9 @@ bool DomainNameReader::isValidIpv4(string &testDomain) {
             parts_end = parts.end();
             parts_start = parts.begin();
             for (iter = parts_start; iter != parts_end; ++iter) {
-                string part = *iter;
+                std::string part = *iter;
                 if (part.size() > 0) {
-                    string parserNum;
+                    std::string parserNum;
                     int base;
                     if (part.size() > 2 && part[0] == '0' && part[1] == 'x') {
                         // dotted hex
@@ -451,14 +412,7 @@ bool DomainNameReader::isValidIpv4(string &testDomain) {
                             section = strtol(parserNum.c_str(), NULL, base);
                         } catch (int) {
                             //日志输出
-                            Log().log()
-                                    .setLevel(LOG_DEBUG_LEVEL)
-                                    .format("This testDomain can't covert to "
-                                            "Int.[at FILE:%s FUNC:%s LINE:%d]",
-                                            __FILE__,
-                                            __FUNCTION__,
-                                            __LINE__)
-                                    .toFile();
+                            Log().log().setLevel(LOG_DEBUG_LEVEL).format("This testDomain can't covert to Int.[at FILE:%s FUNC:%s LINE:%d]",__FILE__,__FUNCTION__, __LINE__).toFile();
                             return false;
                         }
                     }
@@ -477,10 +431,10 @@ bool DomainNameReader::isValidIpv4(string &testDomain) {
     return valid;
 }
 
-bool DomainNameReader::isValidIpv6(string &testDomain) {
+bool DomainNameReader::isValidIpv6(const std::string &testDomain) {
     // char *domainArrays = new char[testDomain.size()];
     // strcpy(domainArrays,testDomain.c_str());
-    string domainArray = testDomain.c_str();
+    std::string domainArray = testDomain;
     // delete(domainArrays);
     if ((domainArray.size() < 3) ||
         (domainArray[domainArray.size() - 1] != ']') ||
@@ -493,7 +447,7 @@ bool DomainNameReader::isValidIpv6(string &testDomain) {
     char prevChar = 0;
 
     // used to check ipv4 addresses at the end of ipv6 addresses.
-    StringBuilder<char> lastSection;
+    StringBuilder lastSection;
     bool hexSection = true;
 
     // If we see a '%'. Example: http://[::ffff:0xC0.0x00.0x02.0xEB%251]
@@ -503,7 +457,7 @@ bool DomainNameReader::isValidIpv6(string &testDomain) {
     // not allowed to have more than one.
     bool doubleColonFlag = false;
 
-    for (int index = 0; index < (int)domainArray.size(); index++) {
+    for (size_t index = 0; index < domainArray.size(); index++) {
         switch (domainArray[index]) {
         case '[':  // found beginning of ipv6 address
             break;
@@ -514,7 +468,7 @@ bool DomainNameReader::isValidIpv6(string &testDomain) {
                 if (domainArray.size() - index >= 2 &&
                     domainArray[index + 1] == '2' &&
                     domainArray[index + 2] == 'e') {
-                    lastSection.Append("%2e");
+                    lastSection.append("%2e");
                     index += 2;
                     hexSection = false;
                     break;
@@ -522,7 +476,7 @@ bool DomainNameReader::isValidIpv6(string &testDomain) {
                 zoneIndiceMode = true;
             }
             if (!hexSection && (!zoneIndiceMode || domainArray[index] == '%')) {
-                string temp = lastSection.ToString();
+                std::string temp = lastSection.toString();
                 if (isValidIpv4(temp)) {
                     numSections++;  // ipv4 takes up 2 sections.
                 } else {
@@ -547,8 +501,7 @@ bool DomainNameReader::isValidIpv6(string &testDomain) {
             hexSection = true;  // reset hex to true
             hexDigits = 0;      // reset count for hex digits
             numSections++;
-//            lastSection.Delete(0, lastSection.size());  // clear last section
-            lastSection.setlength(0);
+            lastSection.setLength(0); // clear last section
             break;
         default:
             if (zoneIndiceMode) {
@@ -556,7 +509,7 @@ bool DomainNameReader::isValidIpv6(string &testDomain) {
                     return false;
                 }
             } else {
-                lastSection.Append(domainArray[index]);  // collect our possible
+                lastSection.append(domainArray[index]);  // collect our possible
                                                          // ipv4 address
                 if (hexSection && CharUtils::isHex(domainArray[index])) {
                     hexDigits++;

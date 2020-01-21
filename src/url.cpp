@@ -1,47 +1,35 @@
 #include "url.h"
 
+
+std::string Url::DEFAULT_SCHEME = "http";
+std::map<std::string,int> Url::SCHEME_PORT_MAP = {
+    {"http",80},
+    {"https",443},
+    {"ftp",21}
+};
+
+
 Url::Url(UrlMarker &urlMarker) : _port(0) {
-    SCHEME_PORT_MAP.insert(make_pair("http", 80));
-    SCHEME_PORT_MAP.insert(make_pair("https", 443));
-    SCHEME_PORT_MAP.insert(make_pair("ftp", 21));
-    DEFAULT_SCHEME = "http";
     _urlMarker = urlMarker;
     _originalUrl = urlMarker.getOriginalUrl();
 }
 Url::Url() {}
 Url::~Url() {}
-Url Url::create(string &url) {
-    string format =
-            StringUtils::replaceAlls(StringUtils::trim(url), " ", "%20");
-    string formattedString = UrlUtil::removeSpecialSpaces(format);
+Url Url::create(std::string &url) {
+    std::string format = StringUtils::replaceAlls(StringUtils::trim(url), " ", "%20");
+    std::string formattedString = UrlUtil::removeSpecialSpaces(format);
     UrlDetectorOptions_T test(ALLOW_SINGLE_LEVEL_DOMAIN);
-    list<Url> urls = UrlDetector(formattedString, test).detect();
+    std::list<Url> urls = UrlDetector(formattedString, test).detect();
     if (urls.size() == 1) {
         return urls.front();
     } else if (urls.size() == 0) {
         // std::cerr<<"We couldn't find any urls in string: " + url<<std::endl;
-        Log().log()
-                .setLevel(LOG_DEBUG_LEVEL)
-                .format("We couldn't find any urls in string. [at FILE:%s "
-                        "FUNC:%s LINE:%d]",
-                        __FILE__,
-                        __FUNCTION__,
-                        __LINE__)
-                .toFile();
+        Log().log().setLevel(LOG_DEBUG_LEVEL).format("We couldn't find any urls in string. [at FILE:%s FUNC:%s LINE:%d]",__FILE__, __FUNCTION__,__LINE__) .toFile();
         return Url();  //
     } else {
         // std::cerr<<"We found more than one url in string: " + url<<std::endl;
-        //��־���
-        Log().log()
-                .setLevel(LOG_DEBUG_LEVEL)
-                .format("We found more than one url in such string. [at "
-                        "FILE:%s FUNC:%s LINE:%d]",
-                        __FILE__,
-                        __FUNCTION__,
-                        __LINE__)
-                .toFile();
-
-        return Url();  //
+        Log().log().setLevel(LOG_DEBUG_LEVEL).format("We found more than one url in such string. [at FILE:%s FUNC:%s LINE:%d]",__FILE__,__FUNCTION__, __LINE__).toFile();
+        return Url();  
     }
 }
 
@@ -49,44 +37,44 @@ NormalizedUrl Url::normalize() {
     return NormalizedUrl(_urlMarker);
 }
 
-string Url::toString() {
+std::string Url::toString() {
     return getFullUrl();
 }
-string Url::getFullUrl() {
-    string fragement = getFragment();
+std::string Url::getFullUrl() {
+    std::string fragement = getFragment();
     return getFullUrlWithoutFragment() + StringUtils::defaultstring(fragement);
 }
 
-string Url::getFullUrlWithoutFragment() {
-    StringBuilder<char> url;
+std::string Url::getFullUrlWithoutFragment() {
+    StringBuilder url;
     if (!getScheme().empty()) {
-        url.Append(getScheme());
-        url.Append(":");
+        url.append(getScheme());
+        url.append(":");
     }
-    url.Append("//");
+    url.append("//");
     if (!getUsername().empty()) {
-        url.Append(getUsername());
+        url.append(getUsername());
         if (!getPassword().empty()) {
-            url.Append(":");
-            url.Append(getPassword());
+            url.append(":");
+            url.append(getPassword());
         }
-        url.Append("@");
+        url.append("@");
     }
 
-    url.Append(getHost());
+    url.append(getHost());
     if (getPort() > 0 && getPort() != SCHEME_PORT_MAP[getScheme()]) {
-        url.Append(":");
-        url.Append(getPort());
+        url.append(":");
+        url.append(getPort());
     }
 
-    url.Append(getPath());
-    url.Append(getQuery());
+    url.append(getPath());
+    url.append(getQuery());
 
-    return url.ToString();
+    return url.toString();
 }
 
-string Url::getScheme() {
-    string regex1 = "//";
+std::string Url::getScheme() {
+    std::string regex1 = "//";
     if (_scheme.empty()) {
         if (exists(URL_SCHEME)) {
             _scheme = getPart(URL_SCHEME);
@@ -101,21 +89,21 @@ string Url::getScheme() {
     return StringUtils::defaultstring(_scheme);
 }
 
-string Url::getUsername() {
+std::string Url::getUsername() {
     if (_username.empty()) {
         populateUsernamePassword();
     }
     return StringUtils::defaultstring(_username);
 }
 
-string Url::getPassword() {
+std::string Url::getPassword() {
     if (_password.empty()) {
         populateUsernamePassword();
     }
     return StringUtils::defaultstring(_password);
 }
 
-string Url::getHost() {
+std::string Url::getHost() {
     if (_host.empty()) {
         _host = getPart(URL_HOST);
         if (exists(URL_PORT)) {
@@ -127,10 +115,12 @@ string Url::getHost() {
 
 int Url::getPort() {
     if (_port == 0) {
-        string portString = getPart(URL_PORT);
+        std::string portString = getPart(URL_PORT);
         if (!portString.empty()) {
             try {
                 _port = atoi(portString.c_str());
+                if(_port < 0 && _port > 65535) //valid port should be range(0,65535)
+                    _port = -1;
             } catch (int) {
                 // std::cout<< "NumberFormatException in url.cpp 136 line" <<
                 // std::endl;
@@ -147,43 +137,38 @@ int Url::getPort() {
     return _port;
 }
 
-string Url::getPath() {
+std::string Url::getPath() {
     if (_path.empty()) {
         _path = exists(URL_PATH) ? getPart(URL_PATH) : "/";
     }
     return _path;
 }
 
-string Url::getQuery() {
+std::string Url::getQuery() {
     if (_query.empty()) {
         _query = getPart(URL_QUERY);
     }
     return StringUtils::defaultstring(_query);
 }
 
-string Url::getFragment() {
+std::string Url::getFragment() {
     if (_fragment.empty()) {
         _fragment = getPart(URL_FRAGMENT);
     }
     return StringUtils::defaultstring(_fragment);
 }
 
-vector<ubyte> Url::getHostBytes() {
+vector<ubyte> Url::getHostBytes() const{ 
     return vector<ubyte>();
 }
-string Url::getOriginalUrl() {
+std::string Url::getOriginalUrl() const{
     return _originalUrl;
 }
 void Url::populateUsernamePassword() {
     if (exists(URL_USERNAME_PASSWORD)) {
-        string usernamepassword = getPart(URL_USERNAME_PASSWORD);
-        // string temp = usernamepassword.substr(0,usernamepassword.size()-1);
+        std::string usernamepassword = getPart(URL_USERNAME_PASSWORD);
         std::vector<std::string> usernamePasswordParts;
-        // string spliter = ":";
-        StringUtils::split(
-                usernamePasswordParts,
-                usernamepassword.substr(0, usernamepassword.size() - 1),
-                ":");  //
+        StringUtils::split(usernamePasswordParts,usernamepassword.substr(0, usernamepassword.size() - 1),":");  //
         if (usernamePasswordParts.size() == 1) {
             _username = usernamePasswordParts[0];
         } else if (usernamePasswordParts.size() == 2) {
@@ -212,7 +197,7 @@ UrlPart Url::nextExistingPart(UrlPart urlPart) {
 /**
  * @param part The part that we want. Ex: host, path
  */
-string Url::getPart(UrlPart part) {
+std::string Url::getPart(UrlPart part) {
     if (!exists(part)) {
         return string();
     }
@@ -220,28 +205,26 @@ string Url::getPart(UrlPart part) {
     if (nextPart == 0) {
         return _originalUrl.substr(_urlMarker.indexOf(part));
     }
-    return _originalUrl.substr(
-            _urlMarker.indexOf(part),
-            _urlMarker.indexOf(nextPart) - _urlMarker.indexOf(part));
+    return _originalUrl.substr(_urlMarker.indexOf(part),_urlMarker.indexOf(nextPart) - _urlMarker.indexOf(part));
 }
 
-void Url::setRawPath(string &path) {
+void Url::setRawPath(const std::string &path) {
     _path = path;
 }
 
-void Url::setRawHost(string &host) {
+void Url::setRawHost(const std::string &host) {
     _host = host;
 }
 
-string Url::getRawPath() {
+std::string Url::getRawPath() const {
     return _path;
 }
 
-string Url::getRawHost() {
+std::string Url::getRawHost() const {
     return _host;
 }
 
-UrlMarker Url::getUrlMarker() {
+UrlMarker Url::getUrlMarker() const {
     return _urlMarker;
 }
 
@@ -251,14 +234,14 @@ NormalizedUrl::NormalizedUrl(UrlMarker &urlMarker) :
         Url(urlMarker),
         _isPopulated(false) {}
 NormalizedUrl::NormalizedUrl() : Url(), _isPopulated(false) {}
-NormalizedUrl NormalizedUrl::create(string &url) {
+NormalizedUrl NormalizedUrl::create(std::string &url) {
     return Url::create(url).normalize();
 }
 
 /**
  *@override
  **/
-string NormalizedUrl::getHost() {
+std::string NormalizedUrl::getHost() {
     if (getRawHost().empty()) {
         populateHostAndHostBytes();
     }
@@ -267,10 +250,10 @@ string NormalizedUrl::getHost() {
 /**
  *@override
  **/
-string NormalizedUrl::getPath() {
+std::string NormalizedUrl::getPath() {
     if (Url::getRawPath().empty()) {
         PathNormalizer path;
-        string urlgetPath = Url::getPath();
+        std::string urlgetPath = Url::getPath();
         Url::setRawPath(path.normalizePath(urlgetPath));
     }
     return Url::getRawPath();
@@ -290,10 +273,9 @@ vector<ubyte> NormalizedUrl::getHostBytes() {
 
 void NormalizedUrl::populateHostAndHostBytes() {
     if (!_isPopulated) {
-        string host = Url::getHost();
-        std::cout << "rawhost->" << host << std::endl;
+        std::string host = Url::getHost();
         HostNormalizer hostNormalizer(host);
-        string rawhost = hostNormalizer.getNormalizedHost();
+        std::string rawhost = hostNormalizer.getNormalizedHost();
         setRawHost(rawhost);
         _hostBytes = hostNormalizer.getBytes();
         _isPopulated = true;

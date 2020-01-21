@@ -16,7 +16,7 @@ public:
      * remove special spaces, decoding hex encoded characters,
      * gets rid of extra dots and slashes, and re-encodes it once
      */
-    std::string &normalizePath(string &path);
+    std::string &normalizePath(std::string &path);
 
 private:
     /**
@@ -26,7 +26,7 @@ private:
      * 4. "//" -> "/"
      * 5. Adds a slash at the end if there isn't one
      */
-    static std::string sanitizeDotsAndSlashes(const string &path);
+    static std::string sanitizeDotsAndSlashes(const std::string &path);
 };
 
 #endif  // !_PATHNORMALIZER_H

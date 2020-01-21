@@ -1,43 +1,19 @@
 #include "urldetector.h"
 #include "time.h"
-UrlDetector::UrlDetector(const string &content, UrlDetectorOptions_T options) :
-        HTML_MAILTO("mailto:"),
-        VALID_SCHEMES{"http://",
-                      "https://",
-                      "ftp://",
-                      "ftps://",
-                      "http%3a//",
-                      "https%3a//",
-                      "ftp%3a//"},
-        _options(options),
-        _reader(InputTextReader(content)),
-        _hasScheme(false),
-        _quoteStart(false),
-        _singleQuoteStart(false),
-        _dontMatchIpv6(false) {
-    // HTML_MAILTO = "mailto:";
-    // VALID_SCHEMES =
-    // {"http://","https://","ftp://","ftps://","http%3a//","https%3a//","ftp%3a//"};
-    //_options = options;
-    //_reader = InputTextReader(content);
+
+
+std::set<std::string> UrlDetector::VALID_SCHEMES = {"http://","https://","ftp://","ftps://","http%3a//","https%3a//","ftp%3a//"};
+std::string UrlDetector::HTML_MAILTO = "mailto:";
+
+UrlDetector::UrlDetector(const std::string &content, UrlDetectorOptions_T options) :
+        _options(options),_reader(InputTextReader(content)),_hasScheme(false),_quoteStart(false),
+        _singleQuoteStart(false),_dontMatchIpv6(false) {
 }
-UrlDetector::UrlDetector() :
-        HTML_MAILTO("mailto:"),
-        VALID_SCHEMES{"http://",
-                      "https://",
-                      "ftp://",
-                      "ftps://",
-                      "http%3a//",
-                      "https%3a//",
-                      "ftp%3a//"},
-        _hasScheme(false),
-        _quoteStart(false),
-        _singleQuoteStart(false),
-        _dontMatchIpv6(false) {}
+UrlDetector::UrlDetector() :_hasScheme(false),_quoteStart(false),_singleQuoteStart(false),_dontMatchIpv6(false) {}
 void UrlDetector::setOptions(UrlDetectorOptions_T options) {
     _options = options;
 }
-void UrlDetector::setContent(const string &content) {
+void UrlDetector::setContent(const std::string &content) {
     _reader = InputTextReader(content);
 }
 void UrlDetector::addCharacter(char chars) {
@@ -47,27 +23,13 @@ int UrlDetector::getBacktracked() {
     return _reader.getBacktrackedCount();
 }
 
-const list<Url> &UrlDetector::detect() {
+const std::list<Url> &UrlDetector::detect() {
     clock_t start, end;
-    Log().log()
-            .setLevel(LOG_DEBUG_LEVEL)
-            .format("URL Detector begin. [at FILE:%s FUNC:%s LINE:%d]",
-                    __FILE__,
-                    __FUNCTION__,
-                    __LINE__)
-            .toFile();
+    Log().log().setLevel(LOG_DEBUG_LEVEL).format("URL Detector begin. [at FILE:%s FUNC:%s LINE:%d]",__FILE__,__FUNCTION__,__LINE__).toFile();
     start = clock();
     readDefault();
     end = clock();
-    Log().log()
-            .setLevel(LOG_DEBUG_LEVEL)
-            .format("URL Detector end.Cost time:%f s. [at FILE:%s FUNC:%s "
-                    "LINE:%d]",
-                    (double)(end - start) / CLOCKS_PER_SEC,
-                    __FILE__,
-                    __FUNCTION__,
-                    __LINE__)
-            .toFile();
+    Log().log().setLevel(LOG_DEBUG_LEVEL).format("URL Detector end.Cost time:%f s. [at FILE:%s FUNC:%s LINE:%d]",(double)(end - start) / CLOCKS_PER_SEC,__FILE__,__FUNCTION__,__LINE__).toFile();
     return _urlList;
 }
 CharacterHandler::~CharacterHandler() {}
@@ -76,7 +38,7 @@ void UrlDetector::readDefault() {
     // Keeps track of the number of characters read to be able to later cut out
     // the domain name.
     int length = 0;
-    string temp;
+    std::string temp;
     // until end of string read the contents
     while (!_reader.eof()) {
         // read the next char to process.
@@ -84,54 +46,48 @@ void UrlDetector::readDefault() {
         switch (curr) {
         case ' ':
             // space was found, check if it's a valid single level domain.
-            if (_options.hasFlag(ALLOW_SINGLE_LEVEL_DOMAIN) &&
-                _buffer.size() > 0 && _hasScheme) {
+            if (_options.hasFlag(ALLOW_SINGLE_LEVEL_DOMAIN) && _buffer.size() > 0 && _hasScheme) {
                 _reader.goBack();
                 temp = _buffer.substr(length);
                 readDomainName(temp);
             }
-            _buffer.Append(curr);
+            _buffer.append(curr);
             readEnd(InvalidUrl);
             length = 0;
             break;
         case ';':
             //; was found, check if it's a valid single level domain.
-            if (_options.hasFlag(ALLOW_SINGLE_LEVEL_DOMAIN) &&
-                _buffer.size() > 0 && _hasScheme) {
+            if (_options.hasFlag(ALLOW_SINGLE_LEVEL_DOMAIN) &&  _buffer.size() > 0 && _hasScheme) {
                 _reader.goBack();
                 temp = _buffer.substr(length);
                 readDomainName(temp);
             }
-            _buffer.Append(curr);
+            _buffer.append(curr);
             readEnd(InvalidUrl);
             length = 0;
             break;
         case ',':
             //, was found, check if it's a valid single level domain.
-            if (_options.hasFlag(ALLOW_SINGLE_LEVEL_DOMAIN) &&
-                _buffer.size() > 0 && _hasScheme) {
+            if (_options.hasFlag(ALLOW_SINGLE_LEVEL_DOMAIN) && _buffer.size() > 0 && _hasScheme) {
                 _reader.goBack();
                 temp = _buffer.substr(length);
                 readDomainName(temp);
             }
-            _buffer.Append(curr);
+            _buffer.append(curr);
             readEnd(InvalidUrl);
             length = 0;
             break;
         case '%':
             if (_reader.canReadChars(2)) {
-                if (StringUtils::stricmp(
-                            _reader.peek(2).c_str(), (const char *)"3a")) {
-                    _buffer.Append(curr);
-                    _buffer.Append(_reader.read());
-                    _buffer.Append(_reader.read());
+                if (StringUtils::stricmp(_reader.peek(2).c_str(), (const char *)"3a")) {
+                    _buffer.append(curr);
+                    _buffer.append(_reader.read());
+                    _buffer.append(_reader.read());
                     length = processColon(length);
-                } else if (
-                        CharUtils::isHex(_reader.peekChar(0)) &&
-                        CharUtils::isHex(_reader.peekChar(1))) {
-                    _buffer.Append(curr);
-                    _buffer.Append(_reader.read());
-                    _buffer.Append(_reader.read());
+                } else if ( CharUtils::isHex(_reader.peekChar(0)) && CharUtils::isHex(_reader.peekChar(1))) {
+                    _buffer.append(curr);
+                    _buffer.append(_reader.read());
+                    _buffer.append(_reader.read());
                     temp = _buffer.substr(length);
                     readDomainName(temp);
                     length = 0;
@@ -148,7 +104,7 @@ void UrlDetector::readDefault() {
                     */
         case '.':  //"." was found, read the domain name using the start from
                    //length.
-            _buffer.Append(curr);
+            _buffer.append(curr);
             temp = _buffer.substr(length);
             readDomainName(temp);
 
@@ -157,8 +113,8 @@ void UrlDetector::readDefault() {
         case '@':  // Check the domain name after a username
             if (_buffer.size() > 0) {
                 _currentUrlMarker.setIndex(URL_USERNAME_PASSWORD, length);
-                _buffer.Append(curr);
-                string temp;
+                _buffer.append(curr);
+                std::string temp;
                 readDomainName(temp);
                 length = 0;
             }
@@ -179,9 +135,9 @@ void UrlDetector::readDefault() {
 
             // if it doesn't have a scheme, clear the buffer.
             if (!_hasScheme) {
-                _buffer.Delete(0, _buffer.size());
+                _buffer.remove(0, _buffer.size());
             }
-            _buffer.Append(curr);
+            _buffer.append(curr);
             temp = _buffer.substr(length);
             if (!readDomainName(temp)) {
                 // if we didn't find an ipv6 address, then check inside the
@@ -196,9 +152,7 @@ void UrlDetector::readDefault() {
             // read a scheme, then we are reading a url in the format
             // http://123123123/asdf
 
-            if (_hasScheme ||
-                (_options.hasFlag(ALLOW_SINGLE_LEVEL_DOMAIN) &&
-                 _buffer.size() > 1)) {
+            if (_hasScheme || (_options.hasFlag(ALLOW_SINGLE_LEVEL_DOMAIN) && _buffer.size() > 1)) {
                 // we already have the scheme, so then we already read:
                 // http://something/ <- if something is all numeric then its a
                 // valid url. OR we are searching for single level domains. We
@@ -218,14 +172,14 @@ void UrlDetector::readDefault() {
                 // case its "//google.com" so its not cleared.
                 // readEnd(ReadEndState::InvalidUrl);
                 readEnd(InvalidUrl);
-                _buffer.Append(curr);
+                _buffer.append(curr);
                 _hasScheme = readHtml5Root();
                 length = _buffer.size();
             }
             break;
         case ':':
             // add the ":" to the url and check for scheme/username
-            _buffer.Append(curr);
+            _buffer.append(curr);
             length = processColon(length);
             break;
         default:
@@ -237,14 +191,13 @@ void UrlDetector::readDefault() {
                 readEnd(InvalidUrl);
                 length = 0;
             } else {
-                _buffer.Append(curr);
+                _buffer.append(curr);
             }
             break;
         }
     }
-    if (_options.hasFlag(ALLOW_SINGLE_LEVEL_DOMAIN) && _buffer.size() > 0 &&
-        _hasScheme) {
-        string str = _buffer.substr(length);
+    if (_options.hasFlag(ALLOW_SINGLE_LEVEL_DOMAIN) && _buffer.size() > 0 && _hasScheme) {
+        std::string str = _buffer.substr(length);
         readDomainName(str);
     }
 }
@@ -255,10 +208,9 @@ int UrlDetector::processColon(int length) {
         if (!readUserPass(length) && _buffer.size() > 0) {
             // unread the ":" so that the domain reader can process it
             _reader.goBack();
-            _buffer.Delete(_buffer.size() - 1, _buffer.size());  //
-            int backtrackOnFail =
-                    _reader.getPosition() - _buffer.size() + length;
-            string temp = _buffer.substr(length);
+            _buffer.remove(_buffer.size() - 1, _buffer.size());  //
+            int backtrackOnFail = _reader.getPosition() - _buffer.size() + length;
+            std::string temp = _buffer.substr(length);
             if (!readDomainName(temp)) {
                 // go back to length location and restart search
                 _reader.seek(backtrackOnFail);
@@ -269,13 +221,11 @@ int UrlDetector::processColon(int length) {
     } else if (readScheme() && _buffer.size() > 0) {
         _hasScheme = true;
         length = _buffer.size();  // set length to be right after the scheme
-    } else if (
-            _buffer.size() > 0 && _options.hasFlag(ALLOW_SINGLE_LEVEL_DOMAIN) &&
-            _reader.canReadChars(1)) {  // takes care of case like hi:
+    } else if (_buffer.size() > 0 && _options.hasFlag(ALLOW_SINGLE_LEVEL_DOMAIN) && _reader.canReadChars(1)) {  // takes care of case like hi:
         _reader.goBack();  // unread the ":" so readDomainName can take care of
                            // the port
-        _buffer.Delete(_buffer.size() - 1, _buffer.size()); // may have something  
-        string str = _buffer.ToString();
+        _buffer.remove(_buffer.size() - 1, _buffer.size()); // may have something  
+        std::string str = _buffer.toString();
         readDomainName(str);
     } else {
         readEnd(InvalidUrl);
@@ -314,11 +264,8 @@ CharacterMatch UrlDetector::checkMatchingCharacter(char curr) {
 
         // if there was already a quote found, or the number of quotes is even,
         // return that we have to stop, else its a start.
-        return quoteStart || currVal % 2 == 0 ? CharacterMatchStop
-                                              : CharacterMatchStart;
-    } else if (
-            _options.hasFlag(BRACKET_MATCH) &&
-            (curr == '[' || curr == '{' || curr == '(')) {
+        return quoteStart || currVal % 2 == 0 ? CharacterMatchStop : CharacterMatchStart;
+    } else if (_options.hasFlag(BRACKET_MATCH) && (curr == '[' || curr == '{' || curr == '(')) {
         // Look for start of bracket
         _characterMatch.insert(make_pair(curr, getCharacterCount(curr) + 1));
         return CharacterMatchStart;
@@ -326,10 +273,7 @@ CharacterMatch UrlDetector::checkMatchingCharacter(char curr) {
         // If its html, look for "<"
         _characterMatch.insert(make_pair(curr, getCharacterCount(curr) + 1));
         return CharacterMatchStart;
-    } else if (
-            (_options.hasFlag(BRACKET_MATCH) &&
-             (curr == ']' || curr == '}' || curr == ')')) ||
-            (_options.hasFlag(XML) && (curr == '>'))) {
+    } else if ( (_options.hasFlag(BRACKET_MATCH) && (curr == ']' || curr == '}' || curr == ')')) ||(_options.hasFlag(XML) && (curr == '>'))) {
         // If we catch a end bracket increment its count and get rid of not ipv6
         // flag
         int currVal = getCharacterCount(curr) + 1;
@@ -355,8 +299,7 @@ CharacterMatch UrlDetector::checkMatchingCharacter(char curr) {
         }
         // If the number of open is greater then the number of closed, return a
         // stop.
-        return getCharacterCount(match) > currVal ? CharacterMatchStop
-                                                  : CharacterMatchStart;
+        return getCharacterCount(match) > currVal ? CharacterMatchStop : CharacterMatchStart;
     }
     // Nothing else was found.
     return CharacterNotMatched;
@@ -371,7 +314,7 @@ bool UrlDetector::readHtml5Root() {
     // read the next character. If its // then return true.
     char curr = _reader.read();
     if (curr == '/') {
-        _buffer.Append(curr);
+        _buffer.append(curr);
         return true;
     } else {
         // if its not //, then go back and reset by 1 character.
@@ -386,10 +329,7 @@ bool UrlDetector::readScheme() {
     // Check if we are checking html and the length is longer than mailto:
     if (_options.hasFlag(HTML) && _buffer.size() >= HTML_MAILTO.size()) {
         // Check if the string is actually mailto: then just return nothing.
-        if (StringUtils::stricmp(
-                    HTML_MAILTO.c_str(),
-                    _buffer.substr(_buffer.size() - HTML_MAILTO.size())
-                            .c_str())) {
+        if (StringUtils::stricmp(HTML_MAILTO.c_str(),_buffer.substr(_buffer.size() - HTML_MAILTO.size()).c_str())) {
             // return readEnd(ReadEndState::InvalidUrl);
             return readEnd(InvalidUrl);
         }
@@ -401,12 +341,12 @@ bool UrlDetector::readScheme() {
         char curr = _reader.read();
         // if we match a slash, look for a second one.
         if (curr == '/') {
-            _buffer.Append(curr);
+            _buffer.append(curr);
             if (numSlashes == 1) {
                 // return only if its an approved protocol. This can be expanded
                 // to allow others
-                string toString = _buffer.ToString();
-                string temp1 = StringUtils::toLowerCase(toString);
+                std::string toString = _buffer.toString();
+                std::string temp1 = StringUtils::toLowerCase(toString);
                 if (VALID_SCHEMES.count(temp1)) {
                     //_currentUrlMarker.setIndex(UrlPart::SCHEME, 0);
                     _currentUrlMarker.setIndex(URL_SCHEME, 0);
@@ -415,19 +355,15 @@ bool UrlDetector::readScheme() {
                 return false;
             }
             numSlashes++;
-        } else if (
-                curr == ' ' ||
-                checkMatchingCharacter(curr) != CharacterNotMatched) {
+        } else if (curr == ' ' || checkMatchingCharacter(curr) != CharacterNotMatched) {
             // if we find a space or end of input, then nothing found.
-            _buffer.Append(curr);
+            _buffer.append(curr);
             return false;
         } else if (curr == '[') {  // if we're starting to see an ipv6 address
             _reader.goBack();  // unread the '[', so that we can start looking
                                // for ipv6
             return false;
-        } else if (
-                originalLength > 0 || numSlashes > 0 ||
-                !CharUtils::isAlpha(curr)) {
+        } else if (originalLength > 0 || numSlashes > 0 || !CharUtils::isAlpha(curr)) {
             // if it's not a character a-z or A-Z then assume we aren't matching
             // scheme, but instead matching username and password.
             _reader.goBack();
@@ -452,20 +388,16 @@ bool UrlDetector::readUserPass(int beginningOfUsername) {
         // if we hit this, then everything is ok and we are matching a domain
         // name.
         if (curr == '@') {
-            _buffer.Append(curr);
-            _currentUrlMarker.setIndex(
-                    URL_USERNAME_PASSWORD, beginningOfUsername);
-            string temp = "";
+            _buffer.append(curr);
+            _currentUrlMarker.setIndex(URL_USERNAME_PASSWORD, beginningOfUsername);
+            std::string temp = "";
             return readDomainName(temp);
         } else if (CharUtils::isDot(curr) || curr == '[') {
             // everything is still ok, just remember that we found a dot or '['
             // in case we might need to backtrack
-            _buffer.Append(curr);
+            _buffer.append(curr);
             rollback = true;
-        } else if (
-                curr == '#' || curr == ' ' || curr == '/' ||
-                checkMatchingCharacter(curr) != CharacterNotMatched ||
-                curr == ',' || curr == ';') {
+        } else if (curr == '#' || curr == ' ' || curr == '/' || checkMatchingCharacter(curr) != CharacterNotMatched || curr == ',' || curr == ';') {
             // one of these characters indicates we are invalid state and should
             // just return.
             rollback = true;
@@ -479,7 +411,7 @@ bool UrlDetector::readUserPass(int beginningOfUsername) {
         }*/
         else {
             // all else, just append character assuming its ok so far.
-            _buffer.Append(curr);
+            _buffer.append(curr);
         }
     }
 
@@ -487,10 +419,9 @@ bool UrlDetector::readUserPass(int beginningOfUsername) {
         // got to here, so there is no username and password. (We didn't find a
         // @)
         int distance = _buffer.size() - start;
-        _buffer.Delete(start, _buffer.size());  //
+        _buffer.remove(start, _buffer.size());  //
 
-        int currIndex =
-                max(_reader.getPosition() - distance - (done ? 1 : 0), 0);
+        int currIndex =max(_reader.getPosition() - distance - (done ? 1 : 0), 0);
         _reader.seek(currIndex);
 
         return false;
@@ -499,10 +430,9 @@ bool UrlDetector::readUserPass(int beginningOfUsername) {
         return readEnd(InvalidUrl);
     }
 }
-bool UrlDetector::readDomainName(string &current) {
+bool UrlDetector::readDomainName(std::string &current) {
 
-    int hostIndex =
-            current.empty() ? _buffer.size() : _buffer.size() - current.size();
+    int hostIndex = current.empty() ? _buffer.size() : _buffer.size() - current.size();
     _currentUrlMarker.setIndex(URL_HOST, hostIndex);
     // create the domain name reader and specify the handler that will be called
     // when a quote character or something is found.
@@ -546,7 +476,7 @@ bool UrlDetector::readFragment() {
             return readEnd(ValidUrl);
         } else {
             // otherwise keep appending.
-            _buffer.Append(curr);
+            _buffer.append(curr);
         }
     }
     // if we are here, anything read is valid.
@@ -559,7 +489,7 @@ bool UrlDetector::readQueryString() {
         char curr = _reader.read();
 
         if (curr == '#') {  // fragment
-            _buffer.Append(curr);
+            _buffer.append(curr);
             return readFragment();
         } else if (
                 curr == ' ' ||
@@ -567,7 +497,7 @@ bool UrlDetector::readQueryString() {
             // end of query string
             return readEnd(ValidUrl);
         } else {  // all else add to buffer.
-            _buffer.Append(curr);
+            _buffer.append(curr);
         }
     }
     // a valid url was read.
@@ -584,22 +514,20 @@ bool UrlDetector::readPort() {
         portLen++;
         if (curr == '/') {
             // continue to read path
-            _buffer.Append(curr);
+            _buffer.append(curr);
             return readPath();
         } else if (curr == '?') {
             // continue to read query string
-            _buffer.Append(curr);
+            _buffer.append(curr);
             return readQueryString();
         } else if (curr == '#') {
             // continue to read fragment.
-            _buffer.Append(curr);
+            _buffer.append(curr);
             return readFragment();
         }
         // else if (checkMatchingCharacter(curr) ==
         // CharacterMatch.CharacterMatchStop || !CharUtils::isNumeric(curr))
-        else if (
-                checkMatchingCharacter(curr) == CharacterMatchStop ||
-                !CharUtils::isNumberic(curr)) {
+        else if (checkMatchingCharacter(curr) == CharacterMatchStop || !CharUtils::isNumberic(curr)) {
             // if we got here, then what we got so far is a valid url. don't
             // append the current character.
             _reader.goBack();
@@ -607,13 +535,13 @@ bool UrlDetector::readPort() {
             // no port found; it was something like google.com:hello.world
             if (portLen == 1) {
                 // remove the ":" from the end.
-                _buffer.Delete(_buffer.size() - 1, _buffer.size());
+                _buffer.remove(_buffer.size() - 1, _buffer.size());
             }
             _currentUrlMarker.unsetIndex(URL_PORT);
             return readEnd(ValidUrl);
         } else {
             // this is a valid character in the port string.
-            _buffer.Append(curr);
+            _buffer.append(curr);
         }
     }
     // found a correct url
@@ -626,14 +554,12 @@ bool UrlDetector::readPath() {
     while (!_reader.eof()) {
         // read the next char
         char curr = _reader.read();
-        if (curr == ' ' ||
-            checkMatchingCharacter(curr) != CharacterNotMatched ||
-            curr == ';') {
+        if (curr == ' ' || checkMatchingCharacter(curr) != CharacterNotMatched || curr == ';') {
             // if end of state and we got here, then the url is valid.
             return readEnd(ValidUrl);
         }
         // append the char
-        _buffer.Append(curr);
+        _buffer.append(curr);
 
         // now see if we move to another state.
         if (curr == '?') {
@@ -654,11 +580,11 @@ bool UrlDetector::readEnd(ReadEndState state) {
         // get the last character. if its a quote, cut it off.
         int len = _buffer.size();
         if (_quoteStart && (_buffer.charAt(len - 1) == '\"')) {
-            _buffer.Delete(len - 1, len);  //
+            _buffer.remove(len - 1, len);  //
         }
         // Add the url to the list of good urls. and should avoid the same in the _urlset
         if (_buffer.size() > 0) {
-            string originalUrl = _buffer.ToString();
+            std::string originalUrl = _buffer.toString();
 
             if(_urlSet.count(originalUrl) == 0){
                 _currentUrlMarker.setOriginalUrl(originalUrl);
@@ -671,8 +597,7 @@ bool UrlDetector::readEnd(ReadEndState state) {
         }
     }
     // clear out the buffer.
-    // _buffer.Delete(0, _buffer.size());
-    _buffer.setlength(0);
+    _buffer.clear();
     // reset the state of internal objects.
     _quoteStart = false;
     _hasScheme = false;

@@ -18,7 +18,7 @@ public:
 
     std::string getHostAddress();
 protected:
-    string hostName;
+    std::string hostName;
     int family;
     int address;
     std::vector<ubyte> _bytes;

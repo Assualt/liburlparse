@@ -41,62 +41,60 @@ using namespace std;
 class NormalizedUrl;
 class Url {
 public:
-    string getFullUrlWithoutFragment();
-    string getScheme();
-    /**
-     * Returns a url given a single url.
-     */
-    static Url create(string &url);
+    std::string getFullUrlWithoutFragment();
+    std::string getScheme();
     /**
      * Returns a normalized url given a url object
      */
     NormalizedUrl normalize();
     /*Override*/
-    string toString();
+    std::string toString();
 
     /**
      * Note that this includes the fragment
      * @return Formats the url to:
      * [scheme]://[username]:[password]@[host]:[port]/[path]?[query]#[fragment]
      */
-    string getFullUrl();
-    string getFragment();
-    string getUsername();
-    string getPassword();
-    virtual string getHost();
+    std::string getFullUrl();
+    std::string getFragment();
+    std::string getUsername();
+    std::string getPassword();
+    virtual std::string getHost();
 
     /**
      * port = 0 means it hasn't been set yet. port = -1 means there is no port
      */
     int getPort();
 
-    virtual string getPath();
+    virtual std::string getPath();
 
-    string getQuery();
+    std::string getQuery();
     /**
      * Always returns null for non normalized urls.
      */
-    virtual vector<ubyte> getHostBytes();
-    string getOriginalUrl();
-    explicit Url(UrlMarker &urlMarker);
+    virtual vector<ubyte> getHostBytes() const;
+    std::string getOriginalUrl() const;
+
+public:
+    Url(UrlMarker &urlMarker);
     Url();
     ~Url();
-
+public:
+    static std::string DEFAULT_SCHEME;
+    static std::map<std::string, int> SCHEME_PORT_MAP;
+    static Url create(std::string &url);
 private:
-    string DEFAULT_SCHEME;
-    map<string, int> SCHEME_PORT_MAP;
-
     UrlMarker _urlMarker;
-    string _scheme;
-    string _username;
-    string _password;
-    string _host;
+    std::string _scheme;
+    std::string _username;
+    std::string _password;
+    std::string _host;
     int _port;
-    string _path;
-    string _query;
-    string _fragment;
-    string _originalUrl;
-
+    std::string _path;
+    std::string _query;
+    std::string _fragment;
+    std::string _originalUrl;
+private:
     void populateUsernamePassword();
     /**
      * @param urlPart The url part we are checking for existence
@@ -115,14 +113,14 @@ private:
     /**
      * @param part The part that we want. Ex: host, path
      */
-    string getPart(UrlPart part);
+    std::string getPart(UrlPart part);
 
-protected:
-    void setRawPath(string &path);
-    void setRawHost(string &host);
-    string getRawPath();
-    string getRawHost();
-    UrlMarker getUrlMarker();
+public:
+    void setRawPath(const std::string &path);
+    void setRawHost(const std::string &host);
+    std::string getRawPath() const;
+    std::string getRawHost() const;
+    UrlMarker getUrlMarker() const;
 };
 
 class NormalizedUrl : public Url {
@@ -130,14 +128,15 @@ public:
     /**
      * Returns a normalized url given a single url.
      */
-    static NormalizedUrl create(string &url);
-    explicit NormalizedUrl(UrlMarker &urlMarker);
+    static NormalizedUrl create(std::string &url);
+    NormalizedUrl(UrlMarker &urlMarker);
     NormalizedUrl();
-    // Override
-    string getPath();
-    string getHost();
-    vector<ubyte> getHostBytes();
 
+public:    
+    // Override
+    std::string getPath();
+    std::string getHost();
+    vector<ubyte> getHostBytes();
     void populateHostAndHostBytes();
 
 private:

@@ -1,9 +1,6 @@
 #include "stringutils.h"
 
-void StringUtils::split(
-        std::vector<std::string> &v,
-        const std::string &s,
-        const std::string &c) {
+void StringUtils::split(std::vector<std::string> &v, const std::string &s,const std::string &c) {
     std::string::size_type pos1, pos2;
     pos2 = s.find(c);
     pos1 = 0;
@@ -15,23 +12,23 @@ void StringUtils::split(
     if (pos1 != s.length())
         v.push_back(s.substr(pos1));
 }
-std::string &StringUtils::toLowerCase(string &src) {
+std::string &StringUtils::toLowerCase(std::string &src) {
     transform(src.begin(), src.end(), src.begin(), ::tolower);
     return src;
 }
-std::string &StringUtils::toUpperCase(string &src) {
+std::string &StringUtils::toUpperCase(std::string &src) {
     transform(src.begin(), src.end(), src.begin(), ::toupper);
     return src;
 }
-bool StringUtils::startsWith(const string &s, const string &sub) {
+bool StringUtils::startsWith(const std::string &s, const std::string &sub) {
     return s.find(sub) == 0 ? true : false;
 }
 
-bool StringUtils::endsWith(const string &s, const string &sub) {
+bool StringUtils::endsWith(const std::string &s, const std::string &sub) {
     return s.rfind(sub) == (s.size() - sub.size()) ? true : false;
 }
 
-std::string &StringUtils::replaceAll(string &old, char oldChar, char newChar) {
+std::string &StringUtils::replaceAll(std::string &old, char oldChar, char newChar) {
     int oldSize = (int)old.size();
     for (int i = 0; i < oldSize; i++) {
         if (old[i] == oldChar) {
@@ -40,10 +37,7 @@ std::string &StringUtils::replaceAll(string &old, char oldChar, char newChar) {
     }
     return old;
 }
-std::string &StringUtils::replaceAlls(
-        string &old,
-        const string &oldStr,
-        const string &newStr) {
+std::string &StringUtils::replaceAlls(std::string &old, const std::string &oldStr, const std::string &newStr) {
     std::string::size_type pos = 0;
     std::string::size_type srclen = oldStr.size();
     std::string::size_type dstlen = newStr.size();
@@ -86,9 +80,3 @@ int StringUtils::max(int num1, int num2) {
     return num1 > num2 ? num1 : num2;
 }
 
-#ifdef MAINEXEC
-int main(int argc,char **argv){
-    testing::InitGoogleTest(&argc,argv);
-    return RUN_ALL_TESTS();
-}
-#endif
