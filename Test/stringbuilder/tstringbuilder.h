@@ -15,6 +15,7 @@
 #include <sstream>
 #include <iomanip>
 #include <memory>
+#include "glog.h"
 using namespace std;
 template <typename chr>
 class StringBuilderImpl {
@@ -33,8 +34,8 @@ public:
      * @return: StringBuilderImpl 
      */
     static StringBuilderImpl& copyOf(const StringBuilderImpl& src, StringBuilderImpl& dst){
-        dst.setSize(src.capacity());
-        dst.append(src.toString());
+        string_t temp = src.toString();
+        dst.append(temp);
         return dst;
     }
 public:
@@ -70,7 +71,7 @@ public:
     }
     ~StringBuilderImpl() {
         if (nullptr != m_Data)
-            delete[] m_Data;
+            delete []m_Data;
         m_nTotalSize = 0;
         m_nCapacity = 0;
     }
@@ -88,15 +89,21 @@ public:
         Append(toString(arg));
         return *this;
     }
+    StringBuilderImpl &append(const string_t &arg){
+        Append(arg);
+        return *this;
+    }
     string_t toString(void) const {
-        string_t temp(m_Data, m_nTotalSize);
+        string_t temp;
+        temp.reserve(m_nTotalSize + 1);
+        temp.append(m_Data,m_nTotalSize);
         return temp;
     }
     chr charAt(size_type nIndex) {
-        if (nIndex > 0 && nIndex < m_nTotalSize) {
+        if (nIndex >= 0 && static_cast<off_t>(nIndex) < m_nTotalSize) {
             return m_Data[nIndex];
         }
-        throw std::range_error("charAt Index out of range");
+        return chr();
     }
     chr operator[](size_type nIndex) {
         return charAt(nIndex);
@@ -132,6 +139,9 @@ public:
         }
         return *this;
     }
+    StringBuilderImpl &setLength(off_t nSize){
+        return setSize(nSize);
+    }
 
     StringBuilderImpl &remove(off_t nStart, off_t nEnd = -1) {
         // safe check first
@@ -141,6 +151,7 @@ public:
             nEnd = m_nTotalSize;
         memset(m_Data + nStart, 0, nEnd - nStart);
         memcpy(m_Data + nStart, m_Data + nEnd, m_nTotalSize - nEnd);
+        memset(m_Data + m_nTotalSize - nEnd, 0, nEnd - nStart);
         m_nTotalSize -= (nEnd - nStart);
         return *this;
     }
@@ -161,7 +172,7 @@ public:
         }
         memcpy(m_Data + nIndex + nCnt, m_Data + nIndex, m_nTotalSize - nIndex);
         memset(m_Data + nIndex, 0, nCnt);
-        mempcpy(m_Data + nIndex, temp.c_str(), nCnt);
+        memcpy(m_Data + nIndex, temp.c_str(), nCnt);
         m_nTotalSize += nCnt;
         return *this;
     }
@@ -240,7 +251,7 @@ protected:
         std::auto_ptr<chr> _au(new chr[nSize]);
         if (nullptr != m_Data) {
             memcpy(_au.get(),m_Data,m_nTotalSize);
-            delete[] m_Data;
+            delete []m_Data;
         }
         m_Data = _au.release();
         m_nCapacity = nSize;
