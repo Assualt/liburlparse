@@ -145,13 +145,19 @@ public:
 
     StringBuilderImpl &remove(off_t nStart, off_t nEnd = -1) {
         // safe check first
+        if(nStart == nEnd)
+            return *this;
         if (nStart < 0 || (nStart > nEnd && nEnd != -1) || nEnd > m_nTotalSize)
             throw std::invalid_argument("invalid Begining and Ending");
         if (nEnd == -1)
             nEnd = m_nTotalSize;
+        // get [0, nStart) and [nEnd,npos)
+        // memset [nStart,nEnd)
         memset(m_Data + nStart, 0, nEnd - nStart);
+        // copythe [nEnd, npos) to => [nStart, nEnd)
         memcpy(m_Data + nStart, m_Data + nEnd, m_nTotalSize - nEnd);
-        memset(m_Data + m_nTotalSize - nEnd, 0, nEnd - nStart);
+        // clear the (nEnd, nPos)
+        memset(m_Data + nStart + m_nTotalSize - nEnd, 0, nEnd - nStart);
         m_nTotalSize -= (nEnd - nStart);
         return *this;
     }
