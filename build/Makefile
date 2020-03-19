@@ -1,7 +1,7 @@
 CC 	= g++
 CXX = gcc
 FLAG = -Wno-literal-suffix -Wno-deprecated -D_POSIX_PTHREAD_SEMANTICS -D_POSIX_THREAD_PRIORITY_SCHEDULING
-CFLAGS=  $(FLAG)  -g -Wall -I../include  $(SYSFLAGS) -std=c++11 # -fprofile-arcs -ftest-coverage 
+CFLAGS=  $(FLAG)  -g -Wall -I../include  $(SYSFLAGS) -std=c++11  -fprofile-arcs -ftest-coverage 
 
 #VPATH 指定cpp文件的路径
 VPATH = ../src:../Test
