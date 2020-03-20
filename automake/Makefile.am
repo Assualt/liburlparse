@@ -1,17 +1,4 @@
-noinst_LIBRARIES=liburlparse.a
-liburlparse_a_SOURCES= charutils.cpp \
-	domainnamereader.cpp \
-	glog.cpp \
-	hostnormalizer.cpp \
-	inetaddress.cpp \
-	inputtextreader.cpp \
-	pathnormalizer.cpp \
-	stringbuilder.cpp \
-	stringutils.cpp \
-	url.cpp \
-	urldetector.cpp \
-	urldetectoroptions.cpp \
-	urlmarker.cpp \
-	urlpart.cpp \
-	urlutil.cpp 
-
+SUBDIRS=src Test
+CURRENTDIR=@DOLLAR_SIGN@(shell /bin/pwd)
+AM_CPPFLAGS=-I$(CURRENTDIR)/src/include -Wno-literal-suffix -Wno-deprecated -Wno-deprecated -Wno-stringop-overflow
+export AM_CPPFLAGS

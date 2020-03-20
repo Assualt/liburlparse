@@ -14,7 +14,6 @@
 
 
 
-
 am__is_gnu_make = { \
   if test -z '$(MAKELEVEL)'; then \
     false; \
@@ -70,10 +69,10 @@ am__make_running_with_option = \
   test $$has_opt = yes
 am__make_dryrun = (target_option=n; $(am__make_running_with_option))
 am__make_keepgoing = (target_option=k; $(am__make_running_with_option))
-pkgdatadir = $(datadir)/
-pkgincludedir = $(includedir)/
-pkglibdir = $(libdir)/
-pkglibexecdir = $(libexecdir)/
+pkgdatadir = $(datadir)/liburlparse
+pkgincludedir = $(includedir)/liburlparse
+pkglibdir = $(libdir)/liburlparse
+pkglibexecdir = $(libexecdir)/liburlparse
 am__cd = CDPATH="$${ZSH_VERSION+.}$(PATH_SEPARATOR)" && cd
 install_sh_DATA = $(install_sh) -c -m 644
 install_sh_PROGRAM = $(install_sh) -c
@@ -96,25 +95,8 @@ DIST_COMMON = $(srcdir)/Makefile.am $(top_srcdir)/configure \
 am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(install_sh) -d
-CONFIG_CLEAN_FILES = src/Makefile Test/Makefile
+CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
-LIBRARIES = $(noinst_LIBRARIES)
-AR = ar
-ARFLAGS = cru
-AM_V_AR = $(am__v_AR_$(V))
-am__v_AR_ = $(am__v_AR_$(AM_DEFAULT_VERBOSITY))
-am__v_AR_0 = @echo "  AR      " $@;
-am__v_AR_1 = 
-liburlparse_a_AR = $(AR) $(ARFLAGS)
-liburlparse_a_LIBADD =
-am_liburlparse_a_OBJECTS = charutils.$(OBJEXT) \
-	domainnamereader.$(OBJEXT) glog.$(OBJEXT) \
-	hostnormalizer.$(OBJEXT) inetaddress.$(OBJEXT) \
-	inputtextreader.$(OBJEXT) pathnormalizer.$(OBJEXT) \
-	stringbuilder.$(OBJEXT) stringutils.$(OBJEXT) url.$(OBJEXT) \
-	urldetector.$(OBJEXT) urldetectoroptions.$(OBJEXT) \
-	urlmarker.$(OBJEXT) urlpart.$(OBJEXT) urlutil.$(OBJEXT)
-liburlparse_a_OBJECTS = $(am_liburlparse_a_OBJECTS)
 AM_V_P = $(am__v_P_$(V))
 am__v_P_ = $(am__v_P_$(AM_DEFAULT_VERBOSITY))
 am__v_P_0 = false
@@ -127,30 +109,29 @@ AM_V_at = $(am__v_at_$(V))
 am__v_at_ = $(am__v_at_$(AM_DEFAULT_VERBOSITY))
 am__v_at_0 = @
 am__v_at_1 = 
-DEFAULT_INCLUDES = -I.
-depcomp = $(SHELL) $(top_srcdir)/depcomp
-am__depfiles_maybe = depfiles
-am__mv = mv -f
-CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
-	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
-AM_V_CXX = $(am__v_CXX_$(V))
-am__v_CXX_ = $(am__v_CXX_$(AM_DEFAULT_VERBOSITY))
-am__v_CXX_0 = @echo "  CXX     " $@;
-am__v_CXX_1 = 
-CXXLD = $(CXX)
-CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
-	-o $@
-AM_V_CXXLD = $(am__v_CXXLD_$(V))
-am__v_CXXLD_ = $(am__v_CXXLD_$(AM_DEFAULT_VERBOSITY))
-am__v_CXXLD_0 = @echo "  CXXLD   " $@;
-am__v_CXXLD_1 = 
-SOURCES = $(liburlparse_a_SOURCES)
-DIST_SOURCES = $(liburlparse_a_SOURCES)
+SOURCES =
+DIST_SOURCES =
+RECURSIVE_TARGETS = all-recursive check-recursive cscopelist-recursive \
+	ctags-recursive dvi-recursive html-recursive info-recursive \
+	install-data-recursive install-dvi-recursive \
+	install-exec-recursive install-html-recursive \
+	install-info-recursive install-pdf-recursive \
+	install-ps-recursive install-recursive installcheck-recursive \
+	installdirs-recursive pdf-recursive ps-recursive \
+	tags-recursive uninstall-recursive
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
     *) (install-info --version) >/dev/null 2>&1;; \
   esac
+RECURSIVE_CLEAN_TARGETS = mostlyclean-recursive clean-recursive	\
+  distclean-recursive maintainer-clean-recursive
+am__recursive_targets = \
+  $(RECURSIVE_TARGETS) \
+  $(RECURSIVE_CLEAN_TARGETS) \
+  $(am__extra_recursive_targets)
+AM_RECURSIVE_TARGETS = $(am__recursive_targets:-recursive=) TAGS CTAGS \
+	cscope distdir dist dist-all distcheck
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
 # Read a list of newline-separated strings from the standard input,
 # and print each of them once, without duplicates.  Input order is
@@ -171,10 +152,10 @@ am__define_uniq_tagged_files = \
 ETAGS = etags
 CTAGS = ctags
 CSCOPE = cscope
-AM_RECURSIVE_TARGETS = cscope
-am__DIST_COMMON = $(srcdir)/Makefile.in $(top_srcdir)/Test/Makefile.in \
-	$(top_srcdir)/src/Makefile.in AUTHORS COPYING ChangeLog \
-	INSTALL NEWS README compile depcomp install-sh missing
+DIST_SUBDIRS = $(SUBDIRS)
+am__DIST_COMMON = $(srcdir)/Makefile.in AUTHORS COPYING ChangeLog \
+	INSTALL NEWS README compile config.guess config.sub depcomp \
+	install-sh missing
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)
@@ -185,6 +166,31 @@ am__remove_distdir = \
       || { sleep 5 && rm -rf "$(distdir)"; }; \
   else :; fi
 am__post_remove_distdir = $(am__remove_distdir)
+am__relativize = \
+  dir0=`pwd`; \
+  sed_first='s,^\([^/]*\)/.*$$,\1,'; \
+  sed_rest='s,^[^/]*/*,,'; \
+  sed_last='s,^.*/\([^/]*\)$$,\1,'; \
+  sed_butlast='s,/*[^/]*$$,,'; \
+  while test -n "$$dir1"; do \
+    first=`echo "$$dir1" | sed -e "$$sed_first"`; \
+    if test "$$first" != "."; then \
+      if test "$$first" = ".."; then \
+        dir2=`echo "$$dir0" | sed -e "$$sed_last"`/"$$dir2"; \
+        dir0=`echo "$$dir0" | sed -e "$$sed_butlast"`; \
+      else \
+        first2=`echo "$$dir2" | sed -e "$$sed_first"`; \
+        if test "$$first2" = "$$first"; then \
+          dir2=`echo "$$dir2" | sed -e "$$sed_rest"`; \
+        else \
+          dir2="../$$dir2"; \
+        fi; \
+        dir0="$$dir0"/"$$first"; \
+      fi; \
+    fi; \
+    dir1=`echo "$$dir1" | sed -e "$$sed_rest"`; \
+  done; \
+  reldir="$$dir2"
 DIST_ARCHIVES = $(distdir).tar.gz
 GZIP_ENV = --best
 DIST_TARGETS = dist-gzip
@@ -192,12 +198,12 @@ distuninstallcheck_listfiles = find . -type f -print
 am__distuninstallcheck_listfiles = $(distuninstallcheck_listfiles) \
   | sed 's|^\./|$(prefix)/|' | grep -v '$(infodir)/dir$$'
 distcleancheck_listfiles = find . -type f -print
-ACLOCAL = ${SHELL} /home/xhou/work/GitRepository/libtest/missing aclocal-1.15
+ACLOCAL = ${SHELL} /home/xhou/my/liburlparse/automake/missing aclocal-1.15
 AMTAR = $${TAR-tar}
 AM_DEFAULT_VERBOSITY = 1
-AUTOCONF = ${SHELL} /home/xhou/work/GitRepository/libtest/missing autoconf
-AUTOHEADER = ${SHELL} /home/xhou/work/GitRepository/libtest/missing autoheader
-AUTOMAKE = ${SHELL} /home/xhou/work/GitRepository/libtest/missing automake-1.15
+AUTOCONF = ${SHELL} /home/xhou/my/liburlparse/automake/missing autoconf
+AUTOHEADER = ${SHELL} /home/xhou/my/liburlparse/automake/missing autoheader
+AUTOMAKE = ${SHELL} /home/xhou/my/liburlparse/automake/missing automake-1.15
 AWK = mawk
 CC = gcc
 CCDEPMODE = depmode=gcc3
@@ -208,8 +214,9 @@ CXX = g++
 CXXDEPMODE = depmode=gcc3
 CXXFLAGS = -g -O2
 CYGPATH_W = echo
-DEFS = -DPACKAGE_NAME=\"liburlparse\" -DPACKAGE_TARNAME=\"liburlparse\" -DPACKAGE_VERSION=\"1.0\" -DPACKAGE_STRING=\"liburlparse\ 1.0\" -DPACKAGE_BUGREPORT=\"13752913198@163.com\" -DPACKAGE_URL=\"\" -DPACKAGE=\"\" -DVERSION=\"1.0\" -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE__BOOL=1 -DHAVE_MEMSET=1 -DHAVE_STRTOL=1
+DEFS = -DPACKAGE_NAME=\"liburlparse\" -DPACKAGE_TARNAME=\"liburlparse\" -DPACKAGE_VERSION=\"1.0\" -DPACKAGE_STRING=\"liburlparse\ 1.0\" -DPACKAGE_BUGREPORT=\"13752913198@163.com\" -DPACKAGE_URL=\"\" -DPACKAGE=\"liburlparse\" -DVERSION=\"1.0\" -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE__BOOL=1 -DHAVE_MEMSET=1 -DHAVE_STRTOL=1
 DEPDIR = .deps
+DOLLAR_SIGN = $
 ECHO_C = 
 ECHO_N = -n
 ECHO_T = 
@@ -225,10 +232,10 @@ LDFLAGS =
 LIBOBJS = 
 LIBS = 
 LTLIBOBJS = 
-MAKEINFO = ${SHELL} /home/xhou/work/GitRepository/libtest/missing makeinfo
+MAKEINFO = ${SHELL} /home/xhou/my/liburlparse/automake/missing makeinfo
 MKDIR_P = /bin/mkdir -p
 OBJEXT = o
-PACKAGE = 
+PACKAGE = liburlparse
 PACKAGE_BUGREPORT = 13752913198@163.com
 PACKAGE_NAME = liburlparse
 PACKAGE_STRING = liburlparse 1.0
@@ -241,10 +248,10 @@ SET_MAKE =
 SHELL = /bin/bash
 STRIP = 
 VERSION = 1.0
-abs_builddir = /home/xhou/work/GitRepository/libtest
-abs_srcdir = /home/xhou/work/GitRepository/libtest
-abs_top_builddir = /home/xhou/work/GitRepository/libtest
-abs_top_srcdir = /home/xhou/work/GitRepository/libtest
+abs_builddir = /home/xhou/my/liburlparse/automake
+abs_srcdir = /home/xhou/my/liburlparse/automake
+abs_top_builddir = /home/xhou/my/liburlparse/automake
+abs_top_srcdir = /home/xhou/my/liburlparse/automake
 ac_ct_CC = gcc
 ac_ct_CXX = g++
 am__include = include
@@ -264,7 +271,7 @@ host_alias =
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = ${SHELL} /home/xhou/work/GitRepository/libtest/install-sh
+install_sh = ${SHELL} /home/xhou/my/liburlparse/automake/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
@@ -285,27 +292,12 @@ target_alias =
 top_build_prefix = 
 top_builddir = .
 top_srcdir = .
-noinst_LIBRARIES = liburlparse.a
-liburlparse_a_SOURCES = charutils.cpp \
-	domainnamereader.cpp \
-	glog.cpp \
-	hostnormalizer.cpp \
-	inetaddress.cpp \
-	inputtextreader.cpp \
-	pathnormalizer.cpp \
-	stringbuilder.cpp \
-	stringutils.cpp \
-	url.cpp \
-	urldetector.cpp \
-	urldetectoroptions.cpp \
-	urlmarker.cpp \
-	urlpart.cpp \
-	urlutil.cpp 
-
-all: all-am
+SUBDIRS = src Test
+CURRENTDIR = $(shell /bin/pwd)
+AM_CPPFLAGS = -I$(CURRENTDIR)/src/include -Wno-literal-suffix -Wno-deprecated -Wno-deprecated -Wno-stringop-overflow
+all: all-recursive
 
 .SUFFIXES:
-.SUFFIXES: .cpp .o .obj
 am--refresh: Makefile
 	@:
 $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
@@ -339,63 +331,62 @@ $(top_srcdir)/configure:  $(am__configure_deps)
 $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
 	$(am__cd) $(srcdir) && $(ACLOCAL) $(ACLOCAL_AMFLAGS)
 $(am__aclocal_m4_deps):
-src/Makefile: $(top_builddir)/config.status $(top_srcdir)/src/Makefile.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
-Test/Makefile: $(top_builddir)/config.status $(top_srcdir)/Test/Makefile.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
 
-clean-noinstLIBRARIES:
-	-test -z "$(noinst_LIBRARIES)" || rm -f $(noinst_LIBRARIES)
-
-liburlparse.a: $(liburlparse_a_OBJECTS) $(liburlparse_a_DEPENDENCIES) $(EXTRA_liburlparse_a_DEPENDENCIES) 
-	$(AM_V_at)-rm -f liburlparse.a
-	$(AM_V_AR)$(liburlparse_a_AR) liburlparse.a $(liburlparse_a_OBJECTS) $(liburlparse_a_LIBADD)
-	$(AM_V_at)$(RANLIB) liburlparse.a
-
-mostlyclean-compile:
-	-rm -f *.$(OBJEXT)
-
-distclean-compile:
-	-rm -f *.tab.c
-
-include ./$(DEPDIR)/charutils.Po
-include ./$(DEPDIR)/domainnamereader.Po
-include ./$(DEPDIR)/glog.Po
-include ./$(DEPDIR)/hostnormalizer.Po
-include ./$(DEPDIR)/inetaddress.Po
-include ./$(DEPDIR)/inputtextreader.Po
-include ./$(DEPDIR)/pathnormalizer.Po
-include ./$(DEPDIR)/stringbuilder.Po
-include ./$(DEPDIR)/stringutils.Po
-include ./$(DEPDIR)/url.Po
-include ./$(DEPDIR)/urldetector.Po
-include ./$(DEPDIR)/urldetectoroptions.Po
-include ./$(DEPDIR)/urlmarker.Po
-include ./$(DEPDIR)/urlpart.Po
-include ./$(DEPDIR)/urlutil.Po
-
-.cpp.o:
-	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
-#	$(AM_V_CXX)source='$<' object='$@' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(AM_V_CXX_no)$(CXXCOMPILE) -c -o $@ $<
-
-.cpp.obj:
-	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
-	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
-#	$(AM_V_CXX)source='$<' object='$@' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(AM_V_CXX_no)$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
+# This directory's subdirectories are mostly independent; you can cd
+# into them and run 'make' without going through this Makefile.
+# To change the values of 'make' variables: instead of editing Makefiles,
+# (1) if the variable is set in 'config.status', edit 'config.status'
+#     (which will cause the Makefiles to be regenerated when you run 'make');
+# (2) otherwise, pass the desired values on the 'make' command line.
+$(am__recursive_targets):
+	@fail=; \
+	if $(am__make_keepgoing); then \
+	  failcom='fail=yes'; \
+	else \
+	  failcom='exit 1'; \
+	fi; \
+	dot_seen=no; \
+	target=`echo $@ | sed s/-recursive//`; \
+	case "$@" in \
+	  distclean-* | maintainer-clean-*) list='$(DIST_SUBDIRS)' ;; \
+	  *) list='$(SUBDIRS)' ;; \
+	esac; \
+	for subdir in $$list; do \
+	  echo "Making $$target in $$subdir"; \
+	  if test "$$subdir" = "."; then \
+	    dot_seen=yes; \
+	    local_target="$$target-am"; \
+	  else \
+	    local_target="$$target"; \
+	  fi; \
+	  ($(am__cd) $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$local_target) \
+	  || eval $$failcom; \
+	done; \
+	if test "$$dot_seen" = "no"; then \
+	  $(MAKE) $(AM_MAKEFLAGS) "$$target-am" || exit 1; \
+	fi; test -z "$$fail"
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique
-tags: tags-am
+tags: tags-recursive
 TAGS: tags
 
 tags-am: $(TAGS_DEPENDENCIES) $(am__tagged_files)
 	set x; \
 	here=`pwd`; \
+	if ($(ETAGS) --etags-include --version) >/dev/null 2>&1; then \
+	  include_option=--etags-include; \
+	  empty_fix=.; \
+	else \
+	  include_option=--include; \
+	  empty_fix=; \
+	fi; \
+	list='$(SUBDIRS)'; for subdir in $$list; do \
+	  if test "$$subdir" = .; then :; else \
+	    test ! -f $$subdir/TAGS || \
+	      set "$$@" "$$include_option=$$here/$$subdir/TAGS"; \
+	  fi; \
+	done; \
 	$(am__define_uniq_tagged_files); \
 	shift; \
 	if test -z "$(ETAGS_ARGS)$$*$$unique"; then :; else \
@@ -408,7 +399,7 @@ tags-am: $(TAGS_DEPENDENCIES) $(am__tagged_files)
 	      $$unique; \
 	  fi; \
 	fi
-ctags: ctags-am
+ctags: ctags-recursive
 
 CTAGS: ctags
 ctags-am: $(TAGS_DEPENDENCIES) $(am__tagged_files)
@@ -427,7 +418,7 @@ cscope: cscope.files
 clean-cscope:
 	-rm -f cscope.files
 cscope.files: clean-cscope cscopelist
-cscopelist: cscopelist-am
+cscopelist: cscopelist-recursive
 
 cscopelist-am: $(am__tagged_files)
 	list='$(am__tagged_files)'; \
@@ -477,6 +468,31 @@ distdir: $(DISTFILES)
 	    test -f "$(distdir)/$$file" \
 	    || cp -p $$d/$$file "$(distdir)/$$file" \
 	    || exit 1; \
+	  fi; \
+	done
+	@list='$(DIST_SUBDIRS)'; for subdir in $$list; do \
+	  if test "$$subdir" = .; then :; else \
+	    $(am__make_dryrun) \
+	      || test -d "$(distdir)/$$subdir" \
+	      || $(MKDIR_P) "$(distdir)/$$subdir" \
+	      || exit 1; \
+	    dir1=$$subdir; dir2="$(distdir)/$$subdir"; \
+	    $(am__relativize); \
+	    new_distdir=$$reldir; \
+	    dir1=$$subdir; dir2="$(top_distdir)"; \
+	    $(am__relativize); \
+	    new_top_distdir=$$reldir; \
+	    echo " (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) top_distdir="$$new_top_distdir" distdir="$$new_distdir" \\"; \
+	    echo "     am__remove_distdir=: am__skip_length_check=: am__skip_mode_fix=: distdir)"; \
+	    ($(am__cd) $$subdir && \
+	      $(MAKE) $(AM_MAKEFLAGS) \
+	        top_distdir="$$new_top_distdir" \
+	        distdir="$$new_distdir" \
+		am__remove_distdir=: \
+		am__skip_length_check=: \
+		am__skip_mode_fix=: \
+	        distdir) \
+	      || exit 1; \
 	  fi; \
 	done
 	-test -n "$(am__skip_mode_fix)" \
@@ -611,18 +627,19 @@ distcleancheck: distclean
 	       $(distcleancheck_listfiles) ; \
 	       exit 1; } >&2
 check-am: all-am
-check: check-am
-all-am: Makefile $(LIBRARIES)
-installdirs:
-install: install-am
-install-exec: install-exec-am
-install-data: install-data-am
-uninstall: uninstall-am
+check: check-recursive
+all-am: Makefile
+installdirs: installdirs-recursive
+installdirs-am:
+install: install-recursive
+install-exec: install-exec-recursive
+install-data: install-data-recursive
+uninstall: uninstall-recursive
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 
-installcheck: installcheck-am
+installcheck: installcheck-recursive
 install-strip:
 	if test -z '$(STRIP)'; then \
 	  $(MAKE) $(AM_MAKEFLAGS) INSTALL_PROGRAM="$(INSTALL_STRIP_PROGRAM)" \
@@ -644,98 +661,95 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
-clean: clean-am
+clean: clean-recursive
 
-clean-am: clean-generic clean-noinstLIBRARIES mostlyclean-am
+clean-am: clean-generic mostlyclean-am
 
-distclean: distclean-am
+distclean: distclean-recursive
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
-	-rm -rf ./$(DEPDIR)
 	-rm -f Makefile
-distclean-am: clean-am distclean-compile distclean-generic \
-	distclean-tags
+distclean-am: clean-am distclean-generic distclean-tags
 
-dvi: dvi-am
+dvi: dvi-recursive
 
 dvi-am:
 
-html: html-am
+html: html-recursive
 
 html-am:
 
-info: info-am
+info: info-recursive
 
 info-am:
 
 install-data-am:
 
-install-dvi: install-dvi-am
+install-dvi: install-dvi-recursive
 
 install-dvi-am:
 
 install-exec-am:
 
-install-html: install-html-am
+install-html: install-html-recursive
 
 install-html-am:
 
-install-info: install-info-am
+install-info: install-info-recursive
 
 install-info-am:
 
 install-man:
 
-install-pdf: install-pdf-am
+install-pdf: install-pdf-recursive
 
 install-pdf-am:
 
-install-ps: install-ps-am
+install-ps: install-ps-recursive
 
 install-ps-am:
 
 installcheck-am:
 
-maintainer-clean: maintainer-clean-am
+maintainer-clean: maintainer-clean-recursive
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
 	-rm -rf $(top_srcdir)/autom4te.cache
-	-rm -rf ./$(DEPDIR)
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 
-mostlyclean: mostlyclean-am
+mostlyclean: mostlyclean-recursive
 
-mostlyclean-am: mostlyclean-compile mostlyclean-generic
+mostlyclean-am: mostlyclean-generic
 
-pdf: pdf-am
+pdf: pdf-recursive
 
 pdf-am:
 
-ps: ps-am
+ps: ps-recursive
 
 ps-am:
 
 uninstall-am:
 
-.MAKE: install-am install-strip
+.MAKE: $(am__recursive_targets) install-am install-strip
 
-.PHONY: CTAGS GTAGS TAGS all all-am am--refresh check check-am clean \
-	clean-cscope clean-generic clean-noinstLIBRARIES cscope \
-	cscopelist-am ctags ctags-am dist dist-all dist-bzip2 \
+.PHONY: $(am__recursive_targets) CTAGS GTAGS TAGS all all-am \
+	am--refresh check check-am clean clean-cscope clean-generic \
+	cscope cscopelist-am ctags ctags-am dist dist-all dist-bzip2 \
 	dist-gzip dist-lzip dist-shar dist-tarZ dist-xz dist-zip \
-	distcheck distclean distclean-compile distclean-generic \
-	distclean-tags distcleancheck distdir distuninstallcheck dvi \
-	dvi-am html html-am info info-am install install-am \
-	install-data install-data-am install-dvi install-dvi-am \
-	install-exec install-exec-am install-html install-html-am \
-	install-info install-info-am install-man install-pdf \
-	install-pdf-am install-ps install-ps-am install-strip \
-	installcheck installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-compile \
-	mostlyclean-generic pdf pdf-am ps ps-am tags tags-am uninstall \
-	uninstall-am
+	distcheck distclean distclean-generic distclean-tags \
+	distcleancheck distdir distuninstallcheck dvi dvi-am html \
+	html-am info info-am install install-am install-data \
+	install-data-am install-dvi install-dvi-am install-exec \
+	install-exec-am install-html install-html-am install-info \
+	install-info-am install-man install-pdf install-pdf-am \
+	install-ps install-ps-am install-strip installcheck \
+	installcheck-am installdirs installdirs-am maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-generic pdf \
+	pdf-am ps ps-am tags tags-am uninstall uninstall-am
 
 .PRECIOUS: Makefile
 
+export AM_CPPFLAGS
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -9,7 +9,4 @@ unitmain_SOURCES=testCharUtils.cpp \
 	testurlutil.cpp \
 	unitmain.cpp 
 
-LIBS=-L$(ROOTDIR)/src -lurlparse -lgtest -pthread
-
-
-
+LIBS=-L$(top_srcdir)/src -lurlparse -lgtest -pthread

@@ -70,10 +70,10 @@ am__make_running_with_option = \
   test $$has_opt = yes
 am__make_dryrun = (target_option=n; $(am__make_running_with_option))
 am__make_keepgoing = (target_option=k; $(am__make_running_with_option))
-pkgdatadir = $(datadir)/
-pkgincludedir = $(includedir)/
-pkglibdir = $(libdir)/
-pkglibexecdir = $(libexecdir)/
+pkgdatadir = $(datadir)/liburlparse
+pkgincludedir = $(includedir)/liburlparse
+pkglibdir = $(libdir)/liburlparse
+pkglibexecdir = $(libexecdir)/liburlparse
 am__cd = CDPATH="$${ZSH_VERSION+.}$(PATH_SEPARATOR)" && cd
 install_sh_DATA = $(install_sh) -c -m 644
 install_sh_PROGRAM = $(install_sh) -c
@@ -169,12 +169,12 @@ ETAGS = etags
 CTAGS = ctags
 am__DIST_COMMON = $(srcdir)/Makefile.in $(top_srcdir)/depcomp
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-ACLOCAL = ${SHELL} /home/xhou/work/GitRepository/libtest/missing aclocal-1.15
+ACLOCAL = ${SHELL} /home/xhou/my/liburlparse/automake/missing aclocal-1.15
 AMTAR = $${TAR-tar}
 AM_DEFAULT_VERBOSITY = 1
-AUTOCONF = ${SHELL} /home/xhou/work/GitRepository/libtest/missing autoconf
-AUTOHEADER = ${SHELL} /home/xhou/work/GitRepository/libtest/missing autoheader
-AUTOMAKE = ${SHELL} /home/xhou/work/GitRepository/libtest/missing automake-1.15
+AUTOCONF = ${SHELL} /home/xhou/my/liburlparse/automake/missing autoconf
+AUTOHEADER = ${SHELL} /home/xhou/my/liburlparse/automake/missing autoheader
+AUTOMAKE = ${SHELL} /home/xhou/my/liburlparse/automake/missing automake-1.15
 AWK = mawk
 CC = gcc
 CCDEPMODE = depmode=gcc3
@@ -185,8 +185,9 @@ CXX = g++
 CXXDEPMODE = depmode=gcc3
 CXXFLAGS = -g -O2
 CYGPATH_W = echo
-DEFS = -DPACKAGE_NAME=\"liburlparse\" -DPACKAGE_TARNAME=\"liburlparse\" -DPACKAGE_VERSION=\"1.0\" -DPACKAGE_STRING=\"liburlparse\ 1.0\" -DPACKAGE_BUGREPORT=\"13752913198@163.com\" -DPACKAGE_URL=\"\" -DPACKAGE=\"\" -DVERSION=\"1.0\" -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE__BOOL=1 -DHAVE_MEMSET=1 -DHAVE_STRTOL=1
+DEFS = -DPACKAGE_NAME=\"liburlparse\" -DPACKAGE_TARNAME=\"liburlparse\" -DPACKAGE_VERSION=\"1.0\" -DPACKAGE_STRING=\"liburlparse\ 1.0\" -DPACKAGE_BUGREPORT=\"13752913198@163.com\" -DPACKAGE_URL=\"\" -DPACKAGE=\"liburlparse\" -DVERSION=\"1.0\" -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1 -DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE__BOOL=1 -DHAVE_MEMSET=1 -DHAVE_STRTOL=1
 DEPDIR = .deps
+DOLLAR_SIGN = $
 ECHO_C = 
 ECHO_N = -n
 ECHO_T = 
@@ -202,10 +203,10 @@ LDFLAGS =
 LIBOBJS = 
 LIBS = 
 LTLIBOBJS = 
-MAKEINFO = ${SHELL} /home/xhou/work/GitRepository/libtest/missing makeinfo
+MAKEINFO = ${SHELL} /home/xhou/my/liburlparse/automake/missing makeinfo
 MKDIR_P = /bin/mkdir -p
 OBJEXT = o
-PACKAGE = 
+PACKAGE = liburlparse
 PACKAGE_BUGREPORT = 13752913198@163.com
 PACKAGE_NAME = liburlparse
 PACKAGE_STRING = liburlparse 1.0
@@ -218,10 +219,10 @@ SET_MAKE =
 SHELL = /bin/bash
 STRIP = 
 VERSION = 1.0
-abs_builddir = /home/xhou/work/GitRepository/libtest/src
-abs_srcdir = /home/xhou/work/GitRepository/libtest/src
-abs_top_builddir = /home/xhou/work/GitRepository/libtest
-abs_top_srcdir = /home/xhou/work/GitRepository/libtest
+abs_builddir = /home/xhou/my/liburlparse/automake/src
+abs_srcdir = /home/xhou/my/liburlparse/automake/src
+abs_top_builddir = /home/xhou/my/liburlparse/automake
+abs_top_srcdir = /home/xhou/my/liburlparse/automake
 ac_ct_CC = gcc
 ac_ct_CXX = g++
 am__include = include
@@ -241,7 +242,7 @@ host_alias =
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = ${SHELL} /home/xhou/work/GitRepository/libtest/install-sh
+install_sh = ${SHELL} /home/xhou/my/liburlparse/automake/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
@@ -279,6 +280,8 @@ liburlparse_a_SOURCES = charutils.cpp \
 	urlpart.cpp \
 	urlutil.cpp 
 
+liburlparse_CPPFLAGS = $(top_srcdir)/src/include # 头文件目录
+liburlparsedir = $(libdir)
 all: all-am
 
 .SUFFIXES:
@@ -559,6 +562,26 @@ uninstall-am:
 
 .PRECIOUS: Makefile
 
+
+#liburlparse_PROGRAMS=liburlparse.so
+#liburlparse_so_SOURCES= charutils.cpp \
+#	domainnamereader.cpp \
+#	glog.cpp \
+#	hostnormalizer.cpp \
+#	inetaddress.cpp \
+#	inputtextreader.cpp \
+#	pathnormalizer.cpp \
+#	stringbuilder.cpp \
+#	stringutils.cpp \
+#	url.cpp \
+#	urldetector.cpp \
+#	urldetectoroptions.cpp \
+#	urlmarker.cpp \
+#	urlpart.cpp \
+#	urlutil.cpp 
+
+#liburlparse_so_LDFLAGS=-shared -fPIC 
+#liburlparse_so_LDADD=
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
