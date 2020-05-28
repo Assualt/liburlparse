@@ -1,7 +1,7 @@
 CC 	= g++
 CXX = gcc
 FLAG = -Wno-literal-suffix -Wno-deprecated -D_POSIX_PTHREAD_SEMANTICS -D_POSIX_THREAD_PRIORITY_SCHEDULING
-CFLAGS=  $(FLAG)  -g -Wall -I../include  $(SYSFLAGS) -std=c++11  -fprofile-arcs -ftest-coverage 
+CFLAGS=  $(FLAG)  -g -Wall -I../include  $(SYSFLAGS) -std=c++11  -fprofile-arcs -ftest-coverage -O2 -Wno-strict-overflow # -pg
 
 #VPATH 指定cpp文件的路径
 VPATH = ../src:../Test
@@ -49,24 +49,25 @@ testurlutil:testurlutil.o
 # file reader to parse url
 urlclient:urlparseclient.o
 	$(CC) $(CFLAGS) -o client urlparseclient.o -L./ -lurlparse 
+
 ## Commands to generate dependency files
-GEN_DEPS.c= $(CC) -E -MM $(DEFS) $(CFLAGS)
-GEN_DEPS.cc= $(CXX) -E -MM $(DEFS) $(CFLAGS)
-%.d : %.c
-	@echo "generating dependency information for $<"
-	@$(SHELL) -ec '$(GEN_DEPS.c) $< \
-			| sed '\''s/\($*\)\.o[ :]*/\1.o $@ : /g'\'' > $@; \
-            [ -s $@ ] || rm -f $@'
-%.d : %.cpp
-	@echo "generating dependency information for $<"
-	@$(SHELL) -ec '$(GEN_DEPS.cc) $< \
-			| sed '\''s/\($*\)\.o[ :]*/\1.o $@ : /g'\'' > $@; \
-            [ -s $@ ] || rm -f $@'
-OBJSDEP = $(OBJS:.o=.d)
-ifeq (,$(NAJECNDGLOBALS))
--include $(OBJSDEP)
-else
-ifneq ($(%clean,,$(MAKECMDGOBALS)),)
--include $(OBJSDEP)
-endif
-endif
+#GEN_DEPS.c= $(CC) -E -MM $(DEFS) $(CFLAGS)
+#GEN_DEPS.cc= $(CXX) -E -MM $(DEFS) $(CFLAGS)
+#%.d : %.c
+#	@echo "generating dependency information for $<"
+#	@$(SHELL) -ec '$(GEN_DEPS.c) $< \
+#			| sed '\''s/\($*\)\.o[ :]*/\1.o $@ : /g'\'' > $@; \
+#            [ -s $@ ] || rm -f $@'
+#%.d : %.cpp
+#	@echo "generating dependency information for $<"
+#	@$(SHELL) -ec '$(GEN_DEPS.cc) $< \
+#			| sed '\''s/\($*\)\.o[ :]*/\1.o $@ : /g'\'' > $@; \
+#            [ -s $@ ] || rm -f $@'
+＃OBJSDEP = $(OBJS:.o=.d)
+#ifeq (,$(NAJECNDGLOBALS))
+#-include $(OBJSDEP)
+#else
+#ifneq ($(%clean,,$(MAKECMDGOBALS)),)
+#-include $(OBJSDEP)
+#endif
+#endif
