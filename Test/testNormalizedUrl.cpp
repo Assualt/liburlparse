@@ -30,6 +30,7 @@ TEST(NormalizedUrl__Test, testUsernamePasswordUrls){
 }
 
 const static std::vector<std::vector<std::string> > FullUrls ={
+    
 	{"http://host/%25%32%35", "http://host/%25"},
     {"http://host/%25%32%35%25%32%35", "http://host/%25%25"},
     {"http://host/%2525252525252525", "http://host/%25"},
@@ -53,7 +54,7 @@ const static std::vector<std::vector<std::string> > FullUrls ={
     {"http://www.google.com/q?r?", "http://www.google.com/q?r?"},
     {"http://www.google.com/q?r?s", "http://www.google.com/q?r?s"},
     {"http://evil.com/foo#bar#baz", "http://evil.com/foo"},
-    {"http://evil.com/foo;", "http://evil.com/foo;"},
+    {"http://evil.com/foo;", "http://evil.com/foo"},
     {"http://evil.com/foo?bar;", "http://evil.com/foo?bar;"},
     {"http://\\x01\\x80.com/", "http://%01%80.com/"},
     {"http://notrailingslash.com", "http://notrailingslash.com/"},
@@ -66,6 +67,8 @@ const static std::vector<std::vector<std::string> > FullUrls ={
     {"http://host.com/ab%23cd", "http://host.com/ab%23cd"},
     {"http://host.com//twoslashes?more//slashes", "http://host.com/twoslashes?more//slashes"},
     {"http://go.co/a/b/../c", "http://go.co/a/c"}
+    
+    //{"http://09828fit.transfăgărășan.ro/co/link.php?lock=visa@kopenhagenfur.cn", "http://09828fit.transfăgărășan.ro/co/link.php?lock=visa@kopenhagenfur.cn"}
 };
 
 TEST(NormalizedUrl__Test, testFullUrls){
@@ -73,11 +76,13 @@ TEST(NormalizedUrl__Test, testFullUrls){
 		string strurl = it[0];
 		NormalizedUrl url = NormalizedUrl::create(strurl);
 		std::cout << it[1] << ":" << url.getFullUrlWithoutFragment() << std::endl;
-		// EXPECT_EQ(url.getFullUrlWithoutFragment(),it[1]);
+		EXPECT_EQ(url.getFullUrlWithoutFragment(),it[1]);
 	}
 }
 
-// int main(int argc,char **argv){
-//     testing::InitGoogleTest(&argc,argv);
-//     return RUN_ALL_TESTS();
-// }
+#ifdef TEST_MAIN_ONLY
+int main(int argc,char **argv){
+    testing::InitGoogleTest(&argc,argv);
+    return RUN_ALL_TESTS();
+}
+#endif

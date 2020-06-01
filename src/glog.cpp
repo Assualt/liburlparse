@@ -1,31 +1,13 @@
 #include "glog.h"
 
-Log::Log() : _level(LOG_DEBUG_LEVEL), _LibUrlParser("URL Parser") {}
-void Log::getTime() {
-    time_t localtimer;
-    time(&localtimer);
-    char buf[TimeBuf_MAXSIZE];
-    memset(buf, 0, sizeof(buf));
-    strftime(buf, sizeof(buf), "(%H:%M:%S)", localtime(&localtimer));
-    _time = buf;
-    memset(buf, 0, sizeof(buf));
-}
-void Log::getDate() {
-    time_t localDate;
-    time(&localDate);
-    char buf[DateBuf_MAXSIZE];
-    memset(buf, 0, sizeof(buf));
-    strftime(buf, sizeof(buf), "%Y-%m-%d", localtime(&localDate));
-    _date = buf;
-    memset(buf, 0, sizeof(buf));
-}
+Logger Logger::_logger;
+Log::Log() : _level(LOG_DEBUG_LEVEL){}
 Log &Log::setLevel(LOG_LEVEL level) {
     _level = level;
     return *this;
 }
 Log &Log::log() {
-    getTime();
-    getDate();
+    _currenttime = getCurrentTime();
     return *this;
 }
 Log &Log::format(const std::string &fmt_str, ...) {
@@ -67,13 +49,10 @@ const std::string Log::getLevel() {
     return t;
 }
 void Log::toFile() {
-    std::string log = _LibUrlParser + " " + _time + " [root - :" + this->getLevel() + "] " + _log_data;
-    std::string filename = LOG_PATH + "." + _date;
-    std::ofstream fout(filename, ios::app);
-    fout << log << std::endl;
-    fout.close();
+    std::string log = "(" + _currenttime + ")[root - :" + this->getLevel() + "] " + _log_data;
+    Logger::getLogger().outStream(log);
 }
-/*
+#ifdef LOG_MAIN
 int main()
 {
         int a = 10086, b = 10010;
@@ -81,12 +60,11 @@ int main()
         int i = 10;
         while (i--)
         {
-                Log().log().setLevel(LOG_DEBUG_LEVEL).format("%d-%d-%s", a,
-b,"this is just a beginning to loops").toFile(); sleep(1);
+            Log().log().setLevel(LOG_DEBUG_LEVEL).format("%d-%d-%s", a, b,"this is just a beginning to loops").toFile(); sleep(1);
         }
         // std::cout<<"TimeFormat:"<<TimeFormat()<<std::endl;
         // sleep(1);
         // std::cout<<"TimeFormat:"<<TimeFormat()<<std::endl;
         return 0;
 }
-*/
+#endif

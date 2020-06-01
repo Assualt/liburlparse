@@ -130,8 +130,9 @@ TEST(Url__Test, testSingleDomainUrls){
 		EXPECT_EQ(url.getFullUrl(),it[3]);
 	}
 }
-// int main(int argc,char **argv){
-//     testing::InitGoogleTest(&argc,argv);
-//     return RUN_ALL_TESTS();
-// }
-// #endif
+#ifdef TEST_MAIN_ONLY
+int main(int argc,char **argv){
+    testing::InitGoogleTest(&argc,argv);
+    return RUN_ALL_TESTS();
+}
+#endif

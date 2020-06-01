@@ -442,7 +442,6 @@ bool UrlDetector::readDomainName(std::string &current) {
     // delete(handler);
     // Try to read the dns and act on the response.
     ReaderNextState state = reader.readDomainName();  //
-
     _reader.setPosition(reader.getReaderPosition());
     _reader.setBacktrackedCount(reader.getBacktracked());
     reader.setBuffer(_buffer);

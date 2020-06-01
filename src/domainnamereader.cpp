@@ -102,7 +102,7 @@ ReaderNextState DomainNameReader::readCurrent() {
                 }
             } else if (
                     CharUtils::isAlpha(curr) || curr == '-' ||
-                    curr >= INTERNATIONAL_CHAR_START) {
+                curr >= INTERNATIONAL_CHAR_START ||  (curr < 0 && CharUtils::isAlphaNumberic(curr) )) {
                 _numeric = false;
             } else if (
                     !CharUtils::isNumberic(curr) &&

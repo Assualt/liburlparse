@@ -107,8 +107,9 @@ TEST(StringUtils__Test, testJudgeValidBaseString){
     EXPECT_TRUE(CharUtils::JudgeValidRadixString("44df",16));
     EXPECT_TRUE(CharUtils::JudgeValidRadixString("ffee",16));
 }
-
-// int main(int argc,char **argv){
-//     testing::InitGoogleTest(&argc,argv);
-//     return RUN_ALL_TESTS();
-// }
+#ifdef TEST_MAIN_ONLY
+int main(int argc,char **argv){
+    testing::InitGoogleTest(&argc,argv);
+    return RUN_ALL_TESTS();
+}
+#endif

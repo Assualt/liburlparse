@@ -1,7 +1,7 @@
 CC 	= g++
 CXX = gcc
 FLAG = -Wno-literal-suffix -Wno-deprecated -D_POSIX_PTHREAD_SEMANTICS -D_POSIX_THREAD_PRIORITY_SCHEDULING
-CFLAGS=  $(FLAG)  -g -Wall -I../include  $(SYSFLAGS) -std=c++11  -fprofile-arcs -ftest-coverage -O2 -Wno-strict-overflow # -pg
+CFLAGS=  $(FLAG)  -g -Wall -I../include  $(SYSFLAGS) -std=c++11 -Wno-unused-function -Wno-strict-overflow # -fprofile-arcs -ftest-coverage -O2 -Wno-strict-overflow # -pg
 
 #VPATH 指定cpp文件的路径
 VPATH = ../src:../Test
@@ -32,19 +32,19 @@ alltest: unitmain.o testInputReader.o testCharUtils.o testurlutil.o testHostnorm
 
 # Test for sigle file just need to remove // for main function
 testcharutils:testCharUtils.o
-	$(CC) $(CFLAGS) -o unitcharutils testCharUtils.o -L/usr/local/lib -lgtest -pthread  -L./ -lurlparse
-testinputreader:testInputReader.o
-	$(CC) $(CFLAGS) -o unitinputreader testInputReader.o -L/usr/local/lib -lgtest -pthread  -L./ -lurlparse 
+	$(CC) $(CFLAGS) -o unitcharutils testCharUtils.o -L/usr/local/lib -lgtest -pthread  -L./ -lurlparse -DTEST_MAIN_ONLY
+testinputreader:testInputReader.o 
+	$(CC) $(CFLAGS) -o unitinputreader testInputReader.o -L/usr/local/lib -lgtest -pthread  -L./ -lurlparse  -DTEST_MAIN_ONLY
 testhostnormalizer:testHostnormalizer.o 
-	$(CC) $(CFLAGS) -o unithostnormalizer testHostnormalizer.o -L/usr/local/lib -lgtest -pthread -L./ -lurlparse 
+	$(CC) $(CFLAGS) -o unithostnormalizer testHostnormalizer.o -L/usr/local/lib -lgtest -pthread -L./ -lurlparse -DTEST_MAIN_ONLY
 testpathnormalizer:testPathNormalizer.o
-	$(CC) $(CFLAGS) -o unitpathnormalizer testPathNormalizer.o -L/usr/local/lib -lgtest -pthread -L./ -lurlparse
+	$(CC) $(CFLAGS) -o unitpathnormalizer testPathNormalizer.o -L/usr/local/lib -lgtest -pthread -L./ -lurlparse -DTEST_MAIN_ONLY
 testurl:testUrl.o
-	$(CC) $(CFLAGS) -o uniturl testUrl.o -L/usr/local/lib -lgtest -pthread -L./ -lurlparse 
+	$(CC) $(CFLAGS) -o uniturl testUrl.o -L/usr/local/lib -lgtest -pthread -L./ -lurlparse -DTEST_MAIN_ONLY
 testnormalizedurl:testNormalizedUrl.o
-	$(CC) $(CFLAGS) -o unitnormalizedurl testNormalizedUrl.o -L/usr/local/lib -lgtest -pthread -L./ -lurlparse 
+	$(CC) $(CFLAGS) -o unitnormalizedurl testNormalizedUrl.o -L/usr/local/lib -lgtest -pthread -L./ -lurlparse -DTEST_MAIN_ONLY
 testurlutil:testurlutil.o
-	$(CC) $(CFLAGS) -o uniturlutil testurlutil.o -L/usr/local/lib -lgtest -pthread -L./ -lurlparse
+	$(CC) $(CFLAGS) -o uniturlutil testurlutil.o -L/usr/local/lib -lgtest -pthread -L./ -lurlparse -DTEST_MAIN_ONLY
 
 # file reader to parse url
 urlclient:urlparseclient.o
