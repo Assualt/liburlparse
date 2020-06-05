@@ -194,8 +194,8 @@ public:
         // move (nStart, m_nTotalSize] to
         // (nStart+str.size(),m_nTotalSize+str.size()]
         memcpy(m_Data + nStart + str.size(),
-                m_Data + nStart,
-                m_nTotalSize - nStart);
+                m_Data + nEnd,
+                m_nTotalSize - nEnd);
         // move str to (nStart, nStart+str.size()]
         memcpy(m_Data + nStart, str.c_str(), str.size());
         return *this;
