@@ -15,8 +15,6 @@
 #include "urlmarker.h"
 #include "hostnormalizer.h"
 #include "pathnormalizer.h"
-//��־�ļ�
-//#include "./glog.h
 
 #define ubyte unsigned char
 using namespace std;

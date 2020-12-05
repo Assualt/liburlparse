@@ -11,7 +11,7 @@
 #include "assert.h"
 using namespace std;
 
-const std::string LOG_PATH = "url.log";
+const std::string LOG_PATH = "/tmp/urlparse.log";
 
 //定义日志级别 分别是 DEBUG WARN ERROR
 enum LOG_LEVEL { LOG_DEBUG_LEVEL = 3, LOG_WARN_LEVEL = 2, LOG_ERR_LEVEL = 1 };
