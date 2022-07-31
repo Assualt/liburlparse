@@ -20,7 +20,7 @@ bool CharUtils::isNumberic(char a) {
 
 // Checks if character is a valid alphanumeric character.
 bool CharUtils::isAlphaNumberic(char a) {
-    return isAlpha(a) || isNumberic(a) || (!ispunct(a) && a != ' ');
+    return isAlpha(a) || isNumberic(a); // || (!ispunct(a) && (a != ' '));
 }
 
 // Checks if character is a valid unreserved character. This is defined by the

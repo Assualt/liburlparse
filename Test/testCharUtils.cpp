@@ -42,7 +42,7 @@ TEST(CharUtils__Test, testCharUtilsIsAlphaNumeric) {
         EXPECT_TRUE(CharUtils::isAlphaNumberic(a));
     }
 
-    char arr2[] = {'~', '-', '_'}; //, '\n'};
+    char arr2[] = {'~', '-', '_', '\n'};
     for (char a : arr2) {
         EXPECT_EQ(CharUtils::isAlphaNumberic(a), false);
     }
@@ -54,7 +54,7 @@ TEST(CharUtils__Test, testCharUtilsIsUnreserved) {
         EXPECT_TRUE(CharUtils::isUnreserved(a));
     }
 
-    char arr2[] = {' ', '!', '(' };//, '\n'};
+    char arr2[] = {' ', '!', '(' , '\n'};
     for (char a : arr2) {
         EXPECT_FALSE(CharUtils::isUnreserved(a));
     }
