@@ -13,24 +13,25 @@
 using namespace std;
 class InetAddress {
 public:
-    InetAddress(const int nfamily);
-    InetAddress(const std::vector<ubyte> ipaddr,const int nfamily = INET_FAMILY_IPV4);
+    InetAddress(const int nFamily);
+    InetAddress(const std::vector<ubyte> ipaddr, const int nFamily = INET_FAMILY_IPV4);
 
     std::string getHostAddress();
+
 protected:
     std::string hostName;
     int family;
     int address;
     std::vector<ubyte> _bytes;
+
 protected:
-	std::vector<ubyte> & getBytes();
+    std::vector<ubyte> &getBytes();
 };
 
 class InetAddressUtils {
 public:
-	static std::string getIPV6HostAddress(const std::vector<ubyte> &vec);
-	static std::string getIPV4HostAddress(const std::vector<ubyte> &vec);
+    static std::string getIPV6HostAddress(const std::vector<ubyte> &vec);
+    static std::string getIPV4HostAddress(const std::vector<ubyte> &vec);
 };
-
 
 #endif  // !_INETADDRESS_H

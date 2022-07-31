@@ -77,10 +77,12 @@ public:
     Url(UrlMarker &urlMarker);
     Url();
     ~Url();
+
 public:
     static std::string DEFAULT_SCHEME;
     static std::map<std::string, int> SCHEME_PORT_MAP;
     static Url create(std::string &url);
+
 private:
     UrlMarker _urlMarker;
     std::string _scheme;
@@ -92,6 +94,7 @@ private:
     std::string _query;
     std::string _fragment;
     std::string _originalUrl;
+
 private:
     void populateUsernamePassword();
     /**
@@ -130,7 +133,7 @@ public:
     NormalizedUrl(UrlMarker &urlMarker);
     NormalizedUrl();
 
-public:    
+public:
     // Override
     std::string getPath();
     std::string getHost();

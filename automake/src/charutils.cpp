@@ -10,12 +10,12 @@ bool CharUtils::isHex(char a) {
 
 // Check if character is a valid alphabetic character.
 bool CharUtils::isAlpha(char a) {
-    return ((a >= 'a' && a <= 'z') || (a >= 'A' && a <= 'Z'));
+    return ((a >= 'a') && (a <= 'z')) || ((a >= 'A') && (a <= 'Z'));
 }
 
 // Checks if character is a valid numeric character.
 bool CharUtils::isNumberic(char a) {
-    return a >= '0' && a <= '9';
+    return ((a >= '0') && (a <= '9'));
 }
 
 // Checks if character is a valid alphanumeric character.
@@ -26,7 +26,7 @@ bool CharUtils::isAlphaNumberic(char a) {
 // Checks if character is a valid unreserved character. This is defined by the
 // RFC 3986 ABNF
 bool CharUtils::isUnreserved(char a) {
-    return isAlphaNumberic(a) || a == '-' || a == '.' || a == '_' || a == '~';
+    return isAlphaNumberic(a) || (a == '-') || (a == '.') || (a == '_') || (a == '~');
 }
 
 // Checks if character is a dot

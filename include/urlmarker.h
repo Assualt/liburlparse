@@ -16,6 +16,7 @@ public:
     void setIndex(UrlPart urlPart, int index);
     int indexOf(UrlPart urlPart);
     void unsetIndex(UrlPart urlPart);
+
 private:
     std::string _originalUrl;
     int _schemeIndex;

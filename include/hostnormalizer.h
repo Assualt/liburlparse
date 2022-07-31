@@ -33,18 +33,19 @@ private:
     std::string _normalizedHost;
     bool _useIpv6Decoded;
     bool _useIpv4Decoded;
-public:    
+
+public:
     /**
      * split ipv6 to vector array
      *
      * example a,b,c,d,e,,
      * splitchar -> ,
-     * limit:0  
+     * limit:0
      *  try to split forever but remove the last ""
-     * => ["a","b","c","d","e"] 
-     * limit:n (n>0)        
+     * => ["a","b","c","d","e"]
+     * limit:n (n>0)
      *  try to split n-1 times , parts = n
-     *  n = 1 => ["a,b,c,d,e,,"] 
+     *  n = 1 => ["a,b,c,d,e,,"]
      *  n = 2 => ["a","b,c,d,e,,"]
      * limit:n (n<0)
      *  try to split forever ,parts = count(,) + 1
@@ -59,7 +60,7 @@ private:
      * Checks if the host is an ip address. Returns the byte representation of
      * it
      */
-    std::vector<ubyte> &tryDecodeHostToIp(std::vector<ubyte> &bytes,const std::string &host);
+    std::vector<ubyte> &tryDecodeHostToIp(std::vector<ubyte> &bytes, const std::string &host);
 
     /**
      * This covers cases like:
@@ -74,14 +75,14 @@ private:
      * if ipv4 was found, _bytes is set to the byte representation of the ipv4
      * address
      */
-    vector<ubyte> &tryDecodeHostToIPv4(std::vector<ubyte> &sbytes,const std::string &host, bool &validEmpty);
+    vector<ubyte> &tryDecodeHostToIPv4(std::vector<ubyte> &sbytes, const std::string &host, bool &validEmpty);
     /**
      * Recommendation for IPv6 Address Text Representation
      * http://tools.ietf.org/html/rfc5952
      *
      * if ipv6 was found, _bytes is set to the byte representation of the ipv6 address
      */
-     vector<ubyte> &tryDecodeHostToIPv6(std::vector<ubyte> &sbytes,const std::string &host);
+    vector<ubyte> &tryDecodeHostToIPv6(std::vector<ubyte> &sbytes, const std::string &host);
 
     std::vector<ubyte> sectionToTwoBytes(int section);
     bool isHexSection(const std::string &section);

@@ -1,12 +1,5 @@
-/*************************************************************************
-        > File Name: stringbuilder_1.h
-        > Author:
-        > Mail:
-        > Created Time: 2020年01月06日 星期一 16时02分19秒
- ************************************************************************/
-
-#ifndef _STRINGBUILDER_1_H
-#define _STRINGBUILDER_1_H
+#ifndef _STRINGBUILDER_H
+#define _STRINGBUILDER_H
 
 #include <list>
 #include <string.h>
@@ -23,7 +16,7 @@ class StringBuilderImpl {
     typedef typename std::basic_stringstream<chr> my_stringstream;
     typedef typename string_t::size_type size_type;
 
-public: 
+public:
     /**
      * static method to provide to replace the copy/assign
      * function. and avoid the warning message of valgrind
@@ -31,57 +24,50 @@ public:
      * happending
      *
      * @param : StringBuilderImpl
-     * @return: StringBuilderImpl 
+     * @return: StringBuilderImpl
      */
-    static StringBuilderImpl& copyOf(const StringBuilderImpl& src, StringBuilderImpl& dst){
+    static StringBuilderImpl &copyOf(const StringBuilderImpl &src, StringBuilderImpl &dst) {
         string_t temp = src.toString();
         dst.append(temp);
         return dst;
     }
+
 public:
     // delete the default function due to free double
-    StringBuilderImpl operator=(const StringBuilderImpl& other)=delete;
+    StringBuilderImpl operator=(const StringBuilderImpl &other) = delete;
     /**
-     * the default construcor and init the 
-     * total size and capacity and set precision 
-     * of double/float and append current val to 
+     * the default construcor and init the
+     * total size and capacity and set precision
+     * of double/float and append current val to
      * the inner data
      *
      */
-    StringBuilderImpl(const string_t &src) :
-            m_Data(nullptr),
-            m_nTotalSize(0),
-            m_nCapacity(16),
-            m_nPrecision(15) {
+    StringBuilderImpl(const string_t &src) : m_Data(nullptr), m_nTotalSize(0), m_nCapacity(16), m_nPrecision(15) {
         ExpandCapacity(m_nCapacity);
         Append(src);
     }
     /**
-     * the default construcor and init the 
-     * total size and capacity and set precision 
+     * the default construcor and init the
+     * total size and capacity and set precision
      * of double/float
      *
      */
-    StringBuilderImpl(void) :
-            m_Data(nullptr),
-            m_nTotalSize(0),
-            m_nCapacity(16),
-            m_nPrecision(15) {
+    StringBuilderImpl(void) : m_Data(nullptr), m_nTotalSize(0), m_nCapacity(16), m_nPrecision(15) {
         ExpandCapacity(m_nCapacity);
     }
     ~StringBuilderImpl() {
         if (nullptr != m_Data)
-            delete []m_Data;
+            delete[] m_Data;
         m_nTotalSize = 0;
         m_nCapacity = 0;
     }
 
 public:
-    template<class T>
-    StringBuilderImpl& operator << (const T &val){
+    template <class T>
+    StringBuilderImpl &operator<<(const T &val) {
         return append(val);
     }
-    StringBuilderImpl &clear(){
+    StringBuilderImpl &clear() {
         return setSize(0);
     }
     template <class typeArg>
@@ -89,14 +75,14 @@ public:
         Append(toString(arg));
         return *this;
     }
-    StringBuilderImpl &append(const string_t &arg){
+    StringBuilderImpl &append(const string_t &arg) {
         Append(arg);
         return *this;
     }
     string_t toString(void) const {
         string_t temp;
         temp.reserve(m_nTotalSize + 1);
-        temp.append(m_Data,m_nTotalSize);
+        temp.append(m_Data, m_nTotalSize);
         return temp;
     }
     chr charAt(size_type nIndex) {
@@ -139,13 +125,13 @@ public:
         }
         return *this;
     }
-    StringBuilderImpl &setLength(off_t nSize){
+    StringBuilderImpl &setLength(off_t nSize) {
         return setSize(nSize);
     }
 
     StringBuilderImpl &remove(off_t nStart, off_t nEnd = -1) {
         // safe check first
-        if(nStart == nEnd)
+        if (nStart == nEnd)
             return *this;
         if (nStart < 0 || (nStart > nEnd && nEnd != -1) || nEnd > m_nTotalSize)
             throw std::invalid_argument("invalid Begining and Ending");
@@ -193,9 +179,7 @@ public:
             ExpandCapacity(checkSize);
         // move (nStart, m_nTotalSize] to
         // (nStart+str.size(),m_nTotalSize+str.size()]
-        memcpy(m_Data + nStart + str.size(),
-                m_Data + nEnd,
-                m_nTotalSize - nEnd);
+        memcpy(m_Data + nStart + str.size(), m_Data + nEnd, m_nTotalSize - nEnd);
         // move str to (nStart, nStart+str.size()]
         memcpy(m_Data + nStart, str.c_str(), str.size());
         return *this;
@@ -236,9 +220,9 @@ private:
      * @return: the size of should expand
      */
     off_t CheckSizeEnough(size_type nSize) {
-        if ( static_cast<off_t>(nSize) + m_nTotalSize > m_nCapacity) {
+        if (static_cast<off_t>(nSize) + m_nTotalSize > m_nCapacity) {
             // should ExpandCapacity
-            m_nCapacity = (m_nCapacity + nSize) << 1;  //扩大为原始的2倍
+            m_nCapacity = (m_nCapacity + nSize) << 1;  // 扩大为原始的2倍
             return m_nCapacity;
         }
         return 0;
@@ -254,21 +238,22 @@ protected:
         if (nSize < m_nCapacity) {
             return;
         }
-        std::auto_ptr<chr> _au(new chr[nSize]);
+        std::unique_ptr<chr> _au(new chr[nSize]);
         if (nullptr != m_Data) {
-            memcpy(_au.get(),m_Data,m_nTotalSize);
-            delete []m_Data;
+            memcpy(_au.get(), m_Data, m_nTotalSize);
+            delete[] m_Data;
         }
         m_Data = _au.release();
         m_nCapacity = nSize;
     }
-    StringBuilderImpl(const StringBuilderImpl&)=delete;
+    StringBuilderImpl(const StringBuilderImpl &) = delete;
+
 private:
     chr *m_Data;
-    off_t m_nTotalSize;   //字符串实际长度
-    off_t m_nCapacity;    //字符串容纳体积
-    size_t m_nPrecision;  //浮点数精度
+    off_t m_nTotalSize;   // 字符串实际长度
+    off_t m_nCapacity;    // 字符串容纳体积
+    size_t m_nPrecision;  // 浮点数精度
 };
 typedef StringBuilderImpl<char> StringBuilder;
-
+typedef StringBuilderImpl<wchar_t> WStringBuilder;
 #endif

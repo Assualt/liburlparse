@@ -68,7 +68,7 @@ private:
     /**
      * The content to read.
      */
-     std::string _content;
+    std::string _content;
     /**
      * The current position in the content we are looking at.
      */

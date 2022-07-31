@@ -1,0 +1,8 @@
+project(liburlparse)
+cmake_minimum_required(VERSION 2.6)
+option(BUILD_TESTS "Enable GoogleTesting " ON)
+include_directories(${PROJECT_SOURCE_DIR}/include /usr/include)
+add_subdirectory(src)
+if (BUILD_TESTS)
+    add_subdirectory(Test)
+endif ()

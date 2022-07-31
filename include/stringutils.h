@@ -11,7 +11,7 @@
 using namespace std;
 class StringUtils {
 public:
-    static void split(std::vector<std::string> &v,const std::string &s,const std::string &c);
+    static void split(std::vector<std::string> &v, const std::string &s, const std::string &c);
     // static bool trans(const char *pFromCode, const char *pToCode, const char
     // *pInBuf, size_t iInLen, char *pOutBuf, size_t iOutLen );
 
@@ -20,14 +20,8 @@ public:
     static bool startsWith(const std::string &s, const std::string &sub);
     static bool endsWith(const std::string &s, const std::string &sub);
 
-    static std::string &replaceAll(
-            std::string &old,
-            char oldChar,
-            char newChar);
-    static std::string &replaceAlls(
-            std::string &old,
-            const std::string &oldStr,
-            const std::string &newStr);
+    static std::string &replaceAll(std::string &old, char oldChar, char newChar);
+    static std::string &replaceAlls(std::string &old, const std::string &oldStr, const std::string &newStr);
 
     static std::string &trim(std::string &s);
 
@@ -37,7 +31,5 @@ public:
 
     static int min(int num1, int num2);
     static int max(int num1, int num2);
-
-
 };
 #endif

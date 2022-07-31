@@ -32,10 +32,10 @@ public:
      * split a Strubf without the use of a regex,which could split by isDot() or
      * %2e
      * @param input the input string which can be split by dot
-     * @return an arry of Strings that is a patition of the original string by dot
+     * @return an arry of Strings that is a partition of the original string by dot
      */
-    static void splitByDot(std::vector<std::string> &splitList,const std::string &input);
-    
+    static void splitByDot(std::vector<std::string> &splitList, const std::string &input);
+
     static bool JudgeValidRadixString(const std::string &src, int radix = 10);
 };
 #endif

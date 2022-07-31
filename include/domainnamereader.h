@@ -7,7 +7,6 @@
 #include "stringbuilder.h"
 #include "urldetector.h"
 
-
 #include <stdlib.h>
 #include <string.h>
 enum ReaderNextState {
@@ -60,7 +59,11 @@ public:
     // DomainNameReader(InputTextReader reader, StringBuilder buffer,
     // string current, UrlDetectorOptions_T options,CharacterHandler
     // *characterHandler);
-    DomainNameReader(InputTextReader &reader,StringBuilder &buffer, const std::string &current, UrlDetectorOptions_T &options);
+    DomainNameReader(
+            InputTextReader &reader,
+            StringBuilder &buffer,
+            const std::string &current,
+            UrlDetectorOptions_T &options);
     /**
      * Reads the Dns and returns the next state the state machine should take in
      * throwing this out, or continue processing if this is a valid domain name.
@@ -73,9 +76,7 @@ public:
     int getReaderPosition();
     int getBacktracked();
 
-
-public: //static const val
-
+public:  // static const val
     /**
      * The minimum length of a ascii based top level domain.
      */

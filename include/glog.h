@@ -13,10 +13,10 @@ using namespace std;
 
 const std::string LOG_PATH = "/tmp/urlparse.log";
 
-//定义日志级别 分别是 DEBUG WARN ERROR
+// 定义日志级别 分别是 DEBUG WARN ERROR
 enum LOG_LEVEL { LOG_DEBUG_LEVEL = 3, LOG_WARN_LEVEL = 2, LOG_ERR_LEVEL = 1 };
 
-//定义时间buf
+// 定义时间buf
 #define TimeBuf_MAXSIZE 32
 #define DateBuf_MAXSIZE 20
 #define MAX_TIME_FORMAT_SIZE 50
@@ -27,37 +27,47 @@ static std::string getCurrentTime() {
     gettimeofday(&tv, NULL);
     char tempValue[MAX_TIME_FORMAT_SIZE];
     time_t tNow = time(NULL);
-    struct tm *t  = localtime(&tNow);
-    memset(tempValue, 0 , MAX_TIME_FORMAT_SIZE);
-    sprintf(tempValue, timeformat, (t->tm_year+1900),
-            (t->tm_mon+1), (t->tm_mday), (t->tm_hour) , (t->tm_min),
-            (t->tm_sec), tv.tv_usec);
+    struct tm *t = localtime(&tNow);
+    memset(tempValue, 0, MAX_TIME_FORMAT_SIZE);
+    sprintf(tempValue,
+            timeformat,
+            (t->tm_year + 1900),
+            (t->tm_mon + 1),
+            (t->tm_mday),
+            (t->tm_hour),
+            (t->tm_min),
+            (t->tm_sec),
+            tv.tv_usec);
     return tempValue;
 }
 
-class Logger{
+class Logger {
 private:
-    Logger(){}
-    ~Logger(){
+    Logger() {}
+    ~Logger() {
         _outlogger.close();
     }
+
 public:
-    static Logger & getLogger() {
+    static Logger &getLogger() {
+        static Logger _logger;
         std::ofstream &out = _logger.getOutStream();
-        if(!out.is_open()){ //try to open
+        if (!out.is_open()) {  // try to open
             out.open(LOG_PATH);
-            if(!out.is_open()){
+            if (!out.is_open()) {
                 std::cout << "open Failed " << LOG_PATH << std::endl;
             }
         }
         return _logger;
     }
-    static Logger _logger;
-    
+
     void outStream(const std::string &data) {
         _outlogger << data << std::endl;
     }
-    ofstream &getOutStream() { return _outlogger; }
+    ofstream &getOutStream() {
+        return _outlogger;
+    }
+
 private:
     std::ofstream _outlogger;
 };
@@ -68,9 +78,10 @@ public:
     Log &setLevel(LOG_LEVEL level);
     Log &format(const std::string &fmt_str, ...);
 
-    const std::string getLevel();
+    std::string getLevel();
     void toFile();
     static Logger _logger;
+
 private:
     std::string _currenttime;
     LOG_LEVEL _level;

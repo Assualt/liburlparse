@@ -1,5 +1,6 @@
 #ifndef _URLPART_H
 #define _URLPART_H
+
 enum UrlPart {
     URL_END = 0,
     URL_FRAGMENT = 1,
@@ -10,6 +11,7 @@ enum UrlPart {
     URL_USERNAME_PASSWORD = 6,
     URL_SCHEME = 7
 };
+
 class UrlPart_T {
 private:
     UrlPart _nextPart;

@@ -50,7 +50,7 @@ enum CharacterMatch {
 };
 class CharacterHandler {
 public:
-    virtual void addCharacter(char chars) = 0;  //纯虚函数
+    virtual void addCharacter(char chars) = 0;  // 纯虚函数
     virtual ~CharacterHandler();
 };
 class UrlDetector : public CharacterHandler {
@@ -85,7 +85,7 @@ public:
     // CharacterHandler 纯虚函数 需要加上virtual 关键字
     virtual void addCharacter(char chars);
 
-public: //static const 
+public:  // static const
     /**
      * Valid protocol schemes.
      */
@@ -94,6 +94,7 @@ public: //static const
      * Contains the string to check for and remove if the scheme is this.
      */
     static std::string HTML_MAILTO;
+
 private:
     /**
      * Stores options for detection.
@@ -138,7 +139,7 @@ private:
     std::list<Url> _urlList;
     /**
      * Stores the urls to avoid the same
-     */ 
+     */
     std::set<std::string> _urlSet;
 
     /**
