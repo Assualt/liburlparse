@@ -8,16 +8,12 @@
 #include <cstdlib>
 #include <cstddef>
 
-#include "urldetector.h"
-#include "urldetectoroptions.h"
-#include "stringutils.h"
-#include "urlutil.h"
-#include "urlmarker.h"
-#include "hostnormalizer.h"
-#include "pathnormalizer.h"
+#include "url_util.h"
+#include "url_marker.h"
+#include "host_normalizer.h"
+#include "path_normalizer.h"
 
 #define ubyte unsigned char
-using namespace std;
 // using namespace __gnu_cxx;
 /**
  * Creating own Uri class since java.net.Uri would throw parsing exceptions
@@ -40,11 +36,14 @@ class NormalizedUrl;
 class Url {
 public:
     std::string getFullUrlWithoutFragment();
+    
     std::string getScheme();
+    
     /**
      * Returns a normalized url given a url object
      */
     NormalizedUrl normalize();
+    
     /*Override*/
     std::string toString();
 
@@ -54,9 +53,13 @@ public:
      * [scheme]://[username]:[password]@[host]:[port]/[path]?[query]#[fragment]
      */
     std::string getFullUrl();
+    
     std::string getFragment();
+    
     std::string getUsername();
+    
     std::string getPassword();
+    
     virtual std::string getHost();
 
     /**
@@ -67,20 +70,26 @@ public:
     virtual std::string getPath();
 
     std::string getQuery();
+    
     /**
      * Always returns null for non normalized urls.
      */
     virtual vector<ubyte> getHostBytes() const;
+    
     std::string getOriginalUrl() const;
 
 public:
-    Url(UrlMarker &urlMarker);
+    explicit Url(UrlMarker &urlMarker);
+    
     Url();
+    
     ~Url();
 
 public:
     static std::string DEFAULT_SCHEME;
+    
     static std::map<std::string, int> SCHEME_PORT_MAP;
+    
     static Url create(std::string &url);
 
 private:
@@ -97,11 +106,13 @@ private:
 
 private:
     void populateUsernamePassword();
+    
     /**
      * @param urlPart The url part we are checking for existence
      * @return Returns true if the part exists.
      */
     bool exists(UrlPart urlPart);
+    
     /**
      * For example, in http://yahoo.com/lala/, nextExistingPart(UrlPart.HOST)
      * would return UrlPart.PATH
@@ -118,9 +129,13 @@ private:
 
 public:
     void setRawPath(const std::string &path);
+    
     void setRawHost(const std::string &host);
+    
     std::string getRawPath() const;
+    
     std::string getRawHost() const;
+    
     UrlMarker getUrlMarker() const;
 };
 
@@ -130,19 +145,24 @@ public:
      * Returns a normalized url given a single url.
      */
     static NormalizedUrl create(std::string &url);
-    NormalizedUrl(UrlMarker &urlMarker);
+    
+    explicit NormalizedUrl(UrlMarker &urlMarker);
+    
     NormalizedUrl();
 
 public:
     // Override
     std::string getPath();
+    
     std::string getHost();
-    vector<ubyte> getHostBytes();
+    
+    std::vector<ubyte> getHostBytes();
+    
     void populateHostAndHostBytes();
 
 private:
     bool _isPopulated;
-    vector<ubyte> _hostBytes;
+    std::vector<ubyte> _hostBytes;
 };
 
 #endif
