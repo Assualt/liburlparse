@@ -1,7 +1,11 @@
 #include "url.h"
-
+#include "string_utils.h"
+#include "url_detect_options.h"
+#include "log.h"
+#include "url_detector.h"
 
 std::string Url::DEFAULT_SCHEME = "http";
+
 std::map<std::string,int> Url::SCHEME_PORT_MAP = {
     {"http",80},
     {"https",443},
