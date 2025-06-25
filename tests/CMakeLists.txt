@@ -1,4 +1,3 @@
-find_package(GoogleTest REQUIRED)
 include(CTest)
 set(test_urlprase_objects
     test_char_utils.cpp

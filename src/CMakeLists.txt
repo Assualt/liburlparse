@@ -23,4 +23,11 @@ PUBLIC
 )
 target_link_libraries(urlparse pthread dl)
 
-add_test(NAME test COMMAND echo "123")
+add_library(urlparse_static STATIC ${parse_objects})
+target_include_directories(urlparse_static 
+PUBLIC
+    ${PROJECT_SOURCE_DIR}/include
+)
+target_link_libraries(urlparse_static pthread dl)
+
+install(TARGETS urlparse urlparse_static DESTINATION lib)
