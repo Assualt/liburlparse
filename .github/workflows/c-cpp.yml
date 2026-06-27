@@ -1,18 +1,46 @@
-name: C/C++ CI
+name: CMake Build and Test
+
 on:
   push:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
+
 jobs:
   build:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    - name: 更新 Git 子模块
-      run: git submodule update --init --recursive
-    - name: configure
-      run: rm -rf build && mkdir -p build && cd build && cmake ..
-    - name: compile
-      run: make -j4
+    name: Build on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
     
+    strategy:
+      fail-fast: false
+      matrix:
+        # 包含 Ubuntu 和 macOS（支持您配置中的 CMAKE_OSX_ARCHITECTURES）
+        os: [ubuntu-latest, macos-latest]
+        build_type: [Release, Debug]
+
+    steps:
+    - name: Checkout repository with submodules
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive # 自动拉取 third_party 中的 googletest, pybind11 等依赖
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-file-cache: true
+        python-version: '3.10' # 确保 pybind11 编译时能找到 Python 环境
+
+    - name: Configure CMake
+      run: >
+        cmake -B ${{github.workspace}}/build 
+        -DCMAKE_BUILD_TYPE=${{matrix.build_type}}
+        -DBUILD_TESTS=ON
+        -DBUILD_PYTHON_TOOL=OFF
+        -DBUILD_BENCHMARK=OFF
+
+    - name: Build Project
+      run: cmake --build ${{github.workspace}}/build --config ${{matrix.build_type}}
+
+    - name: Run Tests
+      working-directory: ${{github.workspace}}/build
+      run: ctest -C ${{matrix.build_type}} --output-on-failure
